@@ -52,4 +52,18 @@ describe("Path", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	it("should include stroke-width attribute when specified", () => {
+		const path = new Path({ d: "M 0 0", stroke: "red", strokeWidth: 2 });
+		const output = path.toString();
+
+		expect(output).toContain('stroke-width="2"');
+	});
+
+	it("should include opacity attribute when specified", () => {
+		const path = new Path({ d: "M 0 0", opacity: 0.5 });
+		const output = path.toString();
+
+		expect(output).toContain('opacity="0.5"');
+	});
 });

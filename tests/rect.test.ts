@@ -52,4 +52,18 @@ describe("Rect", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	it("should include stroke-width attribute when specified", () => {
+		const rect = new Rect({ width: 100, height: 50, stroke: "black", strokeWidth: 2 });
+		const output = rect.toString();
+
+		expect(output).toContain('stroke-width="2"');
+	});
+
+	it("should include opacity attribute when specified", () => {
+		const rect = new Rect({ width: 100, height: 50, opacity: 0.5 });
+		const output = rect.toString();
+
+		expect(output).toContain('opacity="0.5"');
+	});
 });

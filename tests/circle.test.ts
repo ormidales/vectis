@@ -52,4 +52,18 @@ describe("Circle", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	it("should include stroke-width attribute when specified", () => {
+		const circle = new Circle({ r: 10, stroke: "blue", strokeWidth: 2 });
+		const output = circle.toString();
+
+		expect(output).toContain('stroke-width="2"');
+	});
+
+	it("should include opacity attribute when specified", () => {
+		const circle = new Circle({ r: 10, opacity: 0.5 });
+		const output = circle.toString();
+
+		expect(output).toContain('opacity="0.5"');
+	});
 });

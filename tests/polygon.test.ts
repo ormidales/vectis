@@ -52,4 +52,18 @@ describe("Polygon", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	it("should include stroke-width attribute when specified", () => {
+		const polygon = new Polygon({ points: "0,0 50,25 25,50", stroke: "purple", strokeWidth: 2 });
+		const output = polygon.toString();
+
+		expect(output).toContain('stroke-width="2"');
+	});
+
+	it("should include opacity attribute when specified", () => {
+		const polygon = new Polygon({ points: "0,0 50,25 25,50", opacity: 0.5 });
+		const output = polygon.toString();
+
+		expect(output).toContain('opacity="0.5"');
+	});
 });
