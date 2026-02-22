@@ -6,3 +6,8 @@ L'objectif est de créer et de manipuler des fichiers SVG dynamiquement via une 
 - Tests : Vitest (Exécution rapide, support natif ESM).
 - Build : tsup (Bundling rapide basé sur esbuild, génération automatique des définitions de types).
 - Linting : Biome (Performances de formatage et d'analyse statique).
+
+## Idées de logos
+- Minimalist geometric logo combining a stylized code bracket and a pen tool, clean vector art style, dark mode palette with neon blue and purple accents.
+- Abstract node network forming a scalable vector graphic icon, wireframe style, tech-oriented, flat colors on a pure white background.
+- Flat design logo featuring overlapping SVG primitives like a circle, square, and triangle forming a cohesive dynamic shape, vibrant colors, sharp edges.
