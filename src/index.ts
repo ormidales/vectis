@@ -1,3 +1,11 @@
+export type {
+	AnimateOptions,
+	AnimateTransformOptions,
+	BaseAnimationOptions,
+	SmilAnimationOptions,
+} from "./animation/smil.js";
+export { renderSmilAnimation } from "./animation/smil.js";
+
 export type { SvgCanvasOptions } from "./core/canvas.js";
 export { SvgCanvas } from "./core/canvas.js";
 
