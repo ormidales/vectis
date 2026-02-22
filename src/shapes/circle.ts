@@ -6,6 +6,7 @@ import type {
 	PresentationAttributes,
 	Shape,
 } from "../interfaces/shape.interface.js";
+import { escapeXml } from "../utils/escape.js";
 
 export interface CircleOptions extends PresentationAttributes {
 	cx?: number;
@@ -36,8 +37,9 @@ export class Circle implements Shape {
 
 	toString(): string {
 		let attrs = `cx="${this.cx}" cy="${this.cy}" r="${this.r}"`;
-		if (this.fill !== undefined) attrs += ` fill="${this.fill}"`;
-		if (this.stroke !== undefined) attrs += ` stroke="${this.stroke}"`;
+		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
+		if (this.stroke !== undefined)
+			attrs += ` stroke="${escapeXml(this.stroke)}"`;
 		if (this.animations.length === 0) return `<circle ${attrs}/>`;
 		const content = this.animations.map(renderSmilAnimation).join("");
 		return `<circle ${attrs}>${content}</circle>`;

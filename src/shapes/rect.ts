@@ -6,6 +6,7 @@ import type {
 	PresentationAttributes,
 	Shape,
 } from "../interfaces/shape.interface.js";
+import { escapeXml } from "../utils/escape.js";
 
 export interface RectOptions extends PresentationAttributes {
 	x?: number;
@@ -39,8 +40,9 @@ export class Rect implements Shape {
 
 	toString(): string {
 		let attrs = `x="${this.x}" y="${this.y}" width="${this.width}" height="${this.height}"`;
-		if (this.fill !== undefined) attrs += ` fill="${this.fill}"`;
-		if (this.stroke !== undefined) attrs += ` stroke="${this.stroke}"`;
+		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
+		if (this.stroke !== undefined)
+			attrs += ` stroke="${escapeXml(this.stroke)}"`;
 		if (this.animations.length === 0) return `<rect ${attrs}/>`;
 		const content = this.animations.map(renderSmilAnimation).join("");
 		return `<rect ${attrs}>${content}</rect>`;
