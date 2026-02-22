@@ -48,7 +48,7 @@ function renderAttrs(options: BaseAnimationOptions): string {
 export function renderSmilAnimation(options: SmilAnimationOptions): string {
 	if (isAnimateTransform(options)) {
 		const attrName = escapeXml(options.attributeName ?? "transform");
-		return `<animateTransform attributeName="${attrName}" type="${escapeXml(options.type)}"${renderAttrs(options)}/>`;
+		return `<animateTransform attributeName="${attrName}" type="${escapeXml(options.type)}"${renderAttrs(options)} />`;
 	}
-	return `<animate attributeName="${escapeXml(options.attributeName)}"${renderAttrs(options)}/>`;
+	return `<animate attributeName="${escapeXml(options.attributeName)}"${renderAttrs(options)} />`;
 }
