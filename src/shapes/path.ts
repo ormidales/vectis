@@ -15,7 +15,7 @@ export class Path implements Shape {
 	private readonly d: string;
 	private readonly fill: string | undefined;
 	private readonly stroke: string | undefined;
-	private readonly animations: SmilAnimationOptions[] = [];
+	private animations: SmilAnimationOptions[] = [];
 
 	constructor(options: PathOptions = {}) {
 		this.d = options.d ?? "";

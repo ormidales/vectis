@@ -15,7 +15,7 @@ export class Polygon implements Shape {
 	private readonly points: string;
 	private readonly fill: string | undefined;
 	private readonly stroke: string | undefined;
-	private readonly animations: SmilAnimationOptions[] = [];
+	private animations: SmilAnimationOptions[] = [];
 
 	constructor(options: PolygonOptions = {}) {
 		this.points = options.points ?? "";

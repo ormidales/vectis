@@ -19,7 +19,7 @@ export class Circle implements Shape {
 	private readonly r: number;
 	private readonly fill: string | undefined;
 	private readonly stroke: string | undefined;
-	private readonly animations: SmilAnimationOptions[] = [];
+	private animations: SmilAnimationOptions[] = [];
 
 	constructor(options: CircleOptions = {}) {
 		this.cx = options.cx ?? 0;
