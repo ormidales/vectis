@@ -6,6 +6,7 @@ import type {
 	PresentationAttributes,
 	Shape,
 } from "../interfaces/shape.interface.js";
+import { escapeXml } from "../utils/escape.js";
 
 export interface PolygonOptions extends PresentationAttributes {
 	points?: string;
@@ -29,9 +30,10 @@ export class Polygon implements Shape {
 	}
 
 	toString(): string {
-		let attrs = `points="${this.points}"`;
-		if (this.fill !== undefined) attrs += ` fill="${this.fill}"`;
-		if (this.stroke !== undefined) attrs += ` stroke="${this.stroke}"`;
+		let attrs = `points="${escapeXml(this.points)}"`;
+		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
+		if (this.stroke !== undefined)
+			attrs += ` stroke="${escapeXml(this.stroke)}"`;
 		if (this.animations.length === 0) return `<polygon ${attrs}/>`;
 		const content = this.animations.map(renderSmilAnimation).join("");
 		return `<polygon ${attrs}>${content}</polygon>`;

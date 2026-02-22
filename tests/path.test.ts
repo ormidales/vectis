@@ -36,4 +36,20 @@ describe("Path", () => {
 
 		expect(output).toBe('<path d="M 0 0 L 100 100" fill="none" stroke="red"/>');
 	});
+
+	it("should escape special characters in d to prevent XSS", () => {
+		const path = new Path({ d: 'M 0 0" onload="alert(1)' });
+		const output = path.toString();
+
+		expect(output).not.toContain('"M 0 0" onload="alert(1)"');
+		expect(output).toContain("&quot;");
+	});
+
+	it("should escape special characters in fill to prevent XSS", () => {
+		const path = new Path({ d: "M 0 0", fill: '<script>alert(1)</script>' });
+		const output = path.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
 });

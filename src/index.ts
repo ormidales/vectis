@@ -22,3 +22,5 @@ export type { PolygonOptions } from "./shapes/polygon.js";
 export { Polygon } from "./shapes/polygon.js";
 export type { RectOptions } from "./shapes/rect.js";
 export { Rect } from "./shapes/rect.js";
+
+export { escapeXml } from "./utils/escape.js";
