@@ -1,3 +1,7 @@
+import {
+	renderSmilAnimation,
+	type SmilAnimationOptions,
+} from "../animation/smil.js";
 import type {
 	PresentationAttributes,
 	Shape,
@@ -15,6 +19,7 @@ export class Circle implements Shape {
 	private readonly r: number;
 	private readonly fill: string | undefined;
 	private readonly stroke: string | undefined;
+	private readonly animations: SmilAnimationOptions[] = [];
 
 	constructor(options: CircleOptions = {}) {
 		this.cx = options.cx ?? 0;
@@ -24,10 +29,17 @@ export class Circle implements Shape {
 		this.stroke = options.stroke;
 	}
 
+	animate(options: SmilAnimationOptions): this {
+		this.animations.push(options);
+		return this;
+	}
+
 	toString(): string {
 		let attrs = `cx="${this.cx}" cy="${this.cy}" r="${this.r}"`;
 		if (this.fill !== undefined) attrs += ` fill="${this.fill}"`;
 		if (this.stroke !== undefined) attrs += ` stroke="${this.stroke}"`;
-		return `<circle ${attrs}/>`;
+		if (this.animations.length === 0) return `<circle ${attrs}/>`;
+		const content = this.animations.map(renderSmilAnimation).join("");
+		return `<circle ${attrs}>${content}</circle>`;
 	}
 }
