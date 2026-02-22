@@ -20,6 +20,8 @@ export class Circle implements Shape {
 	private readonly r: number;
 	private readonly fill: string | undefined;
 	private readonly stroke: string | undefined;
+	private readonly strokeWidth: number | undefined;
+	private readonly opacity: number | undefined;
 	private animations: SmilAnimationOptions[] = [];
 
 	constructor(options: CircleOptions = {}) {
@@ -28,6 +30,8 @@ export class Circle implements Shape {
 		this.r = options.r ?? 0;
 		this.fill = options.fill;
 		this.stroke = options.stroke;
+		this.strokeWidth = options.strokeWidth;
+		this.opacity = options.opacity;
 	}
 
 	animate(options: SmilAnimationOptions): this {
@@ -40,6 +44,9 @@ export class Circle implements Shape {
 		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
 		if (this.stroke !== undefined)
 			attrs += ` stroke="${escapeXml(this.stroke)}"`;
+		if (this.strokeWidth !== undefined)
+			attrs += ` stroke-width="${this.strokeWidth}"`;
+		if (this.opacity !== undefined) attrs += ` opacity="${this.opacity}"`;
 		if (this.animations.length === 0) return `<circle ${attrs}/>`;
 		const content = this.animations.map(renderSmilAnimation).join("");
 		return `<circle ${attrs}>${content}</circle>`;
