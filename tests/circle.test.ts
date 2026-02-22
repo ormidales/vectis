@@ -36,4 +36,34 @@ describe("Circle", () => {
 
 		expect(output).toBe('<circle cx="0" cy="0" r="10" fill="red" stroke="blue"/>');
 	});
+
+	it("should escape special characters in fill to prevent XSS", () => {
+		const circle = new Circle({ r: 10, fill: 'red" onload="alert(1)' });
+		const output = circle.toString();
+
+		expect(output).not.toContain('"red" onload="alert(1)"');
+		expect(output).toContain("&quot;");
+	});
+
+	it("should escape special characters in stroke to prevent XSS", () => {
+		const circle = new Circle({ r: 10, stroke: '<script>alert(1)</script>' });
+		const output = circle.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
+
+	it("should include stroke-width attribute when specified", () => {
+		const circle = new Circle({ r: 10, stroke: "blue", strokeWidth: 2 });
+		const output = circle.toString();
+
+		expect(output).toContain('stroke-width="2"');
+	});
+
+	it("should include opacity attribute when specified", () => {
+		const circle = new Circle({ r: 10, opacity: 0.5 });
+		const output = circle.toString();
+
+		expect(output).toContain('opacity="0.5"');
+	});
 });

@@ -112,6 +112,22 @@ describe("SMIL animate", () => {
 		expect(output).toContain("</path>");
 	});
 
+	it("should include a space before self-closing /> in <animate> tag", () => {
+		const circle = new Circle({ r: 10 });
+		circle.animate({ attributeName: "r" });
+		const output = circle.toString();
+
+		expect(output).toMatch(/<animate\b[^>]* \/>/);
+	});
+
+	it("should include a space before self-closing /> in <animateTransform> tag", () => {
+		const rect = new Rect({ width: 100, height: 50 });
+		rect.animate({ type: "translate" });
+		const output = rect.toString();
+
+		expect(output).toMatch(/<animateTransform\b[^>]* \/>/);
+	});
+
 	it("should not change output when no animations are added", () => {
 		const circle = new Circle({ cx: 50, cy: 50, r: 25 });
 		expect(circle.toString()).toBe('<circle cx="50" cy="50" r="25"/>');
@@ -131,5 +147,32 @@ describe("SMIL animate", () => {
 
 		expect(output).toContain('type="rotate"');
 		expect(output).toContain('attributeName="transform"');
+	});
+
+	it("should escape special characters in animation attribute values", () => {
+		const circle = new Circle({ r: 10 });
+		circle.animate({
+			attributeName: "r",
+			from: '10" onload="alert(1)',
+			to: "20",
+			dur: "1s",
+		});
+		const output = circle.toString();
+
+		expect(output).not.toContain('"10" onload="alert(1)"');
+		expect(output).toContain("&quot;");
+	});
+
+	it("should escape special characters in animateTransform type", () => {
+		const rect = new Rect({ width: 100, height: 50 });
+		rect.animate({
+			type: "translate",
+			to: '<script>alert(1)</script>',
+			dur: "1s",
+		});
+		const output = rect.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
 	});
 });

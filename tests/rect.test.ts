@@ -36,4 +36,34 @@ describe("Rect", () => {
 
 		expect(output).toBe('<rect x="5" y="5" width="100" height="50" fill="green" stroke="black"/>');
 	});
+
+	it("should escape special characters in fill to prevent XSS", () => {
+		const rect = new Rect({ width: 100, height: 50, fill: 'green" onload="alert(1)' });
+		const output = rect.toString();
+
+		expect(output).not.toContain('"green" onload="alert(1)"');
+		expect(output).toContain("&quot;");
+	});
+
+	it("should escape special characters in stroke to prevent XSS", () => {
+		const rect = new Rect({ width: 100, height: 50, stroke: '<script>alert(1)</script>' });
+		const output = rect.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
+
+	it("should include stroke-width attribute when specified", () => {
+		const rect = new Rect({ width: 100, height: 50, stroke: "black", strokeWidth: 2 });
+		const output = rect.toString();
+
+		expect(output).toContain('stroke-width="2"');
+	});
+
+	it("should include opacity attribute when specified", () => {
+		const rect = new Rect({ width: 100, height: 50, opacity: 0.5 });
+		const output = rect.toString();
+
+		expect(output).toContain('opacity="0.5"');
+	});
 });
