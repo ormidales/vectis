@@ -12,6 +12,10 @@ export interface PresentationAttributes {
 	stroke?: string;
 	/** Width of the stroke in user units. */
 	strokeWidth?: number;
+	/** Shape of the end caps for open subpaths (`stroke-linecap` attribute). */
+	strokeLinecap?: "butt" | "round" | "square";
+	/** Shape of the corners where two lines meet (`stroke-linejoin` attribute). */
+	strokeLinejoin?: "miter" | "round" | "bevel";
 	/** Opacity of the element, from `0` (transparent) to `1` (opaque). */
 	opacity?: number;
 }
