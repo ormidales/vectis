@@ -16,6 +16,21 @@ describe("Circle", () => {
 		expect(output).toBe('<circle cx="50" cy="50" r="25"/>');
 	});
 
+	it("should include id attribute when specified", () => {
+		const circle = new Circle({ r: 10, id: "my-circle" });
+		const output = circle.toString();
+
+		expect(output).toContain('id="my-circle"');
+	});
+
+	it("should escape special characters in id to prevent XSS", () => {
+		const circle = new Circle({ r: 10, id: '<script>alert(1)</script>' });
+		const output = circle.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
+
 	it("should include fill attribute when specified", () => {
 		const circle = new Circle({ cx: 10, cy: 10, r: 5, fill: "red" });
 		const output = circle.toString();

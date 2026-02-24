@@ -9,6 +9,7 @@ import type {
 import { escapeXml } from "../utils/escape.js";
 
 export abstract class BaseShape implements Shape {
+	protected readonly id: string | undefined;
 	protected readonly fill: string | undefined;
 	protected readonly stroke: string | undefined;
 	protected readonly strokeWidth: number | undefined;
@@ -16,6 +17,7 @@ export abstract class BaseShape implements Shape {
 	private readonly animations: SmilAnimationOptions[] = [];
 
 	constructor(options: PresentationAttributes = {}) {
+		this.id = options.id;
 		this.fill = options.fill;
 		this.stroke = options.stroke;
 		this.strokeWidth = options.strokeWidth;
@@ -29,6 +31,7 @@ export abstract class BaseShape implements Shape {
 
 	protected renderPresentationAttrs(): string {
 		let attrs = "";
+		if (this.id !== undefined) attrs += ` id="${escapeXml(this.id)}"`;
 		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
 		if (this.stroke !== undefined)
 			attrs += ` stroke="${escapeXml(this.stroke)}"`;
