@@ -6,6 +6,7 @@ export type {
 } from "./animation/smil.js";
 export { renderSmilAnimation } from "./animation/smil.js";
 
+export { BaseShape } from "./core/base-shape.js";
 export type { SvgCanvasOptions } from "./core/canvas.js";
 export { SvgCanvas } from "./core/canvas.js";
 
