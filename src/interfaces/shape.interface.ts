@@ -6,6 +6,8 @@ import type { SmilAnimationOptions } from "../animation/smil.js";
 export interface PresentationAttributes {
 	/** Unique identifier for the SVG element (`id` attribute). */
 	id?: string;
+	/** CSS class name(s) for the element (`class` attribute). */
+	className?: string;
 	/** Fill color of the shape (e.g. `"red"`, `"#ff0000"`). */
 	fill?: string;
 	/** Stroke color of the shape outline. */
