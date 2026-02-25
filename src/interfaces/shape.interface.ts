@@ -20,6 +20,8 @@ export interface PresentationAttributes {
 	strokeLinejoin?: "miter" | "round" | "bevel";
 	/** Opacity of the element, from `0` (transparent) to `1` (opaque). */
 	opacity?: number;
+	/** Static transform attribute (e.g. `"rotate(45)"`, `"translate(10 20)"`). */
+	transform?: string;
 }
 
 /**

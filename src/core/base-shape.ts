@@ -23,6 +23,7 @@ export abstract class BaseShape implements Shape {
 	protected readonly strokeLinecap: "butt" | "round" | "square" | undefined;
 	protected readonly strokeLinejoin: "miter" | "round" | "bevel" | undefined;
 	protected readonly opacity: number | undefined;
+	protected readonly transform: string | undefined;
 	private readonly animations: SmilAnimationOptions[] = [];
 
 	/**
@@ -39,6 +40,7 @@ export abstract class BaseShape implements Shape {
 		this.strokeLinecap = options.strokeLinecap;
 		this.strokeLinejoin = options.strokeLinejoin;
 		this.opacity = options.opacity;
+		this.transform = options.transform;
 	}
 
 	/**
@@ -68,7 +70,8 @@ export abstract class BaseShape implements Shape {
 			renderAttribute("stroke-width", this.strokeWidth) +
 			renderAttribute("stroke-linecap", this.strokeLinecap) +
 			renderAttribute("stroke-linejoin", this.strokeLinejoin) +
-			renderAttribute("opacity", this.opacity)
+			renderAttribute("opacity", this.opacity) +
+			renderAttribute("transform", this.transform)
 		);
 	}
 

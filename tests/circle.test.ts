@@ -118,4 +118,33 @@ describe("Circle", () => {
 
 		expect(output).toContain('opacity="0.5"');
 	});
+
+	it("should include transform attribute when specified", () => {
+		const circle = new Circle({ r: 10, transform: "rotate(45)" });
+		const output = circle.toString();
+
+		expect(output).toContain('transform="rotate(45)"');
+	});
+
+	it("should support translate transform", () => {
+		const circle = new Circle({ r: 10, transform: "translate(100 50)" });
+		const output = circle.toString();
+
+		expect(output).toContain('transform="translate(100 50)"');
+	});
+
+	it("should support combined transforms", () => {
+		const circle = new Circle({ r: 10, transform: "translate(50 50) rotate(45)" });
+		const output = circle.toString();
+
+		expect(output).toContain('transform="translate(50 50) rotate(45)"');
+	});
+
+	it("should escape special characters in transform to prevent XSS", () => {
+		const circle = new Circle({ r: 10, transform: '<script>alert(1)</script>' });
+		const output = circle.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
 });
