@@ -31,6 +31,21 @@ describe("Circle", () => {
 		expect(output).toContain("&lt;script&gt;");
 	});
 
+	it("should include class attribute when className is specified", () => {
+		const circle = new Circle({ r: 10, className: "icon" });
+		const output = circle.toString();
+
+		expect(output).toContain('class="icon"');
+	});
+
+	it("should escape special characters in className to prevent XSS", () => {
+		const circle = new Circle({ r: 10, className: '<script>alert(1)</script>' });
+		const output = circle.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
+
 	it("should include fill attribute when specified", () => {
 		const circle = new Circle({ cx: 10, cy: 10, r: 5, fill: "red" });
 		const output = circle.toString();
