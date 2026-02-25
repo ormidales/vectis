@@ -62,17 +62,18 @@ export abstract class BaseShape implements Shape {
 	 * @returns A partial attribute string (leading space included), e.g. ` fill="red" opacity="0.5"`.
 	 */
 	protected renderPresentationAttrs(): string {
-		return (
-			renderAttribute("id", this.id) +
-			renderAttribute("class", this.className) +
-			renderAttribute("fill", this.fill) +
-			renderAttribute("stroke", this.stroke) +
-			renderAttribute("stroke-width", this.strokeWidth) +
-			renderAttribute("stroke-linecap", this.strokeLinecap) +
-			renderAttribute("stroke-linejoin", this.strokeLinejoin) +
-			renderAttribute("opacity", this.opacity) +
-			renderAttribute("transform", this.transform)
-		);
+		const parts: string[] = [
+			renderAttribute("id", this.id),
+			renderAttribute("class", this.className),
+			renderAttribute("fill", this.fill),
+			renderAttribute("stroke", this.stroke),
+			renderAttribute("stroke-width", this.strokeWidth),
+			renderAttribute("stroke-linecap", this.strokeLinecap),
+			renderAttribute("stroke-linejoin", this.strokeLinejoin),
+			renderAttribute("opacity", this.opacity),
+			renderAttribute("transform", this.transform),
+		];
+		return parts.join("");
 	}
 
 	/**
@@ -86,9 +87,15 @@ export abstract class BaseShape implements Shape {
 	 */
 	protected renderElement(tag: string, geometricAttrs: string): string {
 		const attrs = geometricAttrs + this.renderPresentationAttrs();
-		if (this.animations.length === 0) return `<${tag} ${attrs}/>`;
-		const content = this.animations.map(renderSmilAnimation).join("");
-		return `<${tag} ${attrs}>${content}</${tag}>`;
+		if (this.animations.length === 0) {
+			return `<${tag} ${attrs}/>`;
+		}
+		const parts: string[] = [
+			`<${tag} ${attrs}>`,
+			...this.animations.map(renderSmilAnimation),
+			`</${tag}>`,
+		];
+		return parts.join("");
 	}
 
 	/**
