@@ -71,6 +71,6 @@ export class SvgCanvas {
 			typeof this.width === "string" ? escapeXml(this.width) : this.width;
 		const h =
 			typeof this.height === "string" ? escapeXml(this.height) : this.height;
-		return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${this.viewBox}" width="${w}" height="${h}">${content}</svg>`;
+		return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
 	}
 }

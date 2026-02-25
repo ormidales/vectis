@@ -63,4 +63,12 @@ describe("SvgCanvas", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain('width="&quot;&gt;&lt;script&gt;"');
 	});
+
+	it("should escape special characters in viewBox", () => {
+		const canvas = new SvgCanvas({ viewBox: '0 0 300 150"><script>xss</script>' });
+		const output = canvas.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
 });

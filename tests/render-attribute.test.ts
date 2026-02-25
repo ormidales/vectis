@@ -69,6 +69,28 @@ describe("renderAttribute", () => {
 		it("should escape single quotes in string values", () => {
 			expect(renderAttribute("id", "test'value")).toContain("&#39;");
 		});
+
+		it("should escape special characters in attribute keys", () => {
+			expect(renderAttribute('<script>xss</script>', "value")).not.toContain(
+				"<script>",
+			);
+			expect(renderAttribute('<script>xss</script>', "value")).toContain(
+				"&lt;script&gt;",
+			);
+		});
+
+		it("should escape quotes in attribute keys", () => {
+			expect(renderAttribute('data-x" onload="alert(1)', "val")).not.toContain(
+				'" onload="alert(1)',
+			);
+			expect(renderAttribute('data-x" onload="alert(1)', "val")).toContain(
+				"&quot;",
+			);
+		});
+
+		it("should escape ampersands in attribute keys", () => {
+			expect(renderAttribute("data-a&b", "val")).toContain("&amp;");
+		});
 	});
 
 	describe("edge cases with dynamic calculations", () => {

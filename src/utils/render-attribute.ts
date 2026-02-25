@@ -34,12 +34,14 @@ export function renderAttribute(
 		return "";
 	}
 
+	const escapedKey = escapeXml(key);
+
 	// For numeric values, check for NaN
 	if (typeof value === "number") {
 		if (Number.isNaN(value)) {
 			return "";
 		}
-		return ` ${key}="${value}"`;
+		return ` ${escapedKey}="${value}"`;
 	}
 
 	// For string values, check for empty strings and escape
@@ -47,7 +49,7 @@ export function renderAttribute(
 		if (value === "") {
 			return "";
 		}
-		return ` ${key}="${escapeXml(value)}"`;
+		return ` ${escapedKey}="${escapeXml(value)}"`;
 	}
 
 	// Default: don't render
