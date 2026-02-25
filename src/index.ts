@@ -1,8 +1,12 @@
 export type {
 	AnimateOptions,
 	AnimateTransformOptions,
+	AnimationValue,
 	BaseAnimationOptions,
+	ColorValue,
+	NumericValue,
 	SmilAnimationOptions,
+	TransformValue,
 } from "./animation/smil.js";
 export { renderSmilAnimation } from "./animation/smil.js";
 
