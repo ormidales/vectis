@@ -23,6 +23,8 @@ export type { CircleOptions } from "./shapes/circle.js";
 export { Circle } from "./shapes/circle.js";
 export type { EllipseOptions } from "./shapes/ellipse.js";
 export { Ellipse } from "./shapes/ellipse.js";
+export type { LineOptions } from "./shapes/line.js";
+export { Line } from "./shapes/line.js";
 export type { PathOptions } from "./shapes/path.js";
 export { Path } from "./shapes/path.js";
 export type { PolygonOptions } from "./shapes/polygon.js";
