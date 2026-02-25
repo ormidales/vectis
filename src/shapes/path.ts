@@ -14,6 +14,29 @@ export interface PathOptions extends PresentationAttributes {
 }
 
 /**
+ * Validates SVG path data string.
+ * Logs a warning if the path data appears invalid.
+ *
+ * @param d - The path data string to validate.
+ */
+function validatePathData(d: string): void {
+	// Skip validation for empty strings
+	if (d === "") {
+		return;
+	}
+
+	// Basic validation: check if the path data starts with a valid SVG path command
+	// Valid commands: M, m, L, l, H, h, V, v, C, c, S, s, Q, q, T, t, A, a, Z, z
+	const validCommandPattern = /^\s*[MmLlHhVvCcSsQqTtAaZz]/;
+
+	if (!validCommandPattern.test(d)) {
+		console.warn(
+			`[vectis] Invalid path data: "${d}". Path data should start with a valid SVG command (M, L, H, V, C, S, Q, T, A, or Z). The SVG may not render correctly.`,
+		);
+	}
+}
+
+/**
  * Represents an SVG `<path>` element.
  *
  * @example
@@ -31,6 +54,7 @@ export class Path extends BaseShape {
 	constructor(options: PathOptions = {}) {
 		super(options);
 		this.d = options.d ?? "";
+		validatePathData(this.d);
 	}
 
 	/**

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Path } from "../src/index.js";
 
 describe("Path", () => {
@@ -65,5 +65,91 @@ describe("Path", () => {
 		const output = path.toString();
 
 		expect(output).toContain('opacity="0.5"');
+	});
+
+	describe("Path data validation", () => {
+		it("should not warn for valid path data starting with M", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "M 10 10 L 90 90" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid path data starting with lowercase m", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "m 10 10 l 90 90" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid path data with leading whitespace", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "  M 10 10 L 90 90" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for empty path data", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for path data starting with other valid commands (L, C, A, Z)", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "L 10 10" });
+			new Path({ d: "C 10 10 20 20 30 30" });
+			new Path({ d: "A 10 10 0 0 1 50 50" });
+			new Path({ d: "Z" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for invalid path data", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "invalid path data" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid path data"),
+			);
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("invalid path data"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for path data starting with numbers", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "10 10 20 20" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid path data"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for path data with only whitespace followed by invalid content", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "   invalid" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid path data"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
 	});
 });
