@@ -1,4 +1,4 @@
-import { escapeXml } from "../utils/escape.js";
+import { renderAttribute } from "../utils/render-attribute.js";
 
 /**
  * Common timing and value options shared by all SMIL animation elements.
@@ -57,20 +57,16 @@ function isAnimateTransform(
 }
 
 function renderAttrs(options: BaseAnimationOptions): string {
-	let attrs = "";
-	if (options.from !== undefined) attrs += ` from="${escapeXml(options.from)}"`;
-	if (options.to !== undefined) attrs += ` to="${escapeXml(options.to)}"`;
-	if (options.dur !== undefined) attrs += ` dur="${escapeXml(options.dur)}"`;
-	if (options.begin !== undefined)
-		attrs += ` begin="${escapeXml(options.begin)}"`;
-	if (options.repeatCount !== undefined)
-		attrs += ` repeatCount="${typeof options.repeatCount === "string" ? escapeXml(options.repeatCount) : options.repeatCount}"`;
-	if (options.values !== undefined)
-		attrs += ` values="${escapeXml(options.values)}"`;
-	if (options.keyTimes !== undefined)
-		attrs += ` keyTimes="${escapeXml(options.keyTimes)}"`;
-	if (options.fill !== undefined) attrs += ` fill="${escapeXml(options.fill)}"`;
-	return attrs;
+	return (
+		renderAttribute("from", options.from) +
+		renderAttribute("to", options.to) +
+		renderAttribute("dur", options.dur) +
+		renderAttribute("begin", options.begin) +
+		renderAttribute("repeatCount", options.repeatCount) +
+		renderAttribute("values", options.values) +
+		renderAttribute("keyTimes", options.keyTimes) +
+		renderAttribute("fill", options.fill)
+	);
 }
 
 /**
@@ -87,8 +83,13 @@ function renderAttrs(options: BaseAnimationOptions): string {
  */
 export function renderSmilAnimation(options: SmilAnimationOptions): string {
 	if (isAnimateTransform(options)) {
-		const attrName = escapeXml(options.attributeName ?? "transform");
-		return `<animateTransform attributeName="${attrName}" type="${escapeXml(options.type)}"${renderAttrs(options)} />`;
+		const attrName = renderAttribute(
+			"attributeName",
+			options.attributeName ?? "transform",
+		);
+		const typeAttr = renderAttribute("type", options.type);
+		return `<animateTransform${attrName}${typeAttr}${renderAttrs(options)} />`;
 	}
-	return `<animate attributeName="${escapeXml(options.attributeName)}"${renderAttrs(options)} />`;
+	const attrName = renderAttribute("attributeName", options.attributeName);
+	return `<animate${attrName}${renderAttrs(options)} />`;
 }
