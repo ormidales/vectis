@@ -133,16 +133,17 @@ function isAnimateTransform(
 }
 
 function renderAttrs(options: BaseAnimationOptions): string {
-	return (
-		renderAttribute("from", options.from) +
-		renderAttribute("to", options.to) +
-		renderAttribute("dur", options.dur) +
-		renderAttribute("begin", options.begin) +
-		renderAttribute("repeatCount", options.repeatCount) +
-		renderAttribute("values", options.values) +
-		renderAttribute("keyTimes", options.keyTimes) +
-		renderAttribute("fill", options.fill)
-	);
+	const parts: string[] = [
+		renderAttribute("from", options.from),
+		renderAttribute("to", options.to),
+		renderAttribute("dur", options.dur),
+		renderAttribute("begin", options.begin),
+		renderAttribute("repeatCount", options.repeatCount),
+		renderAttribute("values", options.values),
+		renderAttribute("keyTimes", options.keyTimes),
+		renderAttribute("fill", options.fill),
+	];
+	return parts.join("");
 }
 
 /**
