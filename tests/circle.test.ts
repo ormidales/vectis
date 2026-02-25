@@ -75,6 +75,28 @@ describe("Circle", () => {
 		expect(output).toContain('stroke-width="2"');
 	});
 
+	it("should include stroke-linecap attribute when specified", () => {
+		const circle = new Circle({ r: 10, strokeLinecap: "round" });
+		const output = circle.toString();
+
+		expect(output).toContain('stroke-linecap="round"');
+	});
+
+	it("should include stroke-linejoin attribute when specified", () => {
+		const circle = new Circle({ r: 10, strokeLinejoin: "bevel" });
+		const output = circle.toString();
+
+		expect(output).toContain('stroke-linejoin="bevel"');
+	});
+
+	it("should include both stroke-linecap and stroke-linejoin when specified", () => {
+		const circle = new Circle({ r: 10, stroke: "black", strokeLinecap: "square", strokeLinejoin: "miter" });
+		const output = circle.toString();
+
+		expect(output).toContain('stroke-linecap="square"');
+		expect(output).toContain('stroke-linejoin="miter"');
+	});
+
 	it("should include opacity attribute when specified", () => {
 		const circle = new Circle({ r: 10, opacity: 0.5 });
 		const output = circle.toString();
