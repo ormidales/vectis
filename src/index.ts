@@ -25,3 +25,4 @@ export type { RectOptions } from "./shapes/rect.js";
 export { Rect } from "./shapes/rect.js";
 
 export { escapeXml } from "./utils/escape.js";
+export { renderAttribute } from "./utils/render-attribute.js";

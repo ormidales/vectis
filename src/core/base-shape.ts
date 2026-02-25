@@ -6,7 +6,7 @@ import type {
 	PresentationAttributes,
 	Shape,
 } from "../interfaces/shape.interface.js";
-import { escapeXml } from "../utils/escape.js";
+import { renderAttribute } from "../utils/render-attribute.js";
 
 /**
  * Abstract base class for all SVG shape elements.
@@ -60,21 +60,16 @@ export abstract class BaseShape implements Shape {
 	 * @returns A partial attribute string (leading space included), e.g. ` fill="red" opacity="0.5"`.
 	 */
 	protected renderPresentationAttrs(): string {
-		let attrs = "";
-		if (this.id !== undefined) attrs += ` id="${escapeXml(this.id)}"`;
-		if (this.className !== undefined)
-			attrs += ` class="${escapeXml(this.className)}"`;
-		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
-		if (this.stroke !== undefined)
-			attrs += ` stroke="${escapeXml(this.stroke)}"`;
-		if (this.strokeWidth !== undefined)
-			attrs += ` stroke-width="${this.strokeWidth}"`;
-		if (this.strokeLinecap !== undefined)
-			attrs += ` stroke-linecap="${this.strokeLinecap}"`;
-		if (this.strokeLinejoin !== undefined)
-			attrs += ` stroke-linejoin="${this.strokeLinejoin}"`;
-		if (this.opacity !== undefined) attrs += ` opacity="${this.opacity}"`;
-		return attrs;
+		return (
+			renderAttribute("id", this.id) +
+			renderAttribute("class", this.className) +
+			renderAttribute("fill", this.fill) +
+			renderAttribute("stroke", this.stroke) +
+			renderAttribute("stroke-width", this.strokeWidth) +
+			renderAttribute("stroke-linecap", this.strokeLinecap) +
+			renderAttribute("stroke-linejoin", this.strokeLinejoin) +
+			renderAttribute("opacity", this.opacity)
+		);
 	}
 
 	/**
