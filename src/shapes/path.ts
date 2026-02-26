@@ -1,48 +1,68 @@
-import {
-	renderSmilAnimation,
-	type SmilAnimationOptions,
-} from "../animation/smil.js";
-import type {
-	PresentationAttributes,
-	Shape,
-} from "../interfaces/shape.interface.js";
+import { BaseShape } from "../core/base-shape.js";
+import type { PresentationAttributes } from "../interfaces/shape.interface.js";
 import { escapeXml } from "../utils/escape.js";
 
+/**
+ * Options for constructing a {@link Path} element.
+ */
 export interface PathOptions extends PresentationAttributes {
+	/**
+	 * SVG path data string (e.g. `"M10 10 L90 90"`).
+	 * Defaults to an empty string.
+	 */
 	d?: string;
 }
 
-export class Path implements Shape {
+/**
+ * Validates SVG path data string.
+ * Logs a warning if the path data appears invalid.
+ *
+ * @param d - The path data string to validate.
+ */
+function validatePathData(d: string): void {
+	// Skip validation for empty strings
+	if (d === "") {
+		return;
+	}
+
+	// Basic validation: check if the path data starts with a valid SVG path command
+	// Valid commands: M, m, L, l, H, h, V, v, C, c, S, s, Q, q, T, t, A, a, Z, z
+	const validCommandPattern = /^\s*[MmLlHhVvCcSsQqTtAaZz]/;
+
+	if (!validCommandPattern.test(d)) {
+		console.warn(
+			`[vectis] Invalid path data: "${d}". Path data should start with a valid SVG command (M, L, H, V, C, S, Q, T, A, or Z). The SVG may not render correctly.`,
+		);
+	}
+}
+
+/**
+ * Represents an SVG `<path>` element.
+ *
+ * @example
+ * new Path({ d: 'M10 10 L90 90', stroke: 'black' }).toString();
+ * // '<path d="M10 10 L90 90" stroke="black"/>'
+ */
+export class Path extends BaseShape {
 	private readonly d: string;
-	private readonly fill: string | undefined;
-	private readonly stroke: string | undefined;
-	private readonly strokeWidth: number | undefined;
-	private readonly opacity: number | undefined;
-	private animations: SmilAnimationOptions[] = [];
 
+	/**
+	 * Creates a new path shape.
+	 *
+	 * @param options - Path data and presentation options.
+	 */
 	constructor(options: PathOptions = {}) {
+		super(options);
 		this.d = options.d ?? "";
-		this.fill = options.fill;
-		this.stroke = options.stroke;
-		this.strokeWidth = options.strokeWidth;
-		this.opacity = options.opacity;
+		validatePathData(this.d);
 	}
 
-	animate(options: SmilAnimationOptions): this {
-		this.animations.push(options);
-		return this;
-	}
-
+	/**
+	 * Serializes the path to a `<path>` SVG element string.
+	 *
+	 * @returns SVG `<path>` element string.
+	 */
 	toString(): string {
-		let attrs = `d="${escapeXml(this.d)}"`;
-		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
-		if (this.stroke !== undefined)
-			attrs += ` stroke="${escapeXml(this.stroke)}"`;
-		if (this.strokeWidth !== undefined)
-			attrs += ` stroke-width="${this.strokeWidth}"`;
-		if (this.opacity !== undefined) attrs += ` opacity="${this.opacity}"`;
-		if (this.animations.length === 0) return `<path ${attrs}/>`;
-		const content = this.animations.map(renderSmilAnimation).join("");
-		return `<path ${attrs}>${content}</path>`;
+		return this.renderElement("path", `d="${escapeXml(this.d)}"`);
 	}
 }

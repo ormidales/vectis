@@ -1,0 +1,129 @@
+import { describe, expect, it } from "vitest";
+import { renderAttribute } from "../src/utils/render-attribute.js";
+
+describe("renderAttribute", () => {
+	describe("valid values", () => {
+		it("should render string attribute", () => {
+			expect(renderAttribute("fill", "red")).toBe(' fill="red"');
+		});
+
+		it("should render numeric attribute", () => {
+			expect(renderAttribute("stroke-width", 2)).toBe(' stroke-width="2"');
+		});
+
+		it("should render zero as a valid numeric value", () => {
+			expect(renderAttribute("opacity", 0)).toBe(' opacity="0"');
+			expect(renderAttribute("stroke-width", 0)).toBe(' stroke-width="0"');
+		});
+
+		it("should render negative numbers", () => {
+			expect(renderAttribute("x", -10)).toBe(' x="-10"');
+		});
+
+		it("should render decimal numbers", () => {
+			expect(renderAttribute("opacity", 0.5)).toBe(' opacity="0.5"');
+		});
+	});
+
+	describe("invalid values", () => {
+		it("should not render undefined", () => {
+			expect(renderAttribute("fill", undefined)).toBe("");
+		});
+
+		it("should not render null", () => {
+			expect(renderAttribute("fill", null)).toBe("");
+		});
+
+		it("should not render NaN", () => {
+			expect(renderAttribute("opacity", Number.NaN)).toBe("");
+		});
+
+		it("should not render empty string", () => {
+			expect(renderAttribute("fill", "")).toBe("");
+		});
+	});
+
+	describe("XSS prevention", () => {
+		it("should escape special characters in string values", () => {
+			expect(renderAttribute("id", "<script>alert(1)</script>")).toContain(
+				"&lt;script&gt;",
+			);
+			expect(renderAttribute("id", "<script>alert(1)</script>")).not.toContain(
+				"<script>",
+			);
+		});
+
+		it("should escape quotes in string values", () => {
+			expect(renderAttribute("fill", 'red" onload="alert(1)')).toContain(
+				"&quot;",
+			);
+			expect(renderAttribute("fill", 'red" onload="alert(1)')).not.toContain(
+				'"red" onload="alert(1)"',
+			);
+		});
+
+		it("should escape ampersands in string values", () => {
+			expect(renderAttribute("id", "test&value")).toContain("&amp;");
+		});
+
+		it("should escape single quotes in string values", () => {
+			expect(renderAttribute("id", "test'value")).toContain("&#39;");
+		});
+
+		it("should escape special characters in attribute keys", () => {
+			expect(renderAttribute('<script>xss</script>', "value")).not.toContain(
+				"<script>",
+			);
+			expect(renderAttribute('<script>xss</script>', "value")).toContain(
+				"&lt;script&gt;",
+			);
+		});
+
+		it("should escape quotes in attribute keys", () => {
+			expect(renderAttribute('data-x" onload="alert(1)', "val")).not.toContain(
+				'" onload="alert(1)',
+			);
+			expect(renderAttribute('data-x" onload="alert(1)', "val")).toContain(
+				"&quot;",
+			);
+		});
+
+		it("should escape ampersands in attribute keys", () => {
+			expect(renderAttribute("data-a&b", "val")).toContain("&amp;");
+		});
+	});
+
+	describe("edge cases with dynamic calculations", () => {
+		it("should handle result of invalid calculations", () => {
+			const invalidCalc = 0 / 0; // NaN
+			expect(renderAttribute("opacity", invalidCalc)).toBe("");
+		});
+
+		it("should handle Infinity", () => {
+			expect(renderAttribute("x", Number.POSITIVE_INFINITY)).toBe(
+				' x="Infinity"',
+			);
+			expect(renderAttribute("x", Number.NEGATIVE_INFINITY)).toBe(
+				' x="-Infinity"',
+			);
+		});
+
+		it("should handle very small numbers", () => {
+			expect(renderAttribute("opacity", 0.0001)).toBe(' opacity="0.0001"');
+		});
+
+		it("should handle scientific notation", () => {
+			expect(renderAttribute("value", 1e-10)).toBe(' value="1e-10"');
+		});
+	});
+
+	describe("attribute key formatting", () => {
+		it("should handle kebab-case attribute names", () => {
+			expect(renderAttribute("stroke-width", 2)).toBe(' stroke-width="2"');
+		});
+
+		it("should handle camelCase attribute names", () => {
+			expect(renderAttribute("strokeWidth", 2)).toBe(' strokeWidth="2"');
+		});
+	});
+});

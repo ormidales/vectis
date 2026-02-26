@@ -1,57 +1,55 @@
-import {
-	renderSmilAnimation,
-	type SmilAnimationOptions,
-} from "../animation/smil.js";
-import type {
-	PresentationAttributes,
-	Shape,
-} from "../interfaces/shape.interface.js";
-import { escapeXml } from "../utils/escape.js";
+import { BaseShape } from "../core/base-shape.js";
+import type { PresentationAttributes } from "../interfaces/shape.interface.js";
 
+/**
+ * Options for constructing a {@link Rect} element.
+ */
 export interface RectOptions extends PresentationAttributes {
+	/** X-coordinate of the rectangle's top-left corner. Defaults to `0`. */
 	x?: number;
+	/** Y-coordinate of the rectangle's top-left corner. Defaults to `0`. */
 	y?: number;
+	/** Width of the rectangle. Defaults to `0`. */
 	width?: number;
+	/** Height of the rectangle. Defaults to `0`. */
 	height?: number;
 }
 
-export class Rect implements Shape {
+/**
+ * Represents an SVG `<rect>` element.
+ *
+ * @example
+ * new Rect({ x: 10, y: 10, width: 80, height: 60, fill: 'green' }).toString();
+ * // '<rect x="10" y="10" width="80" height="60" fill="green"/>'
+ */
+export class Rect extends BaseShape {
 	private readonly x: number;
 	private readonly y: number;
 	private readonly width: number;
 	private readonly height: number;
-	private readonly fill: string | undefined;
-	private readonly stroke: string | undefined;
-	private readonly strokeWidth: number | undefined;
-	private readonly opacity: number | undefined;
-	private animations: SmilAnimationOptions[] = [];
 
+	/**
+	 * Creates a new rectangle shape.
+	 *
+	 * @param options - Rectangle geometry and presentation options.
+	 */
 	constructor(options: RectOptions = {}) {
+		super(options);
 		this.x = options.x ?? 0;
 		this.y = options.y ?? 0;
 		this.width = options.width ?? 0;
 		this.height = options.height ?? 0;
-		this.fill = options.fill;
-		this.stroke = options.stroke;
-		this.strokeWidth = options.strokeWidth;
-		this.opacity = options.opacity;
 	}
 
-	animate(options: SmilAnimationOptions): this {
-		this.animations.push(options);
-		return this;
-	}
-
+	/**
+	 * Serializes the rectangle to a `<rect>` SVG element string.
+	 *
+	 * @returns SVG `<rect>` element string.
+	 */
 	toString(): string {
-		let attrs = `x="${this.x}" y="${this.y}" width="${this.width}" height="${this.height}"`;
-		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
-		if (this.stroke !== undefined)
-			attrs += ` stroke="${escapeXml(this.stroke)}"`;
-		if (this.strokeWidth !== undefined)
-			attrs += ` stroke-width="${this.strokeWidth}"`;
-		if (this.opacity !== undefined) attrs += ` opacity="${this.opacity}"`;
-		if (this.animations.length === 0) return `<rect ${attrs}/>`;
-		const content = this.animations.map(renderSmilAnimation).join("");
-		return `<rect ${attrs}>${content}</rect>`;
+		return this.renderElement(
+			"rect",
+			`x="${this.x}" y="${this.y}" width="${this.width}" height="${this.height}"`,
+		);
 	}
 }

@@ -1,54 +1,51 @@
-import {
-	renderSmilAnimation,
-	type SmilAnimationOptions,
-} from "../animation/smil.js";
-import type {
-	PresentationAttributes,
-	Shape,
-} from "../interfaces/shape.interface.js";
-import { escapeXml } from "../utils/escape.js";
+import { BaseShape } from "../core/base-shape.js";
+import type { PresentationAttributes } from "../interfaces/shape.interface.js";
 
+/**
+ * Options for constructing a {@link Circle} element.
+ */
 export interface CircleOptions extends PresentationAttributes {
+	/** X-coordinate of the circle centre. Defaults to `0`. */
 	cx?: number;
+	/** Y-coordinate of the circle centre. Defaults to `0`. */
 	cy?: number;
+	/** Radius of the circle. Defaults to `0`. */
 	r?: number;
 }
 
-export class Circle implements Shape {
+/**
+ * Represents an SVG `<circle>` element.
+ *
+ * @example
+ * new Circle({ cx: 50, cy: 50, r: 25, fill: 'blue' }).toString();
+ * // '<circle cx="50" cy="50" r="25" fill="blue"/>'
+ */
+export class Circle extends BaseShape {
 	private readonly cx: number;
 	private readonly cy: number;
 	private readonly r: number;
-	private readonly fill: string | undefined;
-	private readonly stroke: string | undefined;
-	private readonly strokeWidth: number | undefined;
-	private readonly opacity: number | undefined;
-	private animations: SmilAnimationOptions[] = [];
 
+	/**
+	 * Creates a new circle shape.
+	 *
+	 * @param options - Circle geometry and presentation options.
+	 */
 	constructor(options: CircleOptions = {}) {
+		super(options);
 		this.cx = options.cx ?? 0;
 		this.cy = options.cy ?? 0;
 		this.r = options.r ?? 0;
-		this.fill = options.fill;
-		this.stroke = options.stroke;
-		this.strokeWidth = options.strokeWidth;
-		this.opacity = options.opacity;
 	}
 
-	animate(options: SmilAnimationOptions): this {
-		this.animations.push(options);
-		return this;
-	}
-
+	/**
+	 * Serializes the circle to a `<circle>` SVG element string.
+	 *
+	 * @returns SVG `<circle>` element string.
+	 */
 	toString(): string {
-		let attrs = `cx="${this.cx}" cy="${this.cy}" r="${this.r}"`;
-		if (this.fill !== undefined) attrs += ` fill="${escapeXml(this.fill)}"`;
-		if (this.stroke !== undefined)
-			attrs += ` stroke="${escapeXml(this.stroke)}"`;
-		if (this.strokeWidth !== undefined)
-			attrs += ` stroke-width="${this.strokeWidth}"`;
-		if (this.opacity !== undefined) attrs += ` opacity="${this.opacity}"`;
-		if (this.animations.length === 0) return `<circle ${attrs}/>`;
-		const content = this.animations.map(renderSmilAnimation).join("");
-		return `<circle ${attrs}>${content}</circle>`;
+		return this.renderElement(
+			"circle",
+			`cx="${this.cx}" cy="${this.cy}" r="${this.r}"`,
+		);
 	}
 }

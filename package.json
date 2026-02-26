@@ -1,11 +1,12 @@
 {
   "name": "vectis",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "SVG manipulation library written in TypeScript",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -24,7 +25,7 @@
     "url": "git+https://github.com/ormidales/vectis.git"
   },
   "keywords": ["svg", "canvas", "typescript"],
-  "author": "",
+  "author": "Hugo Doueil <46538211+ormidales@users.noreply.github.com>",
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "^2.4.4",

@@ -16,6 +16,36 @@ describe("Circle", () => {
 		expect(output).toBe('<circle cx="50" cy="50" r="25"/>');
 	});
 
+	it("should include id attribute when specified", () => {
+		const circle = new Circle({ r: 10, id: "my-circle" });
+		const output = circle.toString();
+
+		expect(output).toContain('id="my-circle"');
+	});
+
+	it("should escape special characters in id to prevent XSS", () => {
+		const circle = new Circle({ r: 10, id: '<script>alert(1)</script>' });
+		const output = circle.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
+
+	it("should include class attribute when className is specified", () => {
+		const circle = new Circle({ r: 10, className: "icon" });
+		const output = circle.toString();
+
+		expect(output).toContain('class="icon"');
+	});
+
+	it("should escape special characters in className to prevent XSS", () => {
+		const circle = new Circle({ r: 10, className: '<script>alert(1)</script>' });
+		const output = circle.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
+
 	it("should include fill attribute when specified", () => {
 		const circle = new Circle({ cx: 10, cy: 10, r: 5, fill: "red" });
 		const output = circle.toString();
@@ -60,10 +90,61 @@ describe("Circle", () => {
 		expect(output).toContain('stroke-width="2"');
 	});
 
+	it("should include stroke-linecap attribute when specified", () => {
+		const circle = new Circle({ r: 10, strokeLinecap: "round" });
+		const output = circle.toString();
+
+		expect(output).toContain('stroke-linecap="round"');
+	});
+
+	it("should include stroke-linejoin attribute when specified", () => {
+		const circle = new Circle({ r: 10, strokeLinejoin: "bevel" });
+		const output = circle.toString();
+
+		expect(output).toContain('stroke-linejoin="bevel"');
+	});
+
+	it("should include both stroke-linecap and stroke-linejoin when specified", () => {
+		const circle = new Circle({ r: 10, stroke: "black", strokeLinecap: "square", strokeLinejoin: "miter" });
+		const output = circle.toString();
+
+		expect(output).toContain('stroke-linecap="square"');
+		expect(output).toContain('stroke-linejoin="miter"');
+	});
+
 	it("should include opacity attribute when specified", () => {
 		const circle = new Circle({ r: 10, opacity: 0.5 });
 		const output = circle.toString();
 
 		expect(output).toContain('opacity="0.5"');
+	});
+
+	it("should include transform attribute when specified", () => {
+		const circle = new Circle({ r: 10, transform: "rotate(45)" });
+		const output = circle.toString();
+
+		expect(output).toContain('transform="rotate(45)"');
+	});
+
+	it("should support translate transform", () => {
+		const circle = new Circle({ r: 10, transform: "translate(100 50)" });
+		const output = circle.toString();
+
+		expect(output).toContain('transform="translate(100 50)"');
+	});
+
+	it("should support combined transforms", () => {
+		const circle = new Circle({ r: 10, transform: "translate(50 50) rotate(45)" });
+		const output = circle.toString();
+
+		expect(output).toContain('transform="translate(50 50) rotate(45)"');
+	});
+
+	it("should escape special characters in transform to prevent XSS", () => {
+		const circle = new Circle({ r: 10, transform: '<script>alert(1)</script>' });
+		const output = circle.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
 	});
 });

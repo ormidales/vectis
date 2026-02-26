@@ -38,4 +38,37 @@ describe("SvgCanvas", () => {
 			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="500" height="400"></svg>',
 		);
 	});
+
+	it("should accept string width and height", () => {
+		const canvas = new SvgCanvas({ width: "100%", height: "100%" });
+		const output = canvas.toString();
+
+		expect(output).toContain('width="100%"');
+		expect(output).toContain('height="100%"');
+		expect(output).toContain('viewBox="0 0 300 150"');
+	});
+
+	it("should accept em-based string dimensions", () => {
+		const canvas = new SvgCanvas({ width: "50em", height: "30em" });
+		const output = canvas.toString();
+
+		expect(output).toContain('width="50em"');
+		expect(output).toContain('height="30em"');
+	});
+
+	it("should escape special characters in string dimensions", () => {
+		const canvas = new SvgCanvas({ width: '"><script>', height: "100%" });
+		const output = canvas.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain('width="&quot;&gt;&lt;script&gt;"');
+	});
+
+	it("should escape special characters in viewBox", () => {
+		const canvas = new SvgCanvas({ viewBox: '0 0 300 150"><script>xss</script>' });
+		const output = canvas.toString();
+
+		expect(output).not.toContain("<script>");
+		expect(output).toContain("&lt;script&gt;");
+	});
 });
