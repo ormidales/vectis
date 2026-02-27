@@ -91,6 +91,27 @@ describe("BaseShape", () => {
 			expect(output).toContain('transform="rotate(45)"');
 		});
 
+		it("should include role attribute when specified", () => {
+			const shape = new MockShape({ role: "button" });
+			const output = shape.toString();
+
+			expect(output).toContain('role="button"');
+		});
+
+		it("should include ariaLabel attribute when specified", () => {
+			const shape = new MockShape({ ariaLabel: "Bouton" });
+			const output = shape.toString();
+
+			expect(output).toContain('aria-label="Bouton"');
+		});
+
+		it("should include ariaLabelledby attribute when specified", () => {
+			const shape = new MockShape({ ariaLabelledby: "label-id" });
+			const output = shape.toString();
+
+			expect(output).toContain('aria-labelledby="label-id"');
+		});
+
 		it("should not include transform attribute when whitespace-only", () => {
 			const shape = new MockShape({ transform: "   " });
 			const output = shape.toString();
@@ -155,6 +176,43 @@ describe("BaseShape", () => {
 
 			expect(output).not.toContain("<script>");
 			expect(output).toContain("&lt;script&gt;");
+		});
+
+		it("should escape special characters in role to prevent XSS", () => {
+			const shape = new MockShape({ role: '<script>alert(1)</script>' });
+			const output = shape.toString();
+
+			expect(output).not.toContain("<script>");
+			expect(output).toContain("&lt;script&gt;");
+		});
+
+		it("should escape special characters in ariaLabel to prevent XSS", () => {
+			const shape = new MockShape({ ariaLabel: '<script>alert(1)</script>' });
+			const output = shape.toString();
+
+			expect(output).not.toContain("<script>");
+			expect(output).toContain("&lt;script&gt;");
+		});
+
+		it("should escape special characters in ariaLabelledby to prevent XSS", () => {
+			const shape = new MockShape({ ariaLabelledby: '<script>alert(1)</script>' });
+			const output = shape.toString();
+
+			expect(output).not.toContain("<script>");
+			expect(output).toContain("&lt;script&gt;");
+		});
+
+		it("should include all ARIA attributes together", () => {
+			const shape = new MockShape({
+				role: "img",
+				ariaLabel: "Description",
+				ariaLabelledby: "title-id",
+			});
+			const output = shape.toString();
+
+			expect(output).toContain('role="img"');
+			expect(output).toContain('aria-label="Description"');
+			expect(output).toContain('aria-labelledby="title-id"');
 		});
 	});
 

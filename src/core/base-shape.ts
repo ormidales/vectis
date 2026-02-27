@@ -18,6 +18,9 @@ export abstract class BaseShape implements Shape {
 	protected readonly strokeLinejoin: "miter" | "round" | "bevel" | undefined;
 	protected readonly opacity: number | undefined;
 	protected readonly transform: string | undefined;
+	protected readonly role: string | undefined;
+	protected readonly ariaLabel: string | undefined;
+	protected readonly ariaLabelledby: string | undefined;
 	private readonly animations: SmilAnimationOptions[] = [];
 
 	/**
@@ -35,6 +38,9 @@ export abstract class BaseShape implements Shape {
 		this.strokeLinejoin = options.strokeLinejoin;
 		this.opacity = options.opacity;
 		this.transform = options.transform;
+		this.role = options.role;
+		this.ariaLabel = options.ariaLabel;
+		this.ariaLabelledby = options.ariaLabelledby;
 	}
 
 	/**
@@ -79,6 +85,9 @@ export abstract class BaseShape implements Shape {
 			renderAttribute("stroke-linejoin", this.strokeLinejoin),
 			renderAttribute("opacity", this.opacity),
 			renderAttribute("transform", this.transform),
+			renderAttribute("role", this.role),
+			renderAttribute("aria-label", this.ariaLabel),
+			renderAttribute("aria-labelledby", this.ariaLabelledby),
 		];
 		return parts.join("");
 	}
