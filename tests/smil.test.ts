@@ -175,6 +175,46 @@ describe("SMIL animate", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	it("should not have double spaces when some attributes are omitted", () => {
+		const circle = new Circle({ r: 10 });
+		circle.animate({
+			attributeName: "r",
+			from: "10",
+			dur: "1s",
+			// Note: 'to', 'begin', 'repeatCount', 'values', 'keyTimes', 'fill' are omitted
+		});
+		const output = circle.toString();
+
+		// Should not contain double spaces
+		expect(output).not.toMatch(/ {2,}/);
+	});
+
+	it("should normalize spacing in animateTransform with sparse attributes", () => {
+		const rect = new Rect({ width: 100, height: 50 });
+		rect.animate({
+			type: "translate",
+			from: "0 0",
+			dur: "2s",
+			// Note: 'to', 'begin', etc. are omitted
+		});
+		const output = rect.toString();
+
+		// Should not contain double spaces
+		expect(output).not.toMatch(/ {2,}/);
+	});
+
+	it("should normalize spacing when only minimal attributes are provided", () => {
+		const circle = new Circle({ r: 10 });
+		circle.animate({
+			attributeName: "r",
+			dur: "1s",
+		});
+		const output = circle.toString();
+
+		// Should not contain double spaces
+		expect(output).not.toMatch(/ {2,}/);
+	});
 });
 
 describe("clearAnimations", () => {
