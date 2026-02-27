@@ -51,6 +51,42 @@ export class Line extends BaseShape {
 	}
 
 	/**
+	 * Gets the x-coordinate of the line start point.
+	 *
+	 * @returns The x-coordinate of the line start point.
+	 */
+	getX1(): number {
+		return this.x1;
+	}
+
+	/**
+	 * Gets the y-coordinate of the line start point.
+	 *
+	 * @returns The y-coordinate of the line start point.
+	 */
+	getY1(): number {
+		return this.y1;
+	}
+
+	/**
+	 * Gets the x-coordinate of the line end point.
+	 *
+	 * @returns The x-coordinate of the line end point.
+	 */
+	getX2(): number {
+		return this.x2;
+	}
+
+	/**
+	 * Gets the y-coordinate of the line end point.
+	 *
+	 * @returns The y-coordinate of the line end point.
+	 */
+	getY2(): number {
+		return this.y2;
+	}
+
+	/**
 	 * Serializes the line to a `<line>` SVG element string.
 	 *
 	 * @returns SVG `<line>` element string.

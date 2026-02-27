@@ -163,4 +163,28 @@ describe("Path", () => {
 			consoleWarnSpy.mockRestore();
 		});
 	});
+
+	describe("getter methods", () => {
+		it("should return d value via getD()", () => {
+			const path = new Path({ d: "M 10 10 L 90 90" });
+			expect(path.getD()).toBe("M 10 10 L 90 90");
+		});
+
+		it("should return empty string when d is not specified", () => {
+			const path = new Path();
+			expect(path.getD()).toBe("");
+		});
+
+		it("should return correct d value after construction", () => {
+			const pathData = "M 0 0 L 100 100 L 100 0 Z";
+			const path = new Path({ d: pathData });
+			expect(path.getD()).toBe(pathData);
+		});
+
+		it("should return d value with special characters", () => {
+			const pathData = "M 10,10 C 20,20 40,20 50,10";
+			const path = new Path({ d: pathData });
+			expect(path.getD()).toBe(pathData);
+		});
+	});
 });

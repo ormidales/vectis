@@ -66,4 +66,42 @@ describe("Rect", () => {
 
 		expect(output).toContain('opacity="0.5"');
 	});
+
+	describe("getter methods", () => {
+		it("should return x value via getX()", () => {
+			const rect = new Rect({ x: 10, y: 20, width: 100, height: 50 });
+			expect(rect.getX()).toBe(10);
+		});
+
+		it("should return y value via getY()", () => {
+			const rect = new Rect({ x: 10, y: 20, width: 100, height: 50 });
+			expect(rect.getY()).toBe(20);
+		});
+
+		it("should return width value via getWidth()", () => {
+			const rect = new Rect({ x: 10, y: 20, width: 100, height: 50 });
+			expect(rect.getWidth()).toBe(100);
+		});
+
+		it("should return height value via getHeight()", () => {
+			const rect = new Rect({ x: 10, y: 20, width: 100, height: 50 });
+			expect(rect.getHeight()).toBe(50);
+		});
+
+		it("should return default values when not specified", () => {
+			const rect = new Rect();
+			expect(rect.getX()).toBe(0);
+			expect(rect.getY()).toBe(0);
+			expect(rect.getWidth()).toBe(0);
+			expect(rect.getHeight()).toBe(0);
+		});
+
+		it("should return correct values after construction", () => {
+			const rect = new Rect({ x: 5, y: 15, width: 200, height: 150 });
+			expect(rect.getX()).toBe(5);
+			expect(rect.getY()).toBe(15);
+			expect(rect.getWidth()).toBe(200);
+			expect(rect.getHeight()).toBe(150);
+		});
+	});
 });

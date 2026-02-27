@@ -147,4 +147,35 @@ describe("Circle", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	describe("getter methods", () => {
+		it("should return cx value via getCx()", () => {
+			const circle = new Circle({ cx: 50, cy: 25, r: 10 });
+			expect(circle.getCx()).toBe(50);
+		});
+
+		it("should return cy value via getCy()", () => {
+			const circle = new Circle({ cx: 50, cy: 25, r: 10 });
+			expect(circle.getCy()).toBe(25);
+		});
+
+		it("should return r value via getR()", () => {
+			const circle = new Circle({ cx: 50, cy: 25, r: 10 });
+			expect(circle.getR()).toBe(10);
+		});
+
+		it("should return default values when not specified", () => {
+			const circle = new Circle();
+			expect(circle.getCx()).toBe(0);
+			expect(circle.getCy()).toBe(0);
+			expect(circle.getR()).toBe(0);
+		});
+
+		it("should return correct values after construction", () => {
+			const circle = new Circle({ cx: 100, cy: 200, r: 50 });
+			expect(circle.getCx()).toBe(100);
+			expect(circle.getCy()).toBe(200);
+			expect(circle.getR()).toBe(50);
+		});
+	});
 });
