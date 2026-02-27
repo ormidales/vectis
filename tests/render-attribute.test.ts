@@ -46,6 +46,13 @@ describe("renderAttribute", () => {
 		it("should not render empty string", () => {
 			expect(renderAttribute("fill", "")).toBe("");
 		});
+
+		it("should not render whitespace-only strings", () => {
+			expect(renderAttribute("transform", "   ")).toBe("");
+			expect(renderAttribute("transform", "\t")).toBe("");
+			expect(renderAttribute("transform", "\n")).toBe("");
+			expect(renderAttribute("fill", "  \t\n  ")).toBe("");
+		});
 	});
 
 	describe("XSS prevention", () => {
