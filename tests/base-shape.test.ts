@@ -91,6 +91,13 @@ describe("BaseShape", () => {
 			expect(output).toContain('transform="rotate(45)"');
 		});
 
+		it("should not include transform attribute when whitespace-only", () => {
+			const shape = new MockShape({ transform: "   " });
+			const output = shape.toString();
+
+			expect(output).not.toContain("transform");
+		});
+
 		it("should include multiple presentation attributes", () => {
 			const shape = new MockShape({
 				id: "multi-test",
