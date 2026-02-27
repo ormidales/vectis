@@ -42,6 +42,42 @@ export class Ellipse extends BaseShape {
 	}
 
 	/**
+	 * Gets the x-coordinate of the ellipse centre.
+	 *
+	 * @returns The x-coordinate of the ellipse centre.
+	 */
+	getCx(): number {
+		return this.cx;
+	}
+
+	/**
+	 * Gets the y-coordinate of the ellipse centre.
+	 *
+	 * @returns The y-coordinate of the ellipse centre.
+	 */
+	getCy(): number {
+		return this.cy;
+	}
+
+	/**
+	 * Gets the horizontal radius of the ellipse.
+	 *
+	 * @returns The horizontal radius of the ellipse.
+	 */
+	getRx(): number {
+		return this.rx;
+	}
+
+	/**
+	 * Gets the vertical radius of the ellipse.
+	 *
+	 * @returns The vertical radius of the ellipse.
+	 */
+	getRy(): number {
+		return this.ry;
+	}
+
+	/**
 	 * Serializes the ellipse to an `<ellipse>` SVG element string.
 	 *
 	 * @returns SVG `<ellipse>` element string.

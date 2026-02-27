@@ -38,6 +38,33 @@ export class Circle extends BaseShape {
 	}
 
 	/**
+	 * Gets the x-coordinate of the circle centre.
+	 *
+	 * @returns The x-coordinate of the circle centre.
+	 */
+	getCx(): number {
+		return this.cx;
+	}
+
+	/**
+	 * Gets the y-coordinate of the circle centre.
+	 *
+	 * @returns The y-coordinate of the circle centre.
+	 */
+	getCy(): number {
+		return this.cy;
+	}
+
+	/**
+	 * Gets the radius of the circle.
+	 *
+	 * @returns The radius of the circle.
+	 */
+	getR(): number {
+		return this.r;
+	}
+
+	/**
 	 * Serializes the circle to a `<circle>` SVG element string.
 	 *
 	 * @returns SVG `<circle>` element string.

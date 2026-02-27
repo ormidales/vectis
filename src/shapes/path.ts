@@ -58,6 +58,15 @@ export class Path extends BaseShape {
 	}
 
 	/**
+	 * Gets the SVG path data string.
+	 *
+	 * @returns The SVG path data string.
+	 */
+	getD(): string {
+		return this.d;
+	}
+
+	/**
 	 * Serializes the path to a `<path>` SVG element string.
 	 *
 	 * @returns SVG `<path>` element string.

@@ -125,4 +125,42 @@ describe("Ellipse", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	describe("getter methods", () => {
+		it("should return cx value via getCx()", () => {
+			const ellipse = new Ellipse({ cx: 50, cy: 25, rx: 40, ry: 20 });
+			expect(ellipse.getCx()).toBe(50);
+		});
+
+		it("should return cy value via getCy()", () => {
+			const ellipse = new Ellipse({ cx: 50, cy: 25, rx: 40, ry: 20 });
+			expect(ellipse.getCy()).toBe(25);
+		});
+
+		it("should return rx value via getRx()", () => {
+			const ellipse = new Ellipse({ cx: 50, cy: 25, rx: 40, ry: 20 });
+			expect(ellipse.getRx()).toBe(40);
+		});
+
+		it("should return ry value via getRy()", () => {
+			const ellipse = new Ellipse({ cx: 50, cy: 25, rx: 40, ry: 20 });
+			expect(ellipse.getRy()).toBe(20);
+		});
+
+		it("should return default values when not specified", () => {
+			const ellipse = new Ellipse();
+			expect(ellipse.getCx()).toBe(0);
+			expect(ellipse.getCy()).toBe(0);
+			expect(ellipse.getRx()).toBe(0);
+			expect(ellipse.getRy()).toBe(0);
+		});
+
+		it("should return correct values after construction", () => {
+			const ellipse = new Ellipse({ cx: 100, cy: 200, rx: 75, ry: 50 });
+			expect(ellipse.getCx()).toBe(100);
+			expect(ellipse.getCy()).toBe(200);
+			expect(ellipse.getRx()).toBe(75);
+			expect(ellipse.getRy()).toBe(50);
+		});
+	});
 });
