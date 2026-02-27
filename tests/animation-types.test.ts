@@ -4,6 +4,11 @@ import type {
 	AnimationValue,
 	ColorValue,
 	NumericValue,
+	RotateValue,
+	ScaleValue,
+	SkewXValue,
+	SkewYValue,
+	TranslateValue,
 } from "../src/animation/smil.js";
 
 describe("SMIL Animation Type Safety", () => {
@@ -275,6 +280,40 @@ describe("SMIL Animation Type Safety", () => {
 			expect(numericAnimation).toBe("50");
 			expect(colorAnimation).toBe("#ff0000");
 			expect(transformAnimation).toBe("0 0");
+		});
+
+		it("should allow using TranslateValue type", () => {
+			const translateTwoParams: TranslateValue = "50 100";
+			expect(translateTwoParams).toBe("50 100");
+
+			const translateOneParam: TranslateValue = "50";
+			expect(translateOneParam).toBe("50");
+		});
+
+		it("should allow using ScaleValue type", () => {
+			const scaleTwoParams: ScaleValue = "2 1.5";
+			expect(scaleTwoParams).toBe("2 1.5");
+
+			const scaleOneParam: ScaleValue = "2";
+			expect(scaleOneParam).toBe("2");
+		});
+
+		it("should allow using RotateValue type", () => {
+			const rotateThreeParams: RotateValue = "45 50 50";
+			expect(rotateThreeParams).toBe("45 50 50");
+
+			const rotateOneParam: RotateValue = "45";
+			expect(rotateOneParam).toBe("45");
+		});
+
+		it("should allow using SkewXValue type", () => {
+			const skewX: SkewXValue = "30";
+			expect(skewX).toBe("30");
+		});
+
+		it("should allow using SkewYValue type", () => {
+			const skewY: SkewYValue = "30";
+			expect(skewY).toBe("30");
 		});
 	});
 });
