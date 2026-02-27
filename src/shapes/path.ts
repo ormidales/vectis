@@ -63,6 +63,7 @@ export class Path extends BaseShape {
 	 * @returns SVG `<path>` element string.
 	 */
 	toString(): string {
-		return this.renderElement("path", `d="${escapeXml(this.d)}"`);
+		const dAttr = this.d === "" ? "" : `d="${escapeXml(this.d)}"`;
+		return this.renderElement("path", dAttr);
 	}
 }
