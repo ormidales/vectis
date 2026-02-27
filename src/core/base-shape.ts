@@ -57,6 +57,19 @@ export abstract class BaseShape implements Shape {
 	}
 
 	/**
+	 * Removes all attached SMIL animations from this shape.
+	 *
+	 * This method is useful when you want to reuse a shape instance without
+	 * its previous animations.
+	 *
+	 * @returns The shape instance for method chaining.
+	 */
+	clearAnimations(): this {
+		this.animations.length = 0;
+		return this;
+	}
+
+	/**
 	 * Builds a string of SVG presentation attributes from the stored options.
 	 *
 	 * @returns A partial attribute string (leading space included), e.g. ` fill="red" opacity="0.5"`.
