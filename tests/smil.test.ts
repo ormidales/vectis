@@ -176,3 +176,76 @@ describe("SMIL animate", () => {
 		expect(output).toContain("&lt;script&gt;");
 	});
 });
+
+describe("clearAnimations", () => {
+	it("should remove all animations from a shape", () => {
+		const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+		circle.animate({ attributeName: "r", from: "25", to: "50", dur: "1s" });
+		circle.animate({ attributeName: "cx", from: "50", to: "100", dur: "2s" });
+
+		const withAnimations = circle.toString();
+		expect(withAnimations).toContain("<animate");
+
+		circle.clearAnimations();
+		const withoutAnimations = circle.toString();
+		expect(withoutAnimations).not.toContain("<animate");
+		expect(withoutAnimations).toBe('<circle cx="50" cy="50" r="25"/>');
+	});
+
+	it("should be chainable", () => {
+		const circle = new Circle({ cx: 0, cy: 0, r: 10 });
+		const result = circle.clearAnimations();
+		expect(result).toBe(circle);
+	});
+
+	it("should allow adding animations after clearing", () => {
+		const circle = new Circle({ r: 25 });
+		circle.animate({ attributeName: "r", from: "25", to: "50", dur: "1s" });
+		circle.clearAnimations();
+		circle.animate({ attributeName: "r", from: "25", to: "75", dur: "2s" });
+
+		const output = circle.toString();
+		expect(output).toContain("<animate");
+		expect(output).toContain('to="75"');
+		expect(output).not.toContain('to="50"');
+	});
+
+	it("should handle multiple clear operations", () => {
+		const rect = new Rect({ width: 100, height: 50 });
+		rect.animate({ attributeName: "width", from: "100", to: "200", dur: "1s" });
+		rect.clearAnimations();
+		rect.clearAnimations();
+
+		const output = rect.toString();
+		expect(output).not.toContain("<animate");
+		expect(output).toBe('<rect x="0" y="0" width="100" height="50"/>');
+	});
+
+	it("should work when called on a shape with no animations", () => {
+		const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+		circle.clearAnimations();
+
+		const output = circle.toString();
+		expect(output).toBe('<circle cx="50" cy="50" r="25"/>');
+	});
+
+	it("should work with different shape types", () => {
+		const polygon = new Polygon({ points: "0,0 50,0 25,50" });
+		polygon.animate({ attributeName: "points", to: "0,0 100,0 50,100", dur: "1s" });
+		polygon.clearAnimations();
+
+		expect(polygon.toString()).toBe('<polygon points="0,0 50,0 25,50"/>');
+	});
+
+	it("should support method chaining with animate", () => {
+		const circle = new Circle({ r: 10 });
+		circle
+			.animate({ attributeName: "r", from: "10", to: "20", dur: "1s" })
+			.clearAnimations()
+			.animate({ attributeName: "r", from: "10", to: "30", dur: "2s" });
+
+		const output = circle.toString();
+		expect(output).toContain('to="30"');
+		expect(output).not.toContain('to="20"');
+	});
+});

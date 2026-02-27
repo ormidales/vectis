@@ -37,6 +37,13 @@ export interface Shape {
 	animate(options: SmilAnimationOptions): this;
 
 	/**
+	 * Removes all attached SMIL animations from the shape.
+	 *
+	 * @returns The shape instance, enabling method chaining.
+	 */
+	clearAnimations(): this;
+
+	/**
 	 * Serializes the shape to an SVG markup string.
 	 *
 	 * @returns A valid SVG element string (e.g. `<circle cx="0" cy="0" r="5"/>`).
