@@ -20,8 +20,8 @@ export interface PathOptions extends PresentationAttributes {
  * @param d - The path data string to validate.
  */
 function validatePathData(d: string): void {
-	// Skip validation for empty strings
-	if (d === "") {
+	// Skip validation for empty strings or strings containing only whitespace
+	if (d.trim() === "") {
 		return;
 	}
 
