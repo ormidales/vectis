@@ -35,4 +35,44 @@ describe("escapeXml", () => {
 	it("should handle empty string", () => {
 		expect(escapeXml("")).toBe("");
 	});
+
+	it("should remove null byte (\\x00)", () => {
+		expect(escapeXml("hello\x00world")).toBe("helloworld");
+	});
+
+	it("should remove control characters \\x01 to \\x08", () => {
+		expect(escapeXml("\x01\x02\x03\x04\x05\x06\x07\x08")).toBe("");
+	});
+
+	it("should preserve tab character (\\t)", () => {
+		expect(escapeXml("hello\tworld")).toBe("hello\tworld");
+	});
+
+	it("should preserve newline character (\\n)", () => {
+		expect(escapeXml("hello\nworld")).toBe("hello\nworld");
+	});
+
+	it("should preserve carriage return (\\r)", () => {
+		expect(escapeXml("hello\rworld")).toBe("hello\rworld");
+	});
+
+	it("should remove control characters \\x0B to \\x1F", () => {
+		expect(escapeXml("\x0B\x0C\x0E\x0F\x10\x1F")).toBe("");
+	});
+
+	it("should remove control character \\x7F (DEL)", () => {
+		expect(escapeXml("hello\x7Fworld")).toBe("helloworld");
+	});
+
+	it("should handle mixed content with control characters and special XML characters", () => {
+		expect(escapeXml("<script>\x00alert('xss')\x1F</script>")).toBe(
+			"&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;",
+		);
+	});
+
+	it("should preserve normal text with allowed whitespace", () => {
+		expect(escapeXml("Line 1\nLine 2\tTabbed\rReturn")).toBe(
+			"Line 1\nLine 2\tTabbed\rReturn",
+		);
+	});
 });
