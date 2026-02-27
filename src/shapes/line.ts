@@ -3,6 +3,15 @@ import type { PresentationAttributes } from "../interfaces/shape.interface.js";
 
 /**
  * Options for constructing a {@link Line} element.
+ *
+ * A line is defined by two points in the SVG coordinate system: a start point
+ * `(x1, y1)` and an end point `(x2, y2)`. The SVG coordinate system places the
+ * origin `(0, 0)` at the top-left corner, with the positive x-axis extending to
+ * the right and the positive y-axis extending downward.
+ *
+ * All coordinate properties are optional and default to `0` if omitted. For example,
+ * if only `x2` and `y2` are provided, the line will be drawn from the origin `(0, 0)`
+ * to the specified end point.
  */
 export interface LineOptions extends PresentationAttributes {
 	/** X-coordinate of the line start point. Defaults to `0`. */
