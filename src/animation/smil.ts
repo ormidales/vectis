@@ -215,11 +215,15 @@ function renderAttrs(options: BaseAnimationOptions): string {
  * // '<animate attributeName="cx" from="0" to="100" dur="1s" />'
  */
 export function renderSmilAnimation(options: SmilAnimationOptions): string {
+	let result: string;
 	if (isAnimateTransform(options)) {
 		const attrName = renderAttribute("attributeName", options.attributeName ?? "transform");
 		const typeAttr = renderAttribute("type", options.type);
-		return `<animateTransform${attrName}${typeAttr}${renderAttrs(options)} />`;
+		result = `<animateTransform${attrName}${typeAttr}${renderAttrs(options)} />`;
+	} else {
+		const attrName = renderAttribute("attributeName", options.attributeName);
+		result = `<animate${attrName}${renderAttrs(options)} />`;
 	}
-	const attrName = renderAttribute("attributeName", options.attributeName);
-	return `<animate${attrName}${renderAttrs(options)} />`;
+	// Normalize spacing: replace multiple consecutive spaces with a single space
+	return result.replace(/ {2,}/g, " ");
 }
