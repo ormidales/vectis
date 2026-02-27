@@ -39,6 +39,8 @@ export class Polygon extends BaseShape {
 	 * @returns SVG `<polygon>` element string.
 	 */
 	toString(): string {
-		return this.renderElement("polygon", `points="${escapeXml(this.points)}"`);
+		const pointsAttr =
+			this.points === "" ? "" : `points="${escapeXml(this.points)}"`;
+		return this.renderElement("polygon", pointsAttr);
 	}
 }

@@ -6,7 +6,7 @@ describe("Polygon", () => {
 		const polygon = new Polygon();
 		const output = polygon.toString();
 
-		expect(output).toBe('<polygon points=""/>');
+		expect(output).toBe('<polygon />');
 	});
 
 	it("should accept custom points", () => {
