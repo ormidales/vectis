@@ -5,8 +5,13 @@ export type {
 	BaseAnimationOptions,
 	ColorValue,
 	NumericValue,
+	RotateValue,
+	ScaleValue,
+	SkewXValue,
+	SkewYValue,
 	SmilAnimationOptions,
 	TransformValue,
+	TranslateValue,
 } from "./animation/smil.js";
 export { renderSmilAnimation } from "./animation/smil.js";
 
