@@ -28,7 +28,7 @@ export { Ellipse } from "./shapes/ellipse.js";
 export type { LineOptions } from "./shapes/line.js";
 export { Line } from "./shapes/line.js";
 export type { PathOptions } from "./shapes/path.js";
-export { Path } from "./shapes/path.js";
+export { Path, validatePathData } from "./shapes/path.js";
 export type { PolygonOptions } from "./shapes/polygon.js";
 export { Polygon } from "./shapes/polygon.js";
 export type { RectOptions } from "./shapes/rect.js";
