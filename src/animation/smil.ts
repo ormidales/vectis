@@ -6,11 +6,7 @@ import { renderAttribute } from "../utils/render-attribute.js";
  *
  * @example "50", "100", "50%", "2em"
  */
-export type NumericValue =
-	| number
-	| `${number}`
-	| `${number}%`
-	| `${number}${"px" | "em" | "rem"}`;
+export type NumericValue = number | `${number}` | `${number}%` | `${number}${"px" | "em" | "rem"}`;
 
 /**
  * Color value types for SVG animations.
@@ -43,11 +39,7 @@ export type TransformValue = string;
  * Animation value type - can be numeric, color, transform, or any other valid SVG attribute value.
  * This provides better type hints while remaining flexible for various animation types.
  */
-export type AnimationValue =
-	| NumericValue
-	| ColorValue
-	| TransformValue
-	| string;
+export type AnimationValue = NumericValue | ColorValue | TransformValue | string;
 
 /**
  * Common timing and value options shared by all SMIL animation elements.
@@ -126,9 +118,7 @@ export interface AnimateTransformOptions extends BaseAnimationOptions {
  */
 export type SmilAnimationOptions = AnimateOptions | AnimateTransformOptions;
 
-function isAnimateTransform(
-	options: SmilAnimationOptions,
-): options is AnimateTransformOptions {
+function isAnimateTransform(options: SmilAnimationOptions): options is AnimateTransformOptions {
 	return "type" in options;
 }
 
@@ -160,10 +150,7 @@ function renderAttrs(options: BaseAnimationOptions): string {
  */
 export function renderSmilAnimation(options: SmilAnimationOptions): string {
 	if (isAnimateTransform(options)) {
-		const attrName = renderAttribute(
-			"attributeName",
-			options.attributeName ?? "transform",
-		);
+		const attrName = renderAttribute("attributeName", options.attributeName ?? "transform");
 		const typeAttr = renderAttribute("type", options.type);
 		return `<animateTransform${attrName}${typeAttr}${renderAttrs(options)} />`;
 	}

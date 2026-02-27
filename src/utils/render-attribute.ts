@@ -25,10 +25,7 @@ import { escapeXml } from "./escape.js";
  * renderAttribute('fill', '');              // ''
  * renderAttribute('opacity', NaN);          // ''
  */
-export function renderAttribute(
-	key: string,
-	value: string | number | undefined | null,
-): string {
+export function renderAttribute(key: string, value: string | number | undefined | null): string {
 	// Filter out invalid values
 	if (value === undefined || value === null) {
 		return "";

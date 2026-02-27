@@ -43,9 +43,6 @@ export class Circle extends BaseShape {
 	 * @returns SVG `<circle>` element string.
 	 */
 	toString(): string {
-		return this.renderElement(
-			"circle",
-			`cx="${this.cx}" cy="${this.cy}" r="${this.r}"`,
-		);
+		return this.renderElement("circle", `cx="${this.cx}" cy="${this.cy}" r="${this.r}"`);
 	}
 }
