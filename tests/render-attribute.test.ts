@@ -38,6 +38,11 @@ describe("renderAttribute", () => {
 			expect(renderAttribute("opacity", Number.NaN)).toBe("");
 		});
 
+		it("should not render Infinity", () => {
+			expect(renderAttribute("x", Number.POSITIVE_INFINITY)).toBe("");
+			expect(renderAttribute("x", Number.NEGATIVE_INFINITY)).toBe("");
+		});
+
 		it("should not render empty string", () => {
 			expect(renderAttribute("fill", "")).toBe("");
 		});
@@ -99,13 +104,9 @@ describe("renderAttribute", () => {
 			expect(renderAttribute("opacity", invalidCalc)).toBe("");
 		});
 
-		it("should handle Infinity", () => {
-			expect(renderAttribute("x", Number.POSITIVE_INFINITY)).toBe(
-				' x="Infinity"',
-			);
-			expect(renderAttribute("x", Number.NEGATIVE_INFINITY)).toBe(
-				' x="-Infinity"',
-			);
+		it("should handle division by zero (Infinity)", () => {
+			const divByZero = 10 / 0; // Infinity
+			expect(renderAttribute("width", divByZero)).toBe("");
 		});
 
 		it("should handle very small numbers", () => {
