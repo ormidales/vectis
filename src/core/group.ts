@@ -1,7 +1,4 @@
-import type {
-	PresentationAttributes,
-	Shape,
-} from "../interfaces/shape.interface.js";
+import type { PresentationAttributes, Shape } from "../interfaces/shape.interface.js";
 import { BaseShape } from "./base-shape.js";
 
 /**

@@ -1,11 +1,5 @@
-import {
-	renderSmilAnimation,
-	type SmilAnimationOptions,
-} from "../animation/smil.js";
-import type {
-	PresentationAttributes,
-	Shape,
-} from "../interfaces/shape.interface.js";
+import { renderSmilAnimation, type SmilAnimationOptions } from "../animation/smil.js";
+import type { PresentationAttributes, Shape } from "../interfaces/shape.interface.js";
 import { renderAttribute } from "../utils/render-attribute.js";
 
 /**
