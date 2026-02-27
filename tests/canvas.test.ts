@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { SvgCanvas } from "../src/index.js";
 
 describe("SvgCanvas", () => {
@@ -71,4 +71,141 @@ describe("SvgCanvas", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	describe("ViewBox validation", () => {
+		it("should not warn for valid viewBox with 4 integers", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 300 150" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with negative values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "-10 -10 100 100" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with decimal values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0.5 0.5 99.5 99.5" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with leading whitespace", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "  0 0 300 150" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with trailing whitespace", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 300 150  " });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for default viewBox", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas();
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for invalid viewBox with text", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "valeur incorrecte" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox format"),
+			);
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("valeur incorrecte"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for viewBox with only 3 values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 300" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox format"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for viewBox with only 2 values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox format"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for viewBox with 5 values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 300 150 100" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox format"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for empty viewBox string", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox format"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for viewBox with non-numeric values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 abc def" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox format"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for viewBox with mixed numeric and non-numeric values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 300 abc" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox format"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+	});
 });
+
