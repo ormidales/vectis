@@ -7,7 +7,8 @@ import { escapeXml } from "./escape.js";
  * - Not `undefined`
  * - Not `null`
  * - Not `NaN` (for numeric values)
- * - Not an empty string
+ * - Not `Infinity` or `-Infinity` (for numeric values)
+ * - Not an empty string or whitespace-only string
  *
  * String values are automatically escaped using `escapeXml` to prevent XSS.
  * Numeric values are rendered directly without escaping.
@@ -23,12 +24,11 @@ import { escapeXml } from "./escape.js";
  * renderAttribute('fill', undefined);       // ''
  * renderAttribute('fill', null);            // ''
  * renderAttribute('fill', '');              // ''
+ * renderAttribute('transform', '   ');      // ''
  * renderAttribute('opacity', NaN);          // ''
+ * renderAttribute('x', Infinity);           // ''
  */
-export function renderAttribute(
-	key: string,
-	value: string | number | undefined | null,
-): string {
+export function renderAttribute(key: string, value: string | number | undefined | null): string {
 	// Filter out invalid values
 	if (value === undefined || value === null) {
 		return "";
@@ -36,9 +36,9 @@ export function renderAttribute(
 
 	const escapedKey = escapeXml(key);
 
-	// For numeric values, check for NaN
+	// For numeric values, check for NaN and Infinity
 	if (typeof value === "number") {
-		if (Number.isNaN(value)) {
+		if (!Number.isFinite(value)) {
 			return "";
 		}
 		return ` ${escapedKey}="${value}"`;
@@ -46,7 +46,8 @@ export function renderAttribute(
 
 	// For string values, check for empty strings and escape
 	if (typeof value === "string") {
-		if (value === "") {
+		const trimmed = value.trim();
+		if (trimmed === "") {
 			return "";
 		}
 		return ` ${escapedKey}="${escapeXml(value)}"`;

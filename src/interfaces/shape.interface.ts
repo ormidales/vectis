@@ -22,6 +22,12 @@ export interface PresentationAttributes {
 	opacity?: number;
 	/** Static transform attribute (e.g. `"rotate(45)"`, `"translate(10 20)"`). */
 	transform?: string;
+	/** ARIA role attribute for accessibility (e.g. `"button"`, `"img"`). */
+	role?: string;
+	/** ARIA label providing an accessible name for the element. */
+	ariaLabel?: string;
+	/** ID reference to another element that labels this element (`aria-labelledby` attribute). */
+	ariaLabelledby?: string;
 }
 
 /**
@@ -35,6 +41,13 @@ export interface Shape {
 	 * @returns The shape instance, enabling method chaining.
 	 */
 	animate(options: SmilAnimationOptions): this;
+
+	/**
+	 * Removes all attached SMIL animations from the shape.
+	 *
+	 * @returns The shape instance, enabling method chaining.
+	 */
+	clearAnimations(): this;
 
 	/**
 	 * Serializes the shape to an SVG markup string.

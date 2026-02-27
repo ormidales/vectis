@@ -125,4 +125,42 @@ describe("Line", () => {
 		expect(output).not.toContain("<script>");
 		expect(output).toContain("&lt;script&gt;");
 	});
+
+	describe("getter methods", () => {
+		it("should return x1 value via getX1()", () => {
+			const line = new Line({ x1: 10, y1: 20, x2: 90, y2: 80 });
+			expect(line.getX1()).toBe(10);
+		});
+
+		it("should return y1 value via getY1()", () => {
+			const line = new Line({ x1: 10, y1: 20, x2: 90, y2: 80 });
+			expect(line.getY1()).toBe(20);
+		});
+
+		it("should return x2 value via getX2()", () => {
+			const line = new Line({ x1: 10, y1: 20, x2: 90, y2: 80 });
+			expect(line.getX2()).toBe(90);
+		});
+
+		it("should return y2 value via getY2()", () => {
+			const line = new Line({ x1: 10, y1: 20, x2: 90, y2: 80 });
+			expect(line.getY2()).toBe(80);
+		});
+
+		it("should return default values when not specified", () => {
+			const line = new Line();
+			expect(line.getX1()).toBe(0);
+			expect(line.getY1()).toBe(0);
+			expect(line.getX2()).toBe(0);
+			expect(line.getY2()).toBe(0);
+		});
+
+		it("should return correct values after construction", () => {
+			const line = new Line({ x1: 5, y1: 15, x2: 100, y2: 200 });
+			expect(line.getX1()).toBe(5);
+			expect(line.getY1()).toBe(15);
+			expect(line.getX2()).toBe(100);
+			expect(line.getY2()).toBe(200);
+		});
+	});
 });

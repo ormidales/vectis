@@ -42,6 +42,42 @@ export class Rect extends BaseShape {
 	}
 
 	/**
+	 * Gets the x-coordinate of the rectangle's top-left corner.
+	 *
+	 * @returns The x-coordinate of the rectangle's top-left corner.
+	 */
+	getX(): number {
+		return this.x;
+	}
+
+	/**
+	 * Gets the y-coordinate of the rectangle's top-left corner.
+	 *
+	 * @returns The y-coordinate of the rectangle's top-left corner.
+	 */
+	getY(): number {
+		return this.y;
+	}
+
+	/**
+	 * Gets the width of the rectangle.
+	 *
+	 * @returns The width of the rectangle.
+	 */
+	getWidth(): number {
+		return this.width;
+	}
+
+	/**
+	 * Gets the height of the rectangle.
+	 *
+	 * @returns The height of the rectangle.
+	 */
+	getHeight(): number {
+		return this.height;
+	}
+
+	/**
 	 * Serializes the rectangle to a `<rect>` SVG element string.
 	 *
 	 * @returns SVG `<rect>` element string.

@@ -19,9 +19,9 @@ export interface PathOptions extends PresentationAttributes {
  *
  * @param d - The path data string to validate.
  */
-function validatePathData(d: string): void {
-	// Skip validation for empty strings
-	if (d === "") {
+export function validatePathData(d: string): void {
+	// Skip validation for empty strings or strings containing only whitespace
+	if (d.trim() === "") {
 		return;
 	}
 
@@ -58,11 +58,21 @@ export class Path extends BaseShape {
 	}
 
 	/**
+	 * Gets the SVG path data string.
+	 *
+	 * @returns The SVG path data string.
+	 */
+	getD(): string {
+		return this.d;
+	}
+
+	/**
 	 * Serializes the path to a `<path>` SVG element string.
 	 *
 	 * @returns SVG `<path>` element string.
 	 */
 	toString(): string {
-		return this.renderElement("path", `d="${escapeXml(this.d)}"`);
+		const dAttr = this.d === "" ? "" : `d="${escapeXml(this.d)}"`;
+		return this.renderElement("path", dAttr);
 	}
 }

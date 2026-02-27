@@ -6,11 +6,7 @@ import { renderAttribute } from "../utils/render-attribute.js";
  *
  * @example "50", "100", "50%", "2em"
  */
-export type NumericValue =
-	| number
-	| `${number}`
-	| `${number}%`
-	| `${number}${"px" | "em" | "rem"}`;
+export type NumericValue = number | `${number}` | `${number}%` | `${number}${"px" | "em" | "rem"}`;
 
 /**
  * Color value types for SVG animations.
@@ -26,28 +22,90 @@ export type ColorValue =
 	| string; // Named colors and other valid CSS colors
 
 /**
+ * Translate transform value.
+ * Accepts "x y" for 2D translation or just "x" for horizontal-only translation.
+ *
+ * @example
+ * // Two-parameter form: horizontal and vertical offset
+ * "50 100"
+ * // Single-parameter form: horizontal offset only
+ * "50"
+ */
+export type TranslateValue = `${number} ${number}` | `${number}`;
+
+/**
+ * Scale transform value.
+ * Accepts "sx sy" for independent scaling or just "sx" for uniform scaling.
+ *
+ * @example
+ * // Two-parameter form: independent horizontal and vertical scaling
+ * "2 1.5"
+ * // Single-parameter form: uniform scaling
+ * "2"
+ */
+export type ScaleValue = `${number} ${number}` | `${number}`;
+
+/**
+ * Rotate transform value.
+ * Accepts "angle cx cy" with rotation center or just "angle" to rotate around origin.
+ *
+ * @example
+ * // Three-parameter form: angle and center point (cx, cy)
+ * "45 50 50"
+ * // Single-parameter form: angle only (rotates around origin)
+ * "45"
+ */
+export type RotateValue = `${number} ${number} ${number}` | `${number}`;
+
+/**
+ * SkewX transform value.
+ * Accepts a single angle value for horizontal skew.
+ *
+ * @example
+ * "30"
+ */
+export type SkewXValue = `${number}`;
+
+/**
+ * SkewY transform value.
+ * Accepts a single angle value for vertical skew.
+ *
+ * @example
+ * "30"
+ */
+export type SkewYValue = `${number}`;
+
+/**
  * Transform value types for animateTransform.
  * Space-separated numeric values depending on transform type.
  *
+ * Use the more specific types ({@link TranslateValue}, {@link ScaleValue}, {@link RotateValue},
+ * {@link SkewXValue}, {@link SkewYValue}) for better IDE autocomplete and type safety,
+ * or use the general {@link TransformValue} type for flexibility.
+ *
  * @example
- * // translate: "x y"
+ * // translate: "x y" or "x"
  * "50 100"
- * // scale: "sx [sy]"
+ * // scale: "sx sy" or "sx"
  * "2" or "2 1.5"
- * // rotate: "angle [cx cy]"
+ * // rotate: "angle cx cy" or "angle"
  * "45 50 50"
+ * // skewX/skewY: "angle"
+ * "30"
  */
-export type TransformValue = string;
+export type TransformValue =
+	| TranslateValue
+	| ScaleValue
+	| RotateValue
+	| SkewXValue
+	| SkewYValue
+	| string; // Fallback for runtime string values
 
 /**
  * Animation value type - can be numeric, color, transform, or any other valid SVG attribute value.
  * This provides better type hints while remaining flexible for various animation types.
  */
-export type AnimationValue =
-	| NumericValue
-	| ColorValue
-	| TransformValue
-	| string;
+export type AnimationValue = NumericValue | ColorValue | TransformValue | string;
 
 /**
  * Common timing and value options shared by all SMIL animation elements.
@@ -126,9 +184,7 @@ export interface AnimateTransformOptions extends BaseAnimationOptions {
  */
 export type SmilAnimationOptions = AnimateOptions | AnimateTransformOptions;
 
-function isAnimateTransform(
-	options: SmilAnimationOptions,
-): options is AnimateTransformOptions {
+function isAnimateTransform(options: SmilAnimationOptions): options is AnimateTransformOptions {
 	return "type" in options;
 }
 
@@ -159,14 +215,15 @@ function renderAttrs(options: BaseAnimationOptions): string {
  * // '<animate attributeName="cx" from="0" to="100" dur="1s" />'
  */
 export function renderSmilAnimation(options: SmilAnimationOptions): string {
+	let result: string;
 	if (isAnimateTransform(options)) {
-		const attrName = renderAttribute(
-			"attributeName",
-			options.attributeName ?? "transform",
-		);
+		const attrName = renderAttribute("attributeName", options.attributeName ?? "transform");
 		const typeAttr = renderAttribute("type", options.type);
-		return `<animateTransform${attrName}${typeAttr}${renderAttrs(options)} />`;
+		result = `<animateTransform${attrName}${typeAttr}${renderAttrs(options)} />`;
+	} else {
+		const attrName = renderAttribute("attributeName", options.attributeName);
+		result = `<animate${attrName}${renderAttrs(options)} />`;
 	}
-	const attrName = renderAttribute("attributeName", options.attributeName);
-	return `<animate${attrName}${renderAttrs(options)} />`;
+	// Normalize spacing: replace multiple consecutive spaces with a single space
+	return result.replace(/ {2,}/g, " ");
 }

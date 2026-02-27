@@ -1,11 +1,5 @@
-import {
-	renderSmilAnimation,
-	type SmilAnimationOptions,
-} from "../animation/smil.js";
-import type {
-	PresentationAttributes,
-	Shape,
-} from "../interfaces/shape.interface.js";
+import { renderSmilAnimation, type SmilAnimationOptions } from "../animation/smil.js";
+import type { PresentationAttributes, Shape } from "../interfaces/shape.interface.js";
 import { renderAttribute } from "../utils/render-attribute.js";
 
 /**
@@ -24,6 +18,9 @@ export abstract class BaseShape implements Shape {
 	protected readonly strokeLinejoin: "miter" | "round" | "bevel" | undefined;
 	protected readonly opacity: number | undefined;
 	protected readonly transform: string | undefined;
+	protected readonly role: string | undefined;
+	protected readonly ariaLabel: string | undefined;
+	protected readonly ariaLabelledby: string | undefined;
 	private readonly animations: SmilAnimationOptions[] = [];
 
 	/**
@@ -41,6 +38,9 @@ export abstract class BaseShape implements Shape {
 		this.strokeLinejoin = options.strokeLinejoin;
 		this.opacity = options.opacity;
 		this.transform = options.transform;
+		this.role = options.role;
+		this.ariaLabel = options.ariaLabel;
+		this.ariaLabelledby = options.ariaLabelledby;
 	}
 
 	/**
@@ -53,6 +53,19 @@ export abstract class BaseShape implements Shape {
 	 */
 	animate(options: SmilAnimationOptions): this {
 		this.animations.push(options);
+		return this;
+	}
+
+	/**
+	 * Removes all attached SMIL animations from this shape.
+	 *
+	 * This method is useful when you want to reuse a shape instance without
+	 * its previous animations.
+	 *
+	 * @returns The shape instance for method chaining.
+	 */
+	clearAnimations(): this {
+		this.animations.length = 0;
 		return this;
 	}
 
@@ -72,6 +85,9 @@ export abstract class BaseShape implements Shape {
 			renderAttribute("stroke-linejoin", this.strokeLinejoin),
 			renderAttribute("opacity", this.opacity),
 			renderAttribute("transform", this.transform),
+			renderAttribute("role", this.role),
+			renderAttribute("aria-label", this.ariaLabel),
+			renderAttribute("aria-labelledby", this.ariaLabelledby),
 		];
 		return parts.join("");
 	}

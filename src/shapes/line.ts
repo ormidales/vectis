@@ -3,6 +3,15 @@ import type { PresentationAttributes } from "../interfaces/shape.interface.js";
 
 /**
  * Options for constructing a {@link Line} element.
+ *
+ * A line is defined by two points in the SVG coordinate system: a start point
+ * `(x1, y1)` and an end point `(x2, y2)`. The SVG coordinate system places the
+ * origin `(0, 0)` at the top-left corner, with the positive x-axis extending to
+ * the right and the positive y-axis extending downward.
+ *
+ * All coordinate properties are optional and default to `0` if omitted. For example,
+ * if only `x2` and `y2` are provided, the line will be drawn from the origin `(0, 0)`
+ * to the specified end point.
  */
 export interface LineOptions extends PresentationAttributes {
 	/** X-coordinate of the line start point. Defaults to `0`. */
@@ -39,6 +48,42 @@ export class Line extends BaseShape {
 		this.y1 = options.y1 ?? 0;
 		this.x2 = options.x2 ?? 0;
 		this.y2 = options.y2 ?? 0;
+	}
+
+	/**
+	 * Gets the x-coordinate of the line start point.
+	 *
+	 * @returns The x-coordinate of the line start point.
+	 */
+	getX1(): number {
+		return this.x1;
+	}
+
+	/**
+	 * Gets the y-coordinate of the line start point.
+	 *
+	 * @returns The y-coordinate of the line start point.
+	 */
+	getY1(): number {
+		return this.y1;
+	}
+
+	/**
+	 * Gets the x-coordinate of the line end point.
+	 *
+	 * @returns The x-coordinate of the line end point.
+	 */
+	getX2(): number {
+		return this.x2;
+	}
+
+	/**
+	 * Gets the y-coordinate of the line end point.
+	 *
+	 * @returns The y-coordinate of the line end point.
+	 */
+	getY2(): number {
+		return this.y2;
 	}
 
 	/**

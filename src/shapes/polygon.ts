@@ -34,11 +34,21 @@ export class Polygon extends BaseShape {
 	}
 
 	/**
+	 * Gets the polygon vertices as a space- or comma-separated list of coordinate pairs.
+	 *
+	 * @returns The polygon vertices string.
+	 */
+	getPoints(): string {
+		return this.points;
+	}
+
+	/**
 	 * Serializes the polygon to a `<polygon>` SVG element string.
 	 *
 	 * @returns SVG `<polygon>` element string.
 	 */
 	toString(): string {
-		return this.renderElement("polygon", `points="${escapeXml(this.points)}"`);
+		const pointsAttr = this.points === "" ? "" : `points="${escapeXml(this.points)}"`;
+		return this.renderElement("polygon", pointsAttr);
 	}
 }
