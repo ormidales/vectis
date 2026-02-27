@@ -3,6 +3,14 @@ import { BaseShape } from "./base-shape.js";
 
 /**
  * Options for constructing a {@link Group} element.
+ *
+ * Inherits all {@link PresentationAttributes} such as `fill`, `stroke`, `opacity`,
+ * and `transform`. These attributes are applied to the group's `<g>` element and
+ * cascade down to all child shapes according to standard SVG inheritance rules.
+ *
+ * For example, setting `fill: 'blue'` on a group will make all children without
+ * their own `fill` attribute render in blue. Similarly, a group-level `transform`
+ * will be applied to the entire group's coordinate system, affecting all children.
  */
 export interface GroupOptions extends PresentationAttributes {}
 
