@@ -104,6 +104,17 @@ describe("Path", () => {
 			consoleWarnSpy.mockRestore();
 		});
 
+		it("should not warn for whitespace-only path data", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "   " });
+			new Path({ d: "\t\n  " });
+			new Path({ d: " " });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
 		it("should not warn for path data starting with other valid commands (L, C, A, Z)", () => {
 			const consoleWarnSpy = vi.spyOn(console, "warn");
 
