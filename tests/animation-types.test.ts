@@ -54,6 +54,76 @@ describe("SMIL Animation Type Safety", () => {
 			expect(output).toContain('from="10px"');
 			expect(output).toContain('to="20px"');
 		});
+
+		it("should accept pt unit values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "r",
+				from: "10pt",
+				to: "20pt",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="10pt"');
+			expect(output).toContain('to="20pt"');
+		});
+
+		it("should accept vw unit values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "r",
+				from: "10vw",
+				to: "50vw",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="10vw"');
+			expect(output).toContain('to="50vw"');
+		});
+
+		it("should accept vh unit values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "r",
+				from: "10vh",
+				to: "50vh",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="10vh"');
+			expect(output).toContain('to="50vh"');
+		});
+
+		it("should accept vmin unit values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "r",
+				from: "10vmin",
+				to: "50vmin",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="10vmin"');
+			expect(output).toContain('to="50vmin"');
+		});
+
+		it("should accept vmax unit values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "r",
+				from: "10vmax",
+				to: "50vmax",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="10vmax"');
+			expect(output).toContain('to="50vmax"');
+		});
 	});
 
 	describe("ColorValue animations", () => {
@@ -111,6 +181,34 @@ describe("SMIL Animation Type Safety", () => {
 
 			expect(output).toContain('from="rgba(255, 0, 0, 0.5)"');
 			expect(output).toContain('to="rgba(0, 255, 0, 1)"');
+		});
+
+		it("should accept hsl color values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "fill",
+				from: "hsl(120, 100%, 50%)",
+				to: "hsl(240, 100%, 50%)",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="hsl(120, 100%, 50%)"');
+			expect(output).toContain('to="hsl(240, 100%, 50%)"');
+		});
+
+		it("should accept hsla color values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "fill",
+				from: "hsla(120, 100%, 50%, 0.5)",
+				to: "hsla(240, 100%, 50%, 1)",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="hsla(120, 100%, 50%, 0.5)"');
+			expect(output).toContain('to="hsla(240, 100%, 50%, 1)"');
 		});
 
 		it("should accept transparent color", () => {

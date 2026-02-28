@@ -4,21 +4,23 @@ import { renderAttribute } from "../utils/render-attribute.js";
  * Numeric value types for animations.
  * Accepts numbers or string representations including CSS units.
  *
- * @example "50", "100", "50%", "2em"
+ * @example "50", "100", "50%", "2em", "50vw", "10pt"
  */
-export type NumericValue = number | `${number}` | `${number}%` | `${number}${"px" | "em" | "rem"}`;
+export type NumericValue = number | `${number}` | `${number}%` | `${number}${"px" | "em" | "rem" | "pt" | "vw" | "vh" | "vmin" | "vmax"}`;
 
 /**
  * Color value types for SVG animations.
- * Supports hex colors, named colors, and RGB/RGBA formats.
+ * Supports hex colors, named colors, RGB/RGBA, and HSL/HSLA formats.
  *
- * @example "#ff0000", "red", "rgb(255, 0, 0)", "rgba(255, 0, 0, 0.5)"
+ * @example "#ff0000", "red", "rgb(255, 0, 0)", "rgba(255, 0, 0, 0.5)", "hsl(120, 100%, 50%)", "hsla(120, 100%, 50%, 0.5)"
  */
 export type ColorValue =
 	| `#${string}`
 	| "transparent"
 	| `rgb(${string})`
 	| `rgba(${string})`
+	| `hsl(${string})`
+	| `hsla(${string})`
 	| string; // Named colors and other valid CSS colors
 
 /**

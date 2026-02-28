@@ -92,4 +92,27 @@ describe("validatePathData", () => {
 		);
 		consoleWarnSpy.mockRestore();
 	});
+
+	it("should warn for hybrid path data containing illegal alphabetic characters", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M 10 10 commande_invalide");
+
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining("[vectis] Invalid path data"),
+		);
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining("M 10 10 commande_invalide"),
+		);
+		consoleWarnSpy.mockRestore();
+	});
+
+	it("should not warn for valid path data with multiple commands", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M 10 10 L 90 90 H 50 V 50 C 10 10 20 20 30 30 Z");
+
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+		consoleWarnSpy.mockRestore();
+	});
 });

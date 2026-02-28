@@ -118,6 +118,33 @@ describe("SvgCanvas", () => {
 			consoleWarnSpy.mockRestore();
 		});
 
+		it("should not warn for valid viewBox with comma separators", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0,0,300,150" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with comma and space separators", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0, 0, 300, 150" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with spaces around comma separators", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 , 0 , 300 , 150" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
 		it("should not warn for default viewBox", () => {
 			const consoleWarnSpy = vi.spyOn(console, "warn");
 
@@ -193,6 +220,42 @@ describe("SvgCanvas", () => {
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("[vectis] Invalid viewBox format"),
 			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with scientific notation values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 1e-4 1e-4" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with uppercase scientific notation", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 1E+4 2E4" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with negative scientific notation values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "-1e2 -1e2 1e2 1e2" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox mixing decimal and scientific notation", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 1.5e3 2.5e3" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
 			consoleWarnSpy.mockRestore();
 		});
 
