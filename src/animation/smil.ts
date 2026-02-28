@@ -4,9 +4,9 @@ import { renderAttribute } from "../utils/render-attribute.js";
  * Numeric value types for animations.
  * Accepts numbers or string representations including CSS units.
  *
- * @example "50", "100", "50%", "2em"
+ * @example "50", "100", "50%", "2em", "50vw", "10pt"
  */
-export type NumericValue = number | `${number}` | `${number}%` | `${number}${"px" | "em" | "rem"}`;
+export type NumericValue = number | `${number}` | `${number}%` | `${number}${"px" | "em" | "rem" | "pt" | "vw" | "vh" | "vmin" | "vmax"}`;
 
 /**
  * Color value types for SVG animations.
