@@ -30,9 +30,9 @@ export interface SvgCanvasOptions {
  */
 function validateViewBox(viewBox: string): void {
 	// The viewBox attribute should contain 4 numeric values: min-x min-y width height
-	// Valid examples: "0 0 300 150", "-10 -10 100 100", "0.5 0.5 99.5 99.5"
+	// Valid examples: "0 0 300 150", "-10 -10 100 100", "0.5 0.5 99.5 99.5", "0, 0, 300, 150"
 	const validViewBoxPattern =
-		/^\s*-?\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+-?\d+(\.\d+)?\s*$/;
+		/^\s*-?\d+(\.\d+)?(?:\s*,\s*|\s+)-?\d+(\.\d+)?(?:\s*,\s*|\s+)-?\d+(\.\d+)?(?:\s*,\s*|\s+)-?\d+(\.\d+)?\s*$/;
 
 	if (!validViewBoxPattern.test(viewBox)) {
 		console.warn(
