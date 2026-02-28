@@ -113,6 +113,34 @@ describe("SMIL Animation Type Safety", () => {
 			expect(output).toContain('to="rgba(0, 255, 0, 1)"');
 		});
 
+		it("should accept hsl color values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "fill",
+				from: "hsl(120, 100%, 50%)",
+				to: "hsl(240, 100%, 50%)",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="hsl(120, 100%, 50%)"');
+			expect(output).toContain('to="hsl(240, 100%, 50%)"');
+		});
+
+		it("should accept hsla color values", () => {
+			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+			circle.animate({
+				attributeName: "fill",
+				from: "hsla(120, 100%, 50%, 0.5)",
+				to: "hsla(240, 100%, 50%, 1)",
+				dur: "1s",
+			});
+			const output = circle.toString();
+
+			expect(output).toContain('from="hsla(120, 100%, 50%, 0.5)"');
+			expect(output).toContain('to="hsla(240, 100%, 50%, 1)"');
+		});
+
 		it("should accept transparent color", () => {
 			const circle = new Circle({ cx: 50, cy: 50, r: 25 });
 			circle.animate({
