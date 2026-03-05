@@ -163,6 +163,21 @@ describe("Circle", () => {
 			const circle = new Circle({ r: 10 });
 			expect(circle.getR()).toBe(10);
 		});
+
+		it("should normalise a NaN radius to 0 via getR()", () => {
+			const circle = new Circle({ r: NaN });
+			expect(circle.getR()).toBe(0);
+		});
+
+		it("should normalise an infinite radius to 0 via getR()", () => {
+			const circle = new Circle({ r: Infinity });
+			expect(circle.getR()).toBe(0);
+		});
+
+		it("should normalise a negative infinite radius to 0 via getR()", () => {
+			const circle = new Circle({ r: -Infinity });
+			expect(circle.getR()).toBe(0);
+		});
 	});
 
 	describe("getter methods", () => {
