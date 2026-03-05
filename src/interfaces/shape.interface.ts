@@ -1,4 +1,4 @@
-import type { SmilAnimationOptions } from "../animation/smil.js";
+import type { NumericValue, SmilAnimationOptions } from "../animation/smil.js";
 
 /**
  * Common SVG presentation attributes shared by all shape elements.
@@ -18,8 +18,8 @@ export interface PresentationAttributes {
 	strokeLinecap?: "butt" | "round" | "square";
 	/** Shape of the corners where two lines meet (`stroke-linejoin` attribute). */
 	strokeLinejoin?: "miter" | "round" | "bevel";
-	/** Opacity of the element, from `0` (transparent) to `1` (opaque). */
-	opacity?: number;
+	/** Opacity of the element, from `0` (transparent) to `1` (opaque). Also accepts percentage strings (e.g. `"50%"`). */
+	opacity?: NumericValue;
 	/** Static transform attribute (e.g. `"rotate(45)"`, `"translate(10 20)"`). */
 	transform?: string;
 	/** ARIA role attribute for accessibility (e.g. `"button"`, `"img"`). */

@@ -1,4 +1,4 @@
-import { renderSmilAnimation, type SmilAnimationOptions } from "../animation/smil.js";
+import { renderSmilAnimation, type NumericValue, type SmilAnimationOptions } from "../animation/smil.js";
 import type { PresentationAttributes, Shape } from "../interfaces/shape.interface.js";
 import { renderAttribute } from "../utils/render-attribute.js";
 
@@ -16,7 +16,7 @@ export abstract class BaseShape implements Shape {
 	protected readonly strokeWidth: number | undefined;
 	protected readonly strokeLinecap: "butt" | "round" | "square" | undefined;
 	protected readonly strokeLinejoin: "miter" | "round" | "bevel" | undefined;
-	protected readonly opacity: number | undefined;
+	protected readonly opacity: NumericValue | undefined;
 	protected readonly transform: string | undefined;
 	protected readonly role: string | undefined;
 	protected readonly ariaLabel: string | undefined;
