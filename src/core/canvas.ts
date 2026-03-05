@@ -30,8 +30,8 @@ export interface SvgCanvasOptions {
  */
 function validateViewBox(viewBox: string): void {
 	// The viewBox attribute should contain 4 numeric values: min-x min-y width height
-	// Valid examples: "0 0 300 150", "-10 -10 100 100", "0.5 0.5 99.5 99.5", "0, 0, 300, 150", "0 0 1e-4 1e-4", ".5 .5 100 100"
-	const num = "-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)(?:[eE][+-]?\\d+)?";
+	// Valid examples: "0 0 300 150", "-10 -10 100 100", "0.5 0.5 99.5 99.5", "0, 0, 300, 150", "0 0 1e-4 1e-4", ".5 .5 100 100", "0 0 +1e4 1e4"
+	const num = "[+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+)(?:[eE][+-]?\\d+)?";
 	const sep = "(?:\\s*,\\s*|\\s+)";
 	const validViewBoxPattern = new RegExp(
 		`^\\s*${num}${sep}${num}${sep}${num}${sep}${num}\\s*$`,

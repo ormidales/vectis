@@ -287,6 +287,33 @@ describe("SvgCanvas", () => {
 			);
 			consoleWarnSpy.mockRestore();
 		});
+
+		it("should not warn for valid viewBox with explicit positive sign on scientific notation", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 +1e4 1e4" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with explicit positive sign on all values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "+0 +0 +300 +150" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox with explicit positive sign on decimal values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "+.5 +.5 +99.5 +99.5" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
 	});
 });
 
