@@ -39,7 +39,7 @@ export function validatePathData(d: string): void {
 	// Additional validation: check for illegal characters anywhere in the path data
 	// Valid characters are: SVG command letters, digits, whitespace, numeric separators (.,+-),
 	// and exponent indicators (eE) for scientific notation (e.g. 1e-5)
-	const illegalCharPattern = /[^MmLlHhVvCcSsQqTtAaZzeE\d\s.,+\-]/;
+	const illegalCharPattern = /[^MmLlHhVvCcSsQqTtAaZzeE\d\s.,+-]/;
 
 	if (illegalCharPattern.test(d)) {
 		console.warn(
