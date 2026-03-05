@@ -9,9 +9,9 @@ export interface RectOptions extends PresentationAttributes {
 	x?: number;
 	/** Y-coordinate of the rectangle's top-left corner. Defaults to `0`. */
 	y?: number;
-	/** Width of the rectangle. Defaults to `0`. */
+	/** Width of the rectangle. Must be `>= 0`. Negative values are clamped to `0`. Defaults to `0`. */
 	width?: number;
-	/** Height of the rectangle. Defaults to `0`. */
+	/** Height of the rectangle. Must be `>= 0`. Negative values are clamped to `0`. Defaults to `0`. */
 	height?: number;
 }
 
@@ -37,8 +37,8 @@ export class Rect extends BaseShape {
 		super(options);
 		this.x = options.x ?? 0;
 		this.y = options.y ?? 0;
-		this.width = options.width ?? 0;
-		this.height = options.height ?? 0;
+		this.width = Math.max(0, options.width ?? 0);
+		this.height = Math.max(0, options.height ?? 0);
 	}
 
 	/**
