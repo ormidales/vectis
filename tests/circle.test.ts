@@ -148,7 +148,7 @@ describe("Circle", () => {
 		expect(output).toContain("&lt;script&gt;");
 	});
 
-	describe("negative radius normalisation", () => {
+	describe("radius normalisation", () => {
 		it("should clamp a negative radius to 0 in toString()", () => {
 			const circle = new Circle({ r: -15 });
 			expect(circle.toString()).toBe('<circle cx="0" cy="0" r="0"/>');
