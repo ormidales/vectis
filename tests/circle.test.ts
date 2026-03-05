@@ -148,6 +148,38 @@ describe("Circle", () => {
 		expect(output).toContain("&lt;script&gt;");
 	});
 
+	describe("radius normalisation", () => {
+		it("should clamp a negative radius to 0 in toString()", () => {
+			const circle = new Circle({ r: -15 });
+			expect(circle.toString()).toBe('<circle cx="0" cy="0" r="0"/>');
+		});
+
+		it("should return 0 from getR() when a negative radius is supplied", () => {
+			const circle = new Circle({ r: -15 });
+			expect(circle.getR()).toBe(0);
+		});
+
+		it("should preserve a positive radius unchanged", () => {
+			const circle = new Circle({ r: 10 });
+			expect(circle.getR()).toBe(10);
+		});
+
+		it("should normalise a NaN radius to 0 via getR()", () => {
+			const circle = new Circle({ r: NaN });
+			expect(circle.getR()).toBe(0);
+		});
+
+		it("should normalise an infinite radius to 0 via getR()", () => {
+			const circle = new Circle({ r: Infinity });
+			expect(circle.getR()).toBe(0);
+		});
+
+		it("should normalise a negative infinite radius to 0 via getR()", () => {
+			const circle = new Circle({ r: -Infinity });
+			expect(circle.getR()).toBe(0);
+		});
+	});
+
 	describe("getter methods", () => {
 		it("should return cx value via getCx()", () => {
 			const circle = new Circle({ cx: 50, cy: 25, r: 10 });

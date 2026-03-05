@@ -23,6 +23,7 @@ export { Group } from "./core/group.js";
 
 export type {
 	PresentationAttributes,
+	OpacityValue,
 	Shape,
 } from "./interfaces/shape.interface.js";
 

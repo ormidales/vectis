@@ -84,6 +84,13 @@ describe("BaseShape", () => {
 			expect(output).toContain('opacity="0.5"');
 		});
 
+		it("should include opacity attribute when specified as a percentage string", () => {
+			const shape = new MockShape({ opacity: "50%" });
+			const output = shape.toString();
+
+			expect(output).toContain('opacity="50%"');
+		});
+
 		it("should include transform attribute when specified", () => {
 			const shape = new MockShape({ transform: "rotate(45)" });
 			const output = shape.toString();

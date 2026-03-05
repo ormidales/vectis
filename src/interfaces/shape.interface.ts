@@ -1,6 +1,14 @@
 import type { SmilAnimationOptions } from "../animation/smil.js";
 
 /**
+ * Valid values for the SVG `opacity` presentation attribute.
+ * Accepts a unitless number, a numeric string, or a percentage string.
+ *
+ * @example 0.5, "0.5", "50%"
+ */
+export type OpacityValue = number | `${number}` | `${number}%`;
+
+/**
  * Common SVG presentation attributes shared by all shape elements.
  */
 export interface PresentationAttributes {
@@ -18,8 +26,8 @@ export interface PresentationAttributes {
 	strokeLinecap?: "butt" | "round" | "square";
 	/** Shape of the corners where two lines meet (`stroke-linejoin` attribute). */
 	strokeLinejoin?: "miter" | "round" | "bevel";
-	/** Opacity of the element, from `0` (transparent) to `1` (opaque). */
-	opacity?: number;
+	/** Opacity of the element, from `0` (transparent) to `1` (opaque). Also accepts percentage strings (e.g. `"50%"`). */
+	opacity?: OpacityValue;
 	/** Static transform attribute (e.g. `"rotate(45)"`, `"translate(10 20)"`). */
 	transform?: string;
 	/** ARIA role attribute for accessibility (e.g. `"button"`, `"img"`). */

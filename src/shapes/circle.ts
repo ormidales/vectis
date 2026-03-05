@@ -9,7 +9,7 @@ export interface CircleOptions extends PresentationAttributes {
 	cx?: number;
 	/** Y-coordinate of the circle centre. Defaults to `0`. */
 	cy?: number;
-	/** Radius of the circle. Defaults to `0`. */
+	/** Radius of the circle. Must be `>= 0`. Negative, `NaN`, and non-finite values are clamped to `0`. Defaults to `0`. */
 	r?: number;
 }
 
@@ -34,7 +34,8 @@ export class Circle extends BaseShape {
 		super(options);
 		this.cx = options.cx ?? 0;
 		this.cy = options.cy ?? 0;
-		this.r = options.r ?? 0;
+		const r = options.r ?? 0;
+		this.r = Number.isFinite(r) ? Math.max(0, r) : 0;
 	}
 
 	/**
