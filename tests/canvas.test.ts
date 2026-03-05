@@ -259,6 +259,24 @@ describe("SvgCanvas", () => {
 			consoleWarnSpy.mockRestore();
 		});
 
+		it("should not warn for valid viewBox with decimal values omitting the leading zero", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: ".5 .5 100 100" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid viewBox mixing leading-zero-omitted and normal decimal values", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "-.5 -.5 99.5 99.5" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
 		it("should warn for viewBox with mixed numeric and non-numeric values", () => {
 			const consoleWarnSpy = vi.spyOn(console, "warn");
 
