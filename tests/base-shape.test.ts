@@ -250,6 +250,48 @@ describe("BaseShape", () => {
 			expect(output).toContain('aria-label="Description"');
 			expect(output).toContain('aria-labelledby="title-id"');
 		});
+
+		it("should include title as a child element when specified", () => {
+			const shape = new MockShape({ title: "Tooltip text" });
+			const output = shape.toString();
+
+			expect(output).toContain("<title>Tooltip text</title>");
+			expect(output).not.toContain('title="');
+		});
+
+		it("should not include title element when not specified", () => {
+			const shape = new MockShape();
+			const output = shape.toString();
+
+			expect(output).not.toContain("<title>");
+		});
+
+		it("should not include title element when whitespace-only", () => {
+			const shape = new MockShape({ title: "   " });
+			const output = shape.toString();
+
+			expect(output).not.toContain("<title>");
+		});
+
+		it("should escape special characters in title child element to prevent XSS", () => {
+			const shape = new MockShape({ title: '<script>alert(1)</script>' });
+			const output = shape.toString();
+
+			expect(output).not.toContain("<script>");
+			expect(output).toContain("&lt;script&gt;");
+		});
+
+		it("should render title as the first child element, before animations", () => {
+			const shape = new MockShape({ title: "My shape" });
+			shape.animate({ attributeName: "opacity", from: "0", to: "1", dur: "1s" });
+			const output = shape.toString();
+
+			const titlePos = output.indexOf("<title>");
+			const animatePos = output.indexOf("<animate");
+			expect(titlePos).toBeGreaterThan(-1);
+			expect(animatePos).toBeGreaterThan(-1);
+			expect(titlePos).toBeLessThan(animatePos);
+		});
 	});
 
 	describe("Animation methods", () => {
