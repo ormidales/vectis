@@ -32,6 +32,22 @@ export interface SvgCanvasOptions {
 }
 
 /**
+ * Checks whether a string is a valid XML namespace prefix (NCName).
+ * Prefixes must be non-empty, start with a letter or underscore, contain only
+ * letters, digits, hyphens, underscores and dots, and must not be the reserved
+ * tokens `xml` or `xmlns`.
+ *
+ * @param prefix - The candidate namespace prefix.
+ * @returns `true` when the prefix is a valid NCName that may be used as a namespace prefix.
+ */
+function isValidNcName(prefix: string): boolean {
+	if (prefix === "xml" || prefix === "xmlns") {
+		return false;
+	}
+	return /^[A-Za-z_][A-Za-z0-9_\-.]*$/.test(prefix);
+}
+
+/**
  * Validates SVG viewBox string.
  * Logs a warning if the viewBox format appears invalid.
  *
@@ -102,6 +118,15 @@ export class SvgCanvas {
 		const w = typeof this.width === "string" ? escapeXml(this.width) : this.width;
 		const h = typeof this.height === "string" ? escapeXml(this.height) : this.height;
 		const extraNs = Object.entries(this.namespaces)
+			.filter(([prefix]) => {
+				if (!isValidNcName(prefix)) {
+					console.warn(
+						`[vectis] Invalid namespace prefix: "${prefix}". Prefixes must be a valid XML NCName (non-empty, start with a letter or underscore, no colons) and must not be "xml" or "xmlns". The namespace declaration will be skipped.`,
+					);
+					return false;
+				}
+				return true;
+			})
 			.map(([prefix, uri]) => ` xmlns:${escapeXml(prefix)}="${escapeXml(uri)}"`)
 			.join("");
 		return `<svg xmlns="http://www.w3.org/2000/svg"${extraNs} viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
