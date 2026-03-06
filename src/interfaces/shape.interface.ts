@@ -30,6 +30,8 @@ export interface PresentationAttributes {
 	opacity?: OpacityValue;
 	/** Static transform attribute (e.g. `"rotate(45)"`, `"translate(10 20)"`). */
 	transform?: string;
+	/** Inline CSS styles for the element (`style` attribute). */
+	style?: string;
 	/** ARIA role attribute for accessibility (e.g. `"button"`, `"img"`). */
 	role?: string;
 	/** ARIA label providing an accessible name for the element. */
