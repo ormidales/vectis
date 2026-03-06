@@ -219,6 +219,31 @@ describe("SvgCanvas", () => {
 			);
 			consoleWarnSpy.mockRestore();
 		});
+
+		it("should warn only once at construction even when toString() is called multiple times", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const canvas = new SvgCanvas({ namespaces: { "bad:prefix": "http://example.com/" } });
+
+			canvas.toString();
+			canvas.toString();
+			canvas.toString();
+
+			expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not reflect post-construction mutations of the caller's namespaces object", () => {
+			const ns: Record<string, string> = { xlink: "http://www.w3.org/1999/xlink" };
+			const canvas = new SvgCanvas({ namespaces: ns });
+
+			ns["custom"] = "http://example.com/custom";
+			delete ns["xlink"];
+
+			const output = canvas.toString();
+
+			expect(output).toContain('xmlns:xlink="http://www.w3.org/1999/xlink"');
+			expect(output).not.toContain("custom");
+		});
 	});
 
 	describe("ViewBox validation", () => {

@@ -93,7 +93,7 @@ export class SvgCanvas {
 		const vbWidth = typeof this.width === "number" ? this.width : 300;
 		const vbHeight = typeof this.height === "number" ? this.height : 150;
 		this.viewBox = options.viewBox ?? `0 0 ${vbWidth} ${vbHeight}`;
-		this.extraNs = Object.entries({ ...(options.namespaces ?? {}) })
+		this.extraNs = Object.entries(options.namespaces ?? {})
 			.filter(([prefix]) => {
 				if (!isValidNcName(prefix)) {
 					console.warn(
@@ -103,7 +103,7 @@ export class SvgCanvas {
 				}
 				return true;
 			})
-			.map(([prefix, uri]) => ` xmlns:${escapeXml(prefix)}="${escapeXml(uri)}"`)
+			.map(([prefix, uri]) => ` xmlns:${prefix}="${escapeXml(uri)}"`)
 			.join("");
 		validateViewBox(this.viewBox);
 	}
