@@ -72,6 +72,155 @@ describe("SvgCanvas", () => {
 		expect(output).toContain("&lt;script&gt;");
 	});
 
+	describe("namespaces", () => {
+		it("should not add extra xmlns attributes when namespaces is omitted", () => {
+			const canvas = new SvgCanvas({ width: 100, height: 100 });
+			const output = canvas.toString();
+
+			expect(output).toBe(
+				'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"></svg>',
+			);
+		});
+
+		it("should not add extra xmlns attributes when namespaces is empty", () => {
+			const canvas = new SvgCanvas({ width: 100, height: 100, namespaces: {} });
+			const output = canvas.toString();
+
+			expect(output).toBe(
+				'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"></svg>',
+			);
+		});
+
+		it("should add a single xmlns:xlink namespace", () => {
+			const canvas = new SvgCanvas({
+				namespaces: { xlink: "http://www.w3.org/1999/xlink" },
+			});
+			const output = canvas.toString();
+
+			expect(output).toContain('xmlns:xlink="http://www.w3.org/1999/xlink"');
+		});
+
+		it("should add multiple namespaces in declaration order", () => {
+			const canvas = new SvgCanvas({
+				namespaces: {
+					xlink: "http://www.w3.org/1999/xlink",
+					dc: "http://purl.org/dc/elements/1.1/",
+				},
+			});
+			const output = canvas.toString();
+
+			const xlinkAttr = 'xmlns:xlink="http://www.w3.org/1999/xlink"';
+			const dcAttr = 'xmlns:dc="http://purl.org/dc/elements/1.1/"';
+
+			expect(output).toContain(xlinkAttr);
+			expect(output).toContain(dcAttr);
+			expect(output.indexOf(xlinkAttr)).toBeLessThan(output.indexOf(dcAttr));
+		});
+
+		it("should place extra namespaces after the default xmlns and before viewBox", () => {
+			const canvas = new SvgCanvas({
+				width: 200,
+				height: 200,
+				namespaces: { xlink: "http://www.w3.org/1999/xlink" },
+			});
+			const output = canvas.toString();
+
+			expect(output).toBe(
+				'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200" width="200" height="200"></svg>',
+			);
+		});
+
+		it("should escape special characters in namespace URI", () => {
+			const canvas = new SvgCanvas({
+				namespaces: { custom: 'http://example.com/"xss"' },
+			});
+			const output = canvas.toString();
+
+			expect(output).not.toContain('"xss"');
+			expect(output).toContain('xmlns:custom="http://example.com/&quot;xss&quot;"');
+		});
+
+		it("should skip and warn for an empty namespace prefix", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const canvas = new SvgCanvas({ namespaces: { "": "http://example.com/" } });
+			const output = canvas.toString();
+
+			expect(output).not.toContain("http://example.com/");
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid namespace prefix"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should skip and warn for a namespace prefix containing a colon", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const canvas = new SvgCanvas({ namespaces: { "bad:prefix": "http://example.com/" } });
+			const output = canvas.toString();
+
+			expect(output).not.toContain("bad:prefix");
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid namespace prefix"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should skip and warn for a namespace prefix containing spaces", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const canvas = new SvgCanvas({ namespaces: { "bad prefix": "http://example.com/" } });
+			const output = canvas.toString();
+
+			expect(output).not.toContain("bad prefix");
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid namespace prefix"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should skip and warn for the reserved prefix 'xml'", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const canvas = new SvgCanvas({
+				namespaces: { xml: "http://www.w3.org/XML/1998/namespace" },
+			});
+			const output = canvas.toString();
+
+			expect(output).not.toContain("xmlns:xml");
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid namespace prefix"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should skip and warn for the reserved prefix 'xmlns'", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const canvas = new SvgCanvas({ namespaces: { xmlns: "http://example.com/" } });
+			const output = canvas.toString();
+
+			expect(output).not.toContain("xmlns:xmlns");
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid namespace prefix"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should skip invalid prefix while still rendering valid ones", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const canvas = new SvgCanvas({
+				namespaces: {
+					"bad:one": "http://example.com/bad",
+					xlink: "http://www.w3.org/1999/xlink",
+				},
+			});
+			const output = canvas.toString();
+
+			expect(output).not.toContain("bad:one");
+			expect(output).toContain('xmlns:xlink="http://www.w3.org/1999/xlink"');
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid namespace prefix"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+	});
+
 	describe("ViewBox validation", () => {
 		it("should not warn for valid viewBox with 4 integers", () => {
 			const consoleWarnSpy = vi.spyOn(console, "warn");

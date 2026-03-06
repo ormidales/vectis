@@ -20,6 +20,31 @@ export interface SvgCanvasOptions {
 	 * Inferred from `width`/`height` when both are numbers and omitted.
 	 */
 	viewBox?: string;
+	/**
+	 * Additional XML namespaces to declare on the root `<svg>` element.
+	 * Each key becomes the namespace prefix and each value the namespace URI.
+	 *
+	 * @example
+	 * // Adds xmlns:xlink="http://www.w3.org/1999/xlink"
+	 * { xlink: "http://www.w3.org/1999/xlink" }
+	 */
+	namespaces?: Record<string, string>;
+}
+
+/**
+ * Checks whether a string is a valid XML namespace prefix (NCName).
+ * Prefixes must be non-empty, start with a letter or underscore, contain only
+ * letters, digits, hyphens, underscores and dots, and must not be the reserved
+ * tokens `xml` or `xmlns`.
+ *
+ * @param prefix - The candidate namespace prefix.
+ * @returns `true` when the prefix is a valid NCName that may be used as a namespace prefix.
+ */
+function isValidNcName(prefix: string): boolean {
+	if (prefix === "xml" || prefix === "xmlns") {
+		return false;
+	}
+	return /^[A-Za-z_][A-Za-z0-9_\-.]*$/.test(prefix);
 }
 
 /**
@@ -54,6 +79,7 @@ export class SvgCanvas {
 	private readonly width: number | string;
 	private readonly height: number | string;
 	private readonly viewBox: string;
+	private readonly namespaces: Record<string, string>;
 	private readonly children: Shape[] = [];
 
 	/**
@@ -67,6 +93,7 @@ export class SvgCanvas {
 		const vbWidth = typeof this.width === "number" ? this.width : 300;
 		const vbHeight = typeof this.height === "number" ? this.height : 150;
 		this.viewBox = options.viewBox ?? `0 0 ${vbWidth} ${vbHeight}`;
+		this.namespaces = options.namespaces ?? {};
 		validateViewBox(this.viewBox);
 	}
 
@@ -90,6 +117,18 @@ export class SvgCanvas {
 		const content = this.children.map((child) => child.toString()).join("");
 		const w = typeof this.width === "string" ? escapeXml(this.width) : this.width;
 		const h = typeof this.height === "string" ? escapeXml(this.height) : this.height;
-		return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
+		const extraNs = Object.entries(this.namespaces)
+			.filter(([prefix]) => {
+				if (!isValidNcName(prefix)) {
+					console.warn(
+						`[vectis] Invalid namespace prefix: "${prefix}". Prefixes must be a valid XML NCName (non-empty, start with a letter or underscore, no colons) and must not be "xml" or "xmlns". The namespace declaration will be skipped.`,
+					);
+					return false;
+				}
+				return true;
+			})
+			.map(([prefix, uri]) => ` xmlns:${escapeXml(prefix)}="${escapeXml(uri)}"`)
+			.join("");
+		return `<svg xmlns="http://www.w3.org/2000/svg"${extraNs} viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
 	}
 }
