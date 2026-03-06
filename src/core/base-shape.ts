@@ -1,5 +1,6 @@
 import { renderSmilAnimation, type SmilAnimationOptions } from "../animation/smil.js";
 import type { OpacityValue, PresentationAttributes, Shape } from "../interfaces/shape.interface.js";
+import { escapeXml } from "../utils/escape.js";
 import { renderAttribute } from "../utils/render-attribute.js";
 
 /**
@@ -18,9 +19,11 @@ export abstract class BaseShape implements Shape {
 	protected readonly strokeLinejoin: "miter" | "round" | "bevel" | undefined;
 	protected readonly opacity: OpacityValue | undefined;
 	protected readonly transform: string | undefined;
+	protected readonly style: string | undefined;
 	protected readonly role: string | undefined;
 	protected readonly ariaLabel: string | undefined;
 	protected readonly ariaLabelledby: string | undefined;
+	protected readonly title: string | undefined;
 	private readonly animations: SmilAnimationOptions[] = [];
 
 	/**
@@ -38,9 +41,11 @@ export abstract class BaseShape implements Shape {
 		this.strokeLinejoin = options.strokeLinejoin;
 		this.opacity = options.opacity;
 		this.transform = options.transform;
+		this.style = options.style;
 		this.role = options.role;
 		this.ariaLabel = options.ariaLabel;
 		this.ariaLabelledby = options.ariaLabelledby;
+		this.title = options.title;
 	}
 
 	/**
@@ -85,6 +90,7 @@ export abstract class BaseShape implements Shape {
 			renderAttribute("stroke-linejoin", this.strokeLinejoin),
 			renderAttribute("opacity", this.opacity),
 			renderAttribute("transform", this.transform),
+			renderAttribute("style", this.style),
 			renderAttribute("role", this.role),
 			renderAttribute("aria-label", this.ariaLabel),
 			renderAttribute("aria-labelledby", this.ariaLabelledby),
@@ -96,6 +102,10 @@ export abstract class BaseShape implements Shape {
 	 * Builds the full SVG element string, combining geometric and presentation attributes
 	 * and embedding any attached SMIL animation children.
 	 *
+	 * When a `title` is provided it is rendered as a `<title>` child element (the first child,
+	 * per SVG 1.1 §5.4 / SVG 2 §3.7) so that screen readers and standards-compliant tools
+	 * can discover it.
+	 *
 	 * @param tag - The SVG element tag name (e.g. `"circle"`, `"rect"`).
 	 * @param geometricAttrs - Pre-built string of geometric attributes (e.g. `cx="0" cy="0" r="5"`).
 	 * @returns A self-closing element string when no animations are present, or an open/close
@@ -103,15 +113,13 @@ export abstract class BaseShape implements Shape {
 	 */
 	protected renderElement(tag: string, geometricAttrs: string): string {
 		const attrs = geometricAttrs + this.renderPresentationAttrs();
-		if (this.animations.length === 0) {
+		const titleText = this.title?.trim();
+		const titleChild = titleText ? `<title>${escapeXml(titleText)}</title>` : "";
+		const children = [titleChild, ...this.animations.map(renderSmilAnimation)].filter(Boolean);
+		if (children.length === 0) {
 			return `<${tag} ${attrs}/>`;
 		}
-		const parts: string[] = [
-			`<${tag} ${attrs}>`,
-			...this.animations.map(renderSmilAnimation),
-			`</${tag}>`,
-		];
-		return parts.join("");
+		return [`<${tag} ${attrs}>`, ...children, `</${tag}>`].join("");
 	}
 
 	/**

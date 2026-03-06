@@ -17,10 +17,16 @@ import { escapeXml } from "./escape.js";
  * @param value - The attribute value to validate and render.
  * @returns A string in the form ` key="value"` if valid, or an empty string if invalid.
  *
+ * Non-integer numeric values are rounded to at most 4 decimal places (trailing
+ * zeros are stripped), e.g. `Math.PI` is rendered as `"3.1416"` rather than
+ * `"3.141592653589793"`.
+ *
  * @example
  * renderAttribute('fill', 'red');           // ' fill="red"'
  * renderAttribute('stroke-width', 2);       // ' stroke-width="2"'
  * renderAttribute('opacity', 0);            // ' opacity="0"'
+ * renderAttribute('r', Math.PI);            // ' r="3.1416"'
+ * renderAttribute('opacity', 0.5);          // ' opacity="0.5"'
  * renderAttribute('fill', undefined);       // ''
  * renderAttribute('fill', null);            // ''
  * renderAttribute('fill', '');              // ''
@@ -41,7 +47,8 @@ export function renderAttribute(key: string, value: string | number | undefined 
 		if (!Number.isFinite(value)) {
 			return "";
 		}
-		return ` ${escapedKey}="${value}"`;
+		const rendered = Number.isInteger(value) ? value : parseFloat(value.toFixed(4));
+		return ` ${escapedKey}="${rendered}"`;
 	}
 
 	// For string values, check for empty strings and escape
