@@ -39,11 +39,13 @@ export function validatePathData(d: string): void {
 	// Additional validation: check for illegal characters anywhere in the path data
 	// Valid characters are: SVG command letters, digits, whitespace, numeric separators (.,+-),
 	// and exponent indicators (eE) for scientific notation (e.g. 1e-5)
-	const illegalCharPattern = /[^MmLlHhVvCcSsQqTtAaZzeE\d\s.,+-]/;
+	const illegalCharPattern = /[^MmLlHhVvCcSsQqTtAaZzeE\d\s.,+-]/u;
 
-	if (illegalCharPattern.test(d)) {
+	const illegalMatch = illegalCharPattern.exec(d);
+
+	if (illegalMatch) {
 		console.warn(
-			`[vectis] Invalid path data: "${d}". Path data contains illegal characters. Only SVG path commands and numeric values are allowed. The SVG may not render correctly.`,
+			`[vectis] Invalid path data: "${d}". Path data contains an illegal character: ${JSON.stringify(illegalMatch[0])}. Only SVG path commands and numeric values are allowed. The SVG may not render correctly.`,
 		);
 	}
 }
