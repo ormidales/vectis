@@ -41,9 +41,11 @@ export function validatePathData(d: string): void {
 	// and exponent indicators (eE) for scientific notation (e.g. 1e-5)
 	const illegalCharPattern = /[^MmLlHhVvCcSsQqTtAaZzeE\d\s.,+-]/;
 
-	if (illegalCharPattern.test(d)) {
+	const illegalMatch = illegalCharPattern.exec(d);
+
+	if (illegalMatch) {
 		console.warn(
-			`[vectis] Invalid path data: "${d}". Path data contains illegal characters. Only SVG path commands and numeric values are allowed. The SVG may not render correctly.`,
+			`[vectis] Invalid path data: "${d}". Path data contains an illegal character: "${illegalMatch[0]}". Only SVG path commands and numeric values are allowed. The SVG may not render correctly.`,
 		);
 	}
 }

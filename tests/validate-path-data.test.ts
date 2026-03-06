@@ -107,6 +107,17 @@ describe("validatePathData", () => {
 		consoleWarnSpy.mockRestore();
 	});
 
+	it("should include the illegal character in the warning message", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M 10 10 @ 20 20");
+
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining('"@"'),
+		);
+		consoleWarnSpy.mockRestore();
+	});
+
 	it("should not warn for valid path data with multiple commands", () => {
 		const consoleWarnSpy = vi.spyOn(console, "warn");
 
