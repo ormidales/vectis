@@ -20,6 +20,15 @@ export interface SvgCanvasOptions {
 	 * Inferred from `width`/`height` when both are numbers and omitted.
 	 */
 	viewBox?: string;
+	/**
+	 * Additional XML namespaces to declare on the root `<svg>` element.
+	 * Each key becomes the namespace prefix and each value the namespace URI.
+	 *
+	 * @example
+	 * // Adds xmlns:xlink="http://www.w3.org/1999/xlink"
+	 * { xlink: "http://www.w3.org/1999/xlink" }
+	 */
+	namespaces?: Record<string, string>;
 }
 
 /**
@@ -54,6 +63,7 @@ export class SvgCanvas {
 	private readonly width: number | string;
 	private readonly height: number | string;
 	private readonly viewBox: string;
+	private readonly namespaces: Record<string, string>;
 	private readonly children: Shape[] = [];
 
 	/**
@@ -67,6 +77,7 @@ export class SvgCanvas {
 		const vbWidth = typeof this.width === "number" ? this.width : 300;
 		const vbHeight = typeof this.height === "number" ? this.height : 150;
 		this.viewBox = options.viewBox ?? `0 0 ${vbWidth} ${vbHeight}`;
+		this.namespaces = options.namespaces ?? {};
 		validateViewBox(this.viewBox);
 	}
 
@@ -90,6 +101,9 @@ export class SvgCanvas {
 		const content = this.children.map((child) => child.toString()).join("");
 		const w = typeof this.width === "string" ? escapeXml(this.width) : this.width;
 		const h = typeof this.height === "string" ? escapeXml(this.height) : this.height;
-		return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
+		const extraNs = Object.entries(this.namespaces)
+			.map(([prefix, uri]) => ` xmlns:${escapeXml(prefix)}="${escapeXml(uri)}"`)
+			.join("");
+		return `<svg xmlns="http://www.w3.org/2000/svg"${extraNs} viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
 	}
 }
