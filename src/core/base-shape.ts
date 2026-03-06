@@ -22,6 +22,7 @@ export abstract class BaseShape implements Shape {
 	protected readonly role: string | undefined;
 	protected readonly ariaLabel: string | undefined;
 	protected readonly ariaLabelledby: string | undefined;
+	protected readonly title: string | undefined;
 	private readonly animations: SmilAnimationOptions[] = [];
 
 	/**
@@ -43,6 +44,7 @@ export abstract class BaseShape implements Shape {
 		this.role = options.role;
 		this.ariaLabel = options.ariaLabel;
 		this.ariaLabelledby = options.ariaLabelledby;
+		this.title = options.title;
 	}
 
 	/**
@@ -91,6 +93,7 @@ export abstract class BaseShape implements Shape {
 			renderAttribute("role", this.role),
 			renderAttribute("aria-label", this.ariaLabel),
 			renderAttribute("aria-labelledby", this.ariaLabelledby),
+			renderAttribute("title", this.title),
 		];
 		return parts.join("");
 	}

@@ -250,6 +250,35 @@ describe("BaseShape", () => {
 			expect(output).toContain('aria-label="Description"');
 			expect(output).toContain('aria-labelledby="title-id"');
 		});
+
+		it("should include title attribute when specified", () => {
+			const shape = new MockShape({ title: "Tooltip text" });
+			const output = shape.toString();
+
+			expect(output).toContain('title="Tooltip text"');
+		});
+
+		it("should not include title attribute when not specified", () => {
+			const shape = new MockShape();
+			const output = shape.toString();
+
+			expect(output).not.toContain("title=");
+		});
+
+		it("should not include title attribute when whitespace-only", () => {
+			const shape = new MockShape({ title: "   " });
+			const output = shape.toString();
+
+			expect(output).not.toContain("title=");
+		});
+
+		it("should escape special characters in title to prevent XSS", () => {
+			const shape = new MockShape({ title: '<script>alert(1)</script>' });
+			const output = shape.toString();
+
+			expect(output).not.toContain("<script>");
+			expect(output).toContain("&lt;script&gt;");
+		});
 	});
 
 	describe("Animation methods", () => {
