@@ -98,6 +98,35 @@ describe("BaseShape", () => {
 			expect(output).toContain('transform="rotate(45)"');
 		});
 
+		it("should include style attribute when specified", () => {
+			const shape = new MockShape({ style: "mix-blend-mode: multiply;" });
+			const output = shape.toString();
+
+			expect(output).toContain('style="mix-blend-mode: multiply;"');
+		});
+
+		it("should not include style attribute when not specified", () => {
+			const shape = new MockShape();
+			const output = shape.toString();
+
+			expect(output).not.toContain("style=");
+		});
+
+		it("should not include style attribute when whitespace-only", () => {
+			const shape = new MockShape({ style: "   " });
+			const output = shape.toString();
+
+			expect(output).not.toContain("style=");
+		});
+
+		it("should escape special characters in style to prevent XSS", () => {
+			const shape = new MockShape({ style: '"onload="alert(1)' });
+			const output = shape.toString();
+
+			expect(output).not.toContain('"onload="alert(1)"');
+			expect(output).toContain("&quot;");
+		});
+
 		it("should include role attribute when specified", () => {
 			const shape = new MockShape({ role: "button" });
 			const output = shape.toString();
