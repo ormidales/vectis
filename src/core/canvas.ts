@@ -79,7 +79,7 @@ export class SvgCanvas {
 	private readonly width: number | string;
 	private readonly height: number | string;
 	private readonly viewBox: string;
-	private readonly namespaces: Record<string, string>;
+	private readonly extraNs: string;
 	private readonly children: Shape[] = [];
 
 	/**
@@ -93,7 +93,18 @@ export class SvgCanvas {
 		const vbWidth = typeof this.width === "number" ? this.width : 300;
 		const vbHeight = typeof this.height === "number" ? this.height : 150;
 		this.viewBox = options.viewBox ?? `0 0 ${vbWidth} ${vbHeight}`;
-		this.namespaces = options.namespaces ?? {};
+		this.extraNs = Object.entries(options.namespaces ?? {})
+			.filter(([prefix]) => {
+				if (!isValidNcName(prefix)) {
+					console.warn(
+						`[vectis] Invalid namespace prefix: "${prefix}". Prefixes must be a valid XML NCName (non-empty, start with a letter or underscore, no colons) and must not be "xml" or "xmlns". The namespace declaration will be skipped.`,
+					);
+					return false;
+				}
+				return true;
+			})
+			.map(([prefix, uri]) => ` xmlns:${prefix}="${escapeXml(uri)}"`)
+			.join("");
 		validateViewBox(this.viewBox);
 	}
 
@@ -117,18 +128,6 @@ export class SvgCanvas {
 		const content = this.children.map((child) => child.toString()).join("");
 		const w = typeof this.width === "string" ? escapeXml(this.width) : this.width;
 		const h = typeof this.height === "string" ? escapeXml(this.height) : this.height;
-		const extraNs = Object.entries(this.namespaces)
-			.filter(([prefix]) => {
-				if (!isValidNcName(prefix)) {
-					console.warn(
-						`[vectis] Invalid namespace prefix: "${prefix}". Prefixes must be a valid XML NCName (non-empty, start with a letter or underscore, no colons) and must not be "xml" or "xmlns". The namespace declaration will be skipped.`,
-					);
-					return false;
-				}
-				return true;
-			})
-			.map(([prefix, uri]) => ` xmlns:${escapeXml(prefix)}="${escapeXml(uri)}"`)
-			.join("");
-		return `<svg xmlns="http://www.w3.org/2000/svg"${extraNs} viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
+		return `<svg xmlns="http://www.w3.org/2000/svg"${this.extraNs} viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
 	}
 }
