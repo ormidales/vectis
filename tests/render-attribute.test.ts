@@ -120,8 +120,33 @@ describe("renderAttribute", () => {
 			expect(renderAttribute("opacity", 0.0001)).toBe(' opacity="0.0001"');
 		});
 
-		it("should handle scientific notation", () => {
-			expect(renderAttribute("value", 1e-10)).toBe(' value="1e-10"');
+		it("should round scientific notation values to 4 decimal places", () => {
+			expect(renderAttribute("value", 1e-10)).toBe(' value="0"');
+		});
+	});
+
+	describe("float precision rounding", () => {
+		it("should round Math.PI to 4 decimal places", () => {
+			expect(renderAttribute("r", Math.PI)).toBe(' r="3.1416"');
+		});
+
+		it("should round long decimal values to 4 decimal places", () => {
+			expect(renderAttribute("x", 1.2345678910111213)).toBe(' x="1.2346"');
+		});
+
+		it("should strip trailing zeros from rounded floats", () => {
+			expect(renderAttribute("opacity", 0.5)).toBe(' opacity="0.5"');
+			expect(renderAttribute("cx", 1.2500)).toBe(' cx="1.25"');
+		});
+
+		it("should not alter integer values", () => {
+			expect(renderAttribute("width", 100)).toBe(' width="100"');
+			expect(renderAttribute("x", -10)).toBe(' x="-10"');
+			expect(renderAttribute("opacity", 0)).toBe(' opacity="0"');
+		});
+
+		it("should handle floats that round to an integer", () => {
+			expect(renderAttribute("r", 1.00001)).toBe(' r="1"');
 		});
 	});
 
