@@ -1,7 +1,11 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { validatePathData } from "../src/index.js";
 
 describe("validatePathData", () => {
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
 	it("should be exported from the main entry point", () => {
 		expect(validatePathData).toBeDefined();
 		expect(typeof validatePathData).toBe("function");
@@ -13,7 +17,6 @@ describe("validatePathData", () => {
 		validatePathData("M 10 10 L 90 90");
 
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should not warn for valid path data starting with lowercase m", () => {
@@ -22,7 +25,6 @@ describe("validatePathData", () => {
 		validatePathData("m 10 10 l 90 90");
 
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should not warn for empty path data", () => {
@@ -31,7 +33,6 @@ describe("validatePathData", () => {
 		validatePathData("");
 
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should not warn for whitespace-only path data", () => {
@@ -41,7 +42,6 @@ describe("validatePathData", () => {
 		validatePathData("\t\n  ");
 
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should warn for invalid path data", () => {
@@ -55,7 +55,6 @@ describe("validatePathData", () => {
 		expect(consoleWarnSpy).toHaveBeenCalledWith(
 			expect.stringContaining("invalid path data"),
 		);
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should warn for path data starting with numbers", () => {
@@ -66,7 +65,6 @@ describe("validatePathData", () => {
 		expect(consoleWarnSpy).toHaveBeenCalledWith(
 			expect.stringContaining("[vectis] Invalid path data"),
 		);
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should allow client-side validation before Path instantiation", () => {
@@ -77,7 +75,6 @@ describe("validatePathData", () => {
 		validatePathData(userInput);
 
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should detect invalid data before Path instantiation", () => {
@@ -90,7 +87,6 @@ describe("validatePathData", () => {
 		expect(consoleWarnSpy).toHaveBeenCalledWith(
 			expect.stringContaining("[vectis] Invalid path data"),
 		);
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should warn for hybrid path data containing illegal alphabetic characters", () => {
@@ -104,7 +100,6 @@ describe("validatePathData", () => {
 		expect(consoleWarnSpy).toHaveBeenCalledWith(
 			expect.stringContaining("M 10 10 commande_invalide"),
 		);
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should include the illegal character in the warning message", () => {
@@ -115,7 +110,6 @@ describe("validatePathData", () => {
 		expect(consoleWarnSpy).toHaveBeenCalledWith(
 			expect.stringContaining('"@"'),
 		);
-		consoleWarnSpy.mockRestore();
 	});
 
 	it("should not warn for valid path data with multiple commands", () => {
@@ -124,6 +118,5 @@ describe("validatePathData", () => {
 		validatePathData("M 10 10 L 90 90 H 50 V 50 C 10 10 20 20 30 30 Z");
 
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
-		consoleWarnSpy.mockRestore();
 	});
 });
