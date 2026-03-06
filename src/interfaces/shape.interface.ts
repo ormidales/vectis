@@ -38,7 +38,7 @@ export interface PresentationAttributes {
 	ariaLabel?: string;
 	/** ID reference to another element that labels this element (`aria-labelledby` attribute). */
 	ariaLabelledby?: string;
-	/** Advisory information for the element, typically shown as a tooltip on hover (`title` attribute). */
+	/** Advisory information for the element, rendered as an SVG `<title>` child (often shown as a tooltip on hover). */
 	title?: string;
 }
 
