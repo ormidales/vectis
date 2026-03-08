@@ -119,4 +119,59 @@ describe("validatePathData", () => {
 
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
 	});
+
+	it("should warn for a lone M command with no parameters", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M");
+
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining("[vectis] Invalid path data"),
+		);
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining('Command "M" is missing required parameters'),
+		);
+	});
+
+	it("should warn when a command requiring parameters is immediately followed by another command", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M 10 10 L");
+
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining("[vectis] Invalid path data"),
+		);
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining('Command "L" is missing required parameters'),
+		);
+	});
+
+	it("should warn when a command requiring parameters is followed only by whitespace then another command", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M M 10 10");
+
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining("[vectis] Invalid path data"),
+		);
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining("is missing required parameters"),
+		);
+	});
+
+	it("should not warn for Z command which requires no parameters", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M 10 10 Z");
+
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+	});
+
+	it("should not warn for z command (lowercase) which requires no parameters", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("m 10 10 z");
+
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+	});
 });

@@ -162,6 +162,34 @@ describe("Path", () => {
 			);
 			consoleWarnSpy.mockRestore();
 		});
+
+		it("should warn for a command with no parameters (e.g. lone M)", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "M" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid path data"),
+			);
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("is missing required parameters"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn when a trailing command is missing parameters", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "M 10 10 L" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid path data"),
+			);
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("is missing required parameters"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
 	});
 
 	describe("getter methods", () => {
