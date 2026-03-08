@@ -17,9 +17,12 @@ import { escapeXml } from "./escape.js";
  * @param value - The attribute value to validate and render.
  * @returns A string in the form ` key="value"` if valid, or an empty string if invalid.
  *
- * Non-integer numeric values are rounded to at most 4 decimal places (trailing
- * zeros are stripped), e.g. `Math.PI` is rendered as `"3.1416"` rather than
- * `"3.141592653589793"`.
+ * Non-integer numeric values are rendered with dynamic precision: enough decimal
+ * places to preserve 4 significant digits, capped at 10. Trailing zeros are
+ * stripped. For large-magnitude values (≥ 1) this gives 4 decimal places, e.g.
+ * `Math.PI` is rendered as `"3.1416"`. For very small values the precision is
+ * increased automatically so that, for example, `0.00001` renders as
+ * `"0.00001"` rather than being truncated to `"0"`.
  *
  * @example
  * renderAttribute('fill', 'red');           // ' fill="red"'
@@ -27,6 +30,7 @@ import { escapeXml } from "./escape.js";
  * renderAttribute('opacity', 0);            // ' opacity="0"'
  * renderAttribute('r', Math.PI);            // ' r="3.1416"'
  * renderAttribute('opacity', 0.5);          // ' opacity="0.5"'
+ * renderAttribute('x', 0.00001);            // ' x="0.00001"'
  * renderAttribute('fill', undefined);       // ''
  * renderAttribute('fill', null);            // ''
  * renderAttribute('fill', '');              // ''
@@ -47,7 +51,19 @@ export function renderAttribute(key: string, value: string | number | undefined 
 		if (!Number.isFinite(value)) {
 			return "";
 		}
-		const rendered = Number.isInteger(value) ? value : parseFloat(value.toFixed(4));
+		let rendered: string;
+		if (Number.isInteger(value)) {
+			rendered = String(value);
+		} else {
+			// Compute decimal places needed to retain 4 significant digits:
+			// for a value of magnitude 10^order, using (4 - order) decimal places
+			// keeps 4 significant figures (e.g. order=-5 → 9 decimal places).
+			// absValue is always > 0 here because 0 is handled by isInteger above.
+			const absValue = Math.abs(value);
+			const order = Math.floor(Math.log10(absValue));
+			const precision = Math.max(4, Math.min(10, 4 - order));
+			rendered = value.toFixed(precision).replace(/\.?0+$/, "");
+		}
 		return ` ${escapedKey}="${rendered}"`;
 	}
 
