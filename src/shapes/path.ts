@@ -36,6 +36,19 @@ export function validatePathData(d: string): void {
 		return;
 	}
 
+	// Check for commands that require parameters but are immediately followed by another command
+	// or end of string (with only optional whitespace in between)
+	const incompleteCommandPattern = /([MmLlHhVvCcSsQqTtAa])\s*(?=[MmLlHhVvCcSsQqTtAaZz]|$)/;
+
+	const incompleteMatch = incompleteCommandPattern.exec(d);
+
+	if (incompleteMatch) {
+		console.warn(
+			`[vectis] Invalid path data: "${d}". Command "${incompleteMatch[1]}" is missing required parameters. The SVG may not render correctly.`,
+		);
+		return;
+	}
+
 	// Additional validation: check for illegal characters anywhere in the path data
 	// Valid characters are: SVG command letters, digits, whitespace, numeric separators (.,+-),
 	// and exponent indicators (eE) for scientific notation (e.g. 1e-5)
