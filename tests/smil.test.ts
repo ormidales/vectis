@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { Circle, Path, Polygon, Rect } from "../src/index.js";
-import { validateSmilTime } from "../src/animation/smil.js";
+import { validateSmilBegin, validateSmilTime } from "../src/animation/smil.js";
 
 describe("SMIL animate", () => {
 	it("should add an <animate> tag inside a circle", () => {
@@ -348,6 +348,14 @@ describe("validateSmilTime", () => {
 		warn.mockRestore();
 	});
 
+	it("should warn for out-of-range clock value like 99:99", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("99:99", "dur");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"99:99"');
+		warn.mockRestore();
+	});
+
 	it("should warn for a bare number without unit", () => {
 		const warn = vi.spyOn(console, "warn");
 		validateSmilTime("10", "dur");
@@ -395,7 +403,7 @@ describe("validateSmilTime", () => {
 		const circle = new Circle({ r: 10 });
 		circle.animate({ attributeName: "r", begin: "1second" }).toString();
 		expect(warn).toHaveBeenCalledOnce();
-		expect(warn.mock.calls[0][0]).toContain('"begin"');
+		expect(warn.mock.calls[0][0]).toContain('"1second"');
 		warn.mockRestore();
 	});
 
@@ -412,6 +420,74 @@ describe("validateSmilTime", () => {
 		const circle = new Circle({ r: 10 });
 		circle.animate({ attributeName: "r", begin: "0.5s" }).toString();
 		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn when animate() receives a valid event-based begin value", () => {
+		const warn = vi.spyOn(console, "warn");
+		const circle = new Circle({ r: 10 });
+		circle.animate({ attributeName: "r", begin: "click" }).toString();
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+});
+
+describe("validateSmilBegin", () => {
+	it("should not warn for a valid time value", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilBegin("1s");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for indefinite", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilBegin("indefinite");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for a bare event name like click", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilBegin("click");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for a syncbase reference like myId.begin", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilBegin("myId.begin");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for an event reference with time offset like myId.end+1s", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilBegin("myId.end+1s");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for a semicolon-separated list of valid begin values", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilBegin("0s; click; myId.begin+500ms");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should warn for an arbitrary invalid begin value", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilBegin("1second");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain("begin");
+		expect(warn.mock.calls[0][0]).toContain('"1second"');
+		warn.mockRestore();
+	});
+
+	it("should warn when at least one entry in a list is invalid", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilBegin("0s; badvalue!!; click");
+		expect(warn).toHaveBeenCalledOnce();
 		warn.mockRestore();
 	});
 });
