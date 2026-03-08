@@ -120,8 +120,13 @@ describe("renderAttribute", () => {
 			expect(renderAttribute("opacity", 0.0001)).toBe(' opacity="0.0001"');
 		});
 
-		it("should round scientific notation values to 4 decimal places", () => {
-			expect(renderAttribute("value", 1e-10)).toBe(' value="0"');
+		it("should preserve very small numbers with dynamic precision", () => {
+			expect(renderAttribute("value", 1e-10)).toBe(' value="0.0000000001"');
+		});
+
+		it("should preserve sub-0.0001 values without truncating to zero", () => {
+			expect(renderAttribute("x", 0.00001)).toBe(' x="0.00001"');
+			expect(renderAttribute("opacity", 0.000001)).toBe(' opacity="0.000001"');
 		});
 	});
 
