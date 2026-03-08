@@ -194,7 +194,82 @@ function isAnimateTransform(options: SmilAnimationOptions): options is AnimateTr
 	return "type" in options;
 }
 
+/**
+ * Regular expression for valid SMIL clock/time-count values.
+ * Accepts:
+ * - The keyword `indefinite`
+ * - Timecount values: a non-negative number followed by `h`, `min`, `s`, or `ms`
+ * - Full clock values: `hh:mm:ss[.fraction]` (minutes and seconds constrained to 00–59)
+ * - Partial clock values: `mm:ss[.fraction]` (minutes and seconds constrained to 00–59)
+ */
+const SMIL_TIME_PATTERN =
+	/^(?:indefinite|\d+(?:\.\d+)?(?:h|min|s|ms)|(?:\d+:)?[0-5]\d:[0-5]\d(?:\.\d+)?)$/;
+
+/**
+ * Regular expression for a single SMIL begin value.
+ * In addition to the time/clock formats accepted by {@link SMIL_TIME_PATTERN}, `begin`
+ * also accepts SMIL event-reference syntax:
+ * - Bare event names: `"click"`, `"mouseover"`
+ * - Syncbase references: `"myId.begin"`, `"myId.end"`
+ * - Event references with optional time offset: `"click+1s"`, `"myId.begin-500ms"`
+ */
+const SMIL_BEGIN_SINGLE_PATTERN =
+	/^(?:indefinite|\d+(?:\.\d+)?(?:h|min|s|ms)|(?:\d+:)?[0-5]\d:[0-5]\d(?:\.\d+)?|[A-Za-z_][\w\-.]*(?:[+-]\d+(?:\.\d+)?(?:h|min|s|ms))?)$/;
+
+/**
+ * Validates a SMIL time value and emits a warning when the format is not
+ * recognised as a valid SVG/SMIL timestamp.
+ *
+ * Valid formats include:
+ * - The `"indefinite"` keyword
+ * - Timecount values: `"1s"`, `"500ms"`, `"2h"`, `"30min"`
+ * - Clock values: `"01:30"` (mm:ss) or `"1:01:30"` (h:mm:ss)
+ *
+ * @param value - The time string to validate.
+ * @param attrName - The attribute name used in the warning message.
+ */
+export function validateSmilTime(value: string, attrName: string): void {
+	if (!SMIL_TIME_PATTERN.test(value)) {
+		console.warn(
+			`[vectis] Invalid SMIL time value for "${attrName}": "${value}". ` +
+				`Expected a value like "1s", "500ms", "2h", "30min", "01:30" or "indefinite". ` +
+				`The animation may not work correctly in browsers.`,
+		);
+	}
+}
+
+/**
+ * Validates a SMIL `begin` attribute value and emits a warning when no part of
+ * the semicolon-separated list is recognised.
+ *
+ * The `begin` attribute supports a superset of plain time values: each
+ * semicolon-separated entry may be a time/clock value, the `"indefinite"` keyword,
+ * or an event-reference (optionally with a `+`/`-` time offset), e.g.:
+ * - `"click"`, `"mouseover"`
+ * - `"myShape.begin"`, `"myShape.end+1s"`
+ * - `"0.5s"`, `"01:00"`, `"indefinite"`
+ *
+ * @param value - The begin attribute string to validate.
+ */
+export function validateSmilBegin(value: string): void {
+	const parts = value.split(";").map((s) => s.trim());
+	const hasInvalid = parts.some((part) => !SMIL_BEGIN_SINGLE_PATTERN.test(part));
+	if (hasInvalid) {
+		console.warn(
+			`[vectis] Invalid SMIL begin value: "${value}". ` +
+				`Expected a time value (e.g. "0.5s", "01:30"), an event reference (e.g. "click", "myId.begin+1s"), or "indefinite". ` +
+				`The animation may not work correctly in browsers.`,
+		);
+	}
+}
+
 function renderAttrs(options: BaseAnimationOptions): string {
+	if (options.dur !== undefined) {
+		validateSmilTime(options.dur, "dur");
+	}
+	if (options.begin !== undefined) {
+		validateSmilBegin(options.begin);
+	}
 	const parts: string[] = [
 		renderAttribute("from", options.from),
 		renderAttribute("to", options.to),
