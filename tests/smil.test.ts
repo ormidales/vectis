@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Circle, Path, Polygon, Rect } from "../src/index.js";
+import { validateSmilTime } from "../src/animation/smil.js";
 
 describe("SMIL animate", () => {
 	it("should add an <animate> tag inside a circle", () => {
@@ -287,5 +288,130 @@ describe("clearAnimations", () => {
 		const output = circle.toString();
 		expect(output).toContain('to="30"');
 		expect(output).not.toContain('to="20"');
+	});
+});
+
+describe("validateSmilTime", () => {
+	it("should not warn for valid seconds value", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("1s", "dur");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for valid milliseconds value", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("500ms", "dur");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for valid hours value", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("2h", "dur");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for valid minutes value", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("30min", "dur");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for decimal seconds value", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("0.5s", "dur");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for indefinite", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("indefinite", "dur");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for partial clock value mm:ss", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("01:30", "dur");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for full clock value h:mm:ss", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("1:01:30", "dur");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should warn for a bare number without unit", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("10", "dur");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"dur"');
+		expect(warn.mock.calls[0][0]).toContain('"10"');
+		warn.mockRestore();
+	});
+
+	it("should warn for a wrong unit like 1sec", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("1sec", "dur");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"1sec"');
+		warn.mockRestore();
+	});
+
+	it("should warn for an arbitrary invalid string", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("invalide", "dur");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"invalide"');
+		warn.mockRestore();
+	});
+
+	it("should include the attribute name in the warning message", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateSmilTime("bad", "begin");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"begin"');
+		warn.mockRestore();
+	});
+
+	it("should warn when animate() receives an invalid dur value", () => {
+		const warn = vi.spyOn(console, "warn");
+		const circle = new Circle({ r: 10 });
+		circle.animate({ attributeName: "r", dur: "invalide" }).toString();
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"dur"');
+		warn.mockRestore();
+	});
+
+	it("should warn when animate() receives an invalid begin value", () => {
+		const warn = vi.spyOn(console, "warn");
+		const circle = new Circle({ r: 10 });
+		circle.animate({ attributeName: "r", begin: "1second" }).toString();
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"begin"');
+		warn.mockRestore();
+	});
+
+	it("should not warn when animate() receives a valid dur value", () => {
+		const warn = vi.spyOn(console, "warn");
+		const circle = new Circle({ r: 10 });
+		circle.animate({ attributeName: "r", dur: "2s" }).toString();
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn when animate() receives a valid begin value", () => {
+		const warn = vi.spyOn(console, "warn");
+		const circle = new Circle({ r: 10 });
+		circle.animate({ attributeName: "r", begin: "0.5s" }).toString();
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
 	});
 });

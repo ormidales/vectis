@@ -194,7 +194,46 @@ function isAnimateTransform(options: SmilAnimationOptions): options is AnimateTr
 	return "type" in options;
 }
 
+/**
+ * Regular expression for valid SMIL clock/time-count values.
+ * Accepts:
+ * - The keyword `indefinite`
+ * - Timecount values: a non-negative number followed by `h`, `min`, `s`, or `ms`
+ * - Full clock values: `hh:mm:ss[.fraction]`
+ * - Partial clock values: `mm:ss[.fraction]` (minutes must be two digits)
+ */
+const SMIL_TIME_PATTERN =
+	/^(?:indefinite|\d+(?:\.\d+)?(?:h|min|s|ms)|(?:\d+:)?\d{2}:\d{2}(?:\.\d+)?)$/;
+
+/**
+ * Validates a SMIL time value and emits a warning when the format is not
+ * recognised as a valid SVG/SMIL timestamp.
+ *
+ * Valid formats include:
+ * - The `"indefinite"` keyword
+ * - Timecount values: `"1s"`, `"500ms"`, `"2h"`, `"30min"`
+ * - Clock values: `"01:30"` (mm:ss) or `"1:01:30"` (h:mm:ss)
+ *
+ * @param value - The time string to validate.
+ * @param attrName - The attribute name (`"dur"` or `"begin"`) used in the warning message.
+ */
+export function validateSmilTime(value: string, attrName: string): void {
+	if (!SMIL_TIME_PATTERN.test(value)) {
+		console.warn(
+			`[vectis] Invalid SMIL time value for "${attrName}": "${value}". ` +
+				`Expected a value like "1s", "500ms", "01:30" or "indefinite". ` +
+				`The animation may not work correctly in browsers.`,
+		);
+	}
+}
+
 function renderAttrs(options: BaseAnimationOptions): string {
+	if (options.dur !== undefined) {
+		validateSmilTime(options.dur, "dur");
+	}
+	if (options.begin !== undefined) {
+		validateSmilTime(options.begin, "begin");
+	}
 	const parts: string[] = [
 		renderAttribute("from", options.from),
 		renderAttribute("to", options.to),
