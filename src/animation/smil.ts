@@ -239,8 +239,8 @@ export function validateSmilTime(value: string, attrName: string): void {
 }
 
 /**
- * Validates a SMIL `begin` attribute value and emits a warning when no part of
- * the semicolon-separated list is recognised.
+ * Validates a SMIL `begin` attribute value and emits a warning when any part of
+ * the semicolon-separated list is not recognised as a valid entry.
  *
  * The `begin` attribute supports a superset of plain time values: each
  * semicolon-separated entry may be a time/clock value, the `"indefinite"` keyword,
