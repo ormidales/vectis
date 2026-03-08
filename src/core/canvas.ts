@@ -64,6 +64,22 @@ function validateViewBox(viewBox: string): void {
 		console.warn(
 			`[vectis] Invalid viewBox format: "${viewBox}". ViewBox should contain 4 numeric values (min-x min-y width height), e.g., "0 0 300 150". The SVG may not render correctly.`,
 		);
+		return;
+	}
+
+	const values = [...viewBox.matchAll(new RegExp(num, "g"))].map((m) => Number(m[0]));
+	const width = values[2];
+	const height = values[3];
+
+	if (width <= 0) {
+		console.warn(
+			`[vectis] Invalid viewBox: width must be strictly positive, got ${width}. The SVG may not render correctly.`,
+		);
+	}
+	if (height <= 0) {
+		console.warn(
+			`[vectis] Invalid viewBox: height must be strictly positive, got ${height}. The SVG may not render correctly.`,
+		);
 	}
 }
 
