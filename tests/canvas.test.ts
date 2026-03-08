@@ -488,6 +488,73 @@ describe("SvgCanvas", () => {
 			expect(consoleWarnSpy).not.toHaveBeenCalled();
 			consoleWarnSpy.mockRestore();
 		});
+
+		it("should warn for viewBox with negative width", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 -100 100" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox: width must be strictly positive"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for viewBox with negative height", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 100 -100" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox: height must be strictly positive"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for viewBox with zero width", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 0 100" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox: width must be strictly positive"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for viewBox with zero height", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 100 0" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox: height must be strictly positive"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for both width and height when both are negative", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "0 0 -100 -100" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox: width must be strictly positive"),
+			);
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid viewBox: height must be strictly positive"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for viewBox with negative min-x and min-y but positive dimensions", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ viewBox: "-50 -50 100 100" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
 	});
 });
 
