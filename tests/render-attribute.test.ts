@@ -127,6 +127,7 @@ describe("renderAttribute", () => {
 		it("should preserve sub-0.0001 values without truncating to zero", () => {
 			expect(renderAttribute("x", 0.00001)).toBe(' x="0.00001"');
 			expect(renderAttribute("opacity", 0.000001)).toBe(' opacity="0.000001"');
+			expect(renderAttribute("x", -0.00001)).toBe(' x="-0.00001"');
 		});
 	});
 
