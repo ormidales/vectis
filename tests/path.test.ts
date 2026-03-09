@@ -6,7 +6,7 @@ describe("Path", () => {
 		const path = new Path();
 		const output = path.toString();
 
-		expect(output).toBe('<path />');
+		expect(output).toBe('<path/>');
 	});
 
 	it("should accept a custom d attribute", () => {
