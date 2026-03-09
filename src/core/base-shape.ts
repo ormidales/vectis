@@ -116,10 +116,11 @@ export abstract class BaseShape implements Shape {
 		const titleText = this.title?.trim();
 		const titleChild = titleText ? `<title>${escapeXml(titleText)}</title>` : "";
 		const children = [titleChild, ...this.animations.map(renderSmilAnimation)].filter(Boolean);
+		const attrsStr = attrs.trim();
 		if (children.length === 0) {
-			return `<${tag} ${attrs}/>`;
+			return attrsStr ? `<${tag} ${attrsStr}/>` : `<${tag}/>`;
 		}
-		return [`<${tag} ${attrs}>`, ...children, `</${tag}>`].join("");
+		return [`<${tag}${attrsStr ? ` ${attrsStr}` : ""}>`, ...children, `</${tag}>`].join("");
 	}
 
 	/**
