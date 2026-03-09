@@ -85,4 +85,27 @@ describe("Group", () => {
 			'<g transform="translate(50 50)"><g fill="blue"><circle cx="0" cy="0" r="10"/></g></g>',
 		);
 	});
+
+	it("should not self-close when a title is set but no children", () => {
+		const group = new Group({ title: "My Group" });
+		expect(group.toString()).toBe("<g><title>My Group</title></g>");
+	});
+
+	it("should not self-close when a SMIL animation is attached but no children", () => {
+		const group = new Group({ fill: "red" });
+		group.animate({ attributeName: "opacity", from: "1", to: "0", dur: "1s" });
+		const output = group.toString();
+		expect(output).toContain("<animate");
+		expect(output).toContain("</g>");
+		expect(output).not.toMatch(/<g[^>]*\/>/);
+	});
+
+	it("should include title and children together in the group", () => {
+		const group = new Group({ title: "Shapes" });
+		group.add(new Circle({ r: 5 }));
+		const output = group.toString();
+		expect(output).toContain("<title>Shapes</title>");
+		expect(output).toContain("<circle");
+		expect(output).toContain("</g>");
+	});
 });
