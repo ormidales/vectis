@@ -58,6 +58,7 @@ export class Group extends BaseShape {
 	toString(): string {
 		const attrs = this.renderPresentationAttrs();
 		const content = this.children.map((child) => child.toString()).join("");
+		if (!content) return `<g${attrs}/>`;
 		return `<g${attrs}>${content}</g>`;
 	}
 }

@@ -4,22 +4,22 @@ import { Circle, Group, Rect } from "../src/index.js";
 describe("Group", () => {
 	it("should generate an empty group element with no attributes", () => {
 		const group = new Group();
-		expect(group.toString()).toBe("<g></g>");
+		expect(group.toString()).toBe("<g/>");
 	});
 
 	it("should include fill attribute when specified", () => {
 		const group = new Group({ fill: "blue" });
-		expect(group.toString()).toBe('<g fill="blue"></g>');
+		expect(group.toString()).toBe('<g fill="blue"/>');
 	});
 
 	it("should include transform attribute when specified", () => {
 		const group = new Group({ transform: "translate(10 20)" });
-		expect(group.toString()).toBe('<g transform="translate(10 20)"></g>');
+		expect(group.toString()).toBe('<g transform="translate(10 20)"/>');
 	});
 
 	it("should include opacity attribute when specified", () => {
 		const group = new Group({ opacity: 0.5 });
-		expect(group.toString()).toBe('<g opacity="0.5"></g>');
+		expect(group.toString()).toBe('<g opacity="0.5"/>');
 	});
 
 	it("should include id attribute when specified", () => {
