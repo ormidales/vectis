@@ -13,8 +13,13 @@ describe("Ellipse edge cases for rx / ry clamping", () => {
 			expect(ellipse.getRx()).toBe(0);
 		});
 
-		it("should clamp Infinity rx to 0", () => {
+		it("should clamp +Infinity rx to 0", () => {
 			const ellipse = new Ellipse({ rx: Number.POSITIVE_INFINITY });
+			expect(ellipse.getRx()).toBe(0);
+		});
+
+		it("should clamp -Infinity rx to 0", () => {
+			const ellipse = new Ellipse({ rx: Number.NEGATIVE_INFINITY });
 			expect(ellipse.getRx()).toBe(0);
 		});
 
@@ -40,8 +45,13 @@ describe("Ellipse edge cases for rx / ry clamping", () => {
 			expect(ellipse.getRy()).toBe(0);
 		});
 
-		it("should clamp Infinity ry to 0", () => {
+		it("should clamp +Infinity ry to 0", () => {
 			const ellipse = new Ellipse({ ry: Number.POSITIVE_INFINITY });
+			expect(ellipse.getRy()).toBe(0);
+		});
+
+		it("should clamp -Infinity ry to 0", () => {
+			const ellipse = new Ellipse({ ry: Number.NEGATIVE_INFINITY });
 			expect(ellipse.getRy()).toBe(0);
 		});
 
@@ -68,8 +78,14 @@ describe("Ellipse edge cases for rx / ry clamping", () => {
 			expect(output).not.toContain("NaN");
 		});
 
-		it("should not emit Infinity rx in SVG output", () => {
+		it("should not emit +Infinity rx in SVG output", () => {
 			const output = new Ellipse({ rx: Number.POSITIVE_INFINITY, ry: 25 }).toString();
+			expect(output).toContain('rx="0"');
+			expect(output).not.toContain("Infinity");
+		});
+
+		it("should not emit -Infinity rx in SVG output", () => {
+			const output = new Ellipse({ rx: Number.NEGATIVE_INFINITY, ry: 25 }).toString();
 			expect(output).toContain('rx="0"');
 			expect(output).not.toContain("Infinity");
 		});
