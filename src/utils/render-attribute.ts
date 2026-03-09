@@ -17,12 +17,11 @@ import { escapeXml } from "./escape.js";
  * @param value - The attribute value to validate and render.
  * @returns A string in the form ` key="value"` if valid, or an empty string if invalid.
  *
- * Non-integer numeric values are rendered with dynamic precision. For values
- * with magnitude ≥ 1 this always gives 4 decimal places (e.g. `Math.PI` →
- * `"3.1416"`, `1234.5` → `"1234.5"`). For values with magnitude < 1 the
- * number of decimal places is increased so that 4 significant digits are
- * preserved (e.g. `0.00001` → `"0.00001"`). Precision is capped at 10
- * decimal places and trailing zeros are stripped.
+ * Non-integer numeric values are rounded using a computed number of decimal
+ * places (magnitude ≥ 1: 4 dp; magnitude < 1: more dp to keep ~4 sig figs
+ * where present), then trailing zeros are stripped. For example, `Math.PI`
+ * rounds to `"3.1416"`, `1234.5` rounds to `"1234.5"`, and `0.00001`
+ * rounds to `"0.00001"`. Precision is capped at 10 decimal places.
  *
  * @example
  * renderAttribute('fill', 'red');           // ' fill="red"'
@@ -57,9 +56,9 @@ export function renderAttribute(key: string, value: string | number | undefined 
 		} else {
 			// Compute decimal places for rendering:
 			// - Values with magnitude < 1 (negative order) get extra decimal places
-			//   so that 4 significant digits are preserved (e.g. order=-5 → 9 dp).
-			// - Values with magnitude ≥ 1 (order ≥ 0) are always rendered with
-			//   4 decimal places regardless of their order of magnitude.
+			//   so that ~4 significant digits are kept where present (e.g. order=-5 → 9 dp).
+			// - Values with magnitude ≥ 1 (order ≥ 0) are rounded at 4 decimal places.
+			// In both cases, trailing zeros (and the decimal point if unneeded) are stripped.
 			// absValue is always > 0 here because 0 is handled by isInteger above.
 			const absValue = Math.abs(value);
 			const order = Math.floor(Math.log10(absValue));

@@ -155,8 +155,8 @@ describe("renderAttribute", () => {
 			expect(renderAttribute("r", 1.00001)).toBe(' r="1"');
 		});
 
-		it("should render large-magnitude non-integers with 4 decimal places", () => {
-			// Values >= 1 always get 4 decimal places (not 4 significant figures).
+		it("should render large-magnitude non-integers rounded to 4 decimal places with trailing zeros stripped", () => {
+			// For |v| >= 1, values are rounded to 4 decimal places, then trailing zeros are stripped.
 			expect(renderAttribute("x", 1234.5678)).toBe(' x="1234.5678"');
 			expect(renderAttribute("x", 1000.5)).toBe(' x="1000.5"');
 		});
