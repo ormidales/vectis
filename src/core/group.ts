@@ -53,11 +53,17 @@ export class Group extends BaseShape {
 	/**
 	 * Serializes the group to a `<g>` SVG element string containing all children.
 	 *
+	 * Emits a self-closing `<g .../>` tag when the group has no children, no `title`,
+	 * and no attached SMIL animations; otherwise emits an open/close `<g ...>...</g>` pair.
+	 *
 	 * @returns SVG `<g>` element string.
 	 */
 	toString(): string {
 		const attrs = this.renderPresentationAttrs();
-		const content = this.children.map((child) => child.toString()).join("");
+		const baseContent = this.renderBaseChildren();
+		const shapeContent = this.children.map((child) => child.toString()).join("");
+		const content = baseContent + shapeContent;
+		if (!content) return `<g${attrs}/>`;
 		return `<g${attrs}>${content}</g>`;
 	}
 }

@@ -4,22 +4,22 @@ import { Circle, Group, Rect } from "../src/index.js";
 describe("Group", () => {
 	it("should generate an empty group element with no attributes", () => {
 		const group = new Group();
-		expect(group.toString()).toBe("<g></g>");
+		expect(group.toString()).toBe("<g/>");
 	});
 
 	it("should include fill attribute when specified", () => {
 		const group = new Group({ fill: "blue" });
-		expect(group.toString()).toBe('<g fill="blue"></g>');
+		expect(group.toString()).toBe('<g fill="blue"/>');
 	});
 
 	it("should include transform attribute when specified", () => {
 		const group = new Group({ transform: "translate(10 20)" });
-		expect(group.toString()).toBe('<g transform="translate(10 20)"></g>');
+		expect(group.toString()).toBe('<g transform="translate(10 20)"/>');
 	});
 
 	it("should include opacity attribute when specified", () => {
 		const group = new Group({ opacity: 0.5 });
-		expect(group.toString()).toBe('<g opacity="0.5"></g>');
+		expect(group.toString()).toBe('<g opacity="0.5"/>');
 	});
 
 	it("should include id attribute when specified", () => {
@@ -84,5 +84,28 @@ describe("Group", () => {
 		expect(outer.toString()).toBe(
 			'<g transform="translate(50 50)"><g fill="blue"><circle cx="0" cy="0" r="10"/></g></g>',
 		);
+	});
+
+	it("should not self-close when a title is set but no children", () => {
+		const group = new Group({ title: "My Group" });
+		expect(group.toString()).toBe("<g><title>My Group</title></g>");
+	});
+
+	it("should not self-close when a SMIL animation is attached but no children", () => {
+		const group = new Group({ fill: "red" });
+		group.animate({ attributeName: "opacity", from: "1", to: "0", dur: "1s" });
+		const output = group.toString();
+		expect(output).toContain("<animate");
+		expect(output).toContain("</g>");
+		expect(output).not.toMatch(/<g[^>]*\/>/);
+	});
+
+	it("should include title and children together in the group", () => {
+		const group = new Group({ title: "Shapes" });
+		group.add(new Circle({ r: 5 }));
+		const output = group.toString();
+		expect(output).toContain("<title>Shapes</title>");
+		expect(output).toContain("<circle");
+		expect(output).toContain("</g>");
 	});
 });
