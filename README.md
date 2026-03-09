@@ -16,10 +16,7 @@ const canvas = new SvgCanvas({ width: 200, height: 200 });
 canvas.add(new Circle({ cx: 100, cy: 100, r: 50, fill: "steelblue" }));
 canvas.add(new Rect({ x: 10, y: 10, width: 80, height: 60, fill: "orange" }));
 console.log(canvas.toString());
-// <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-//   <circle cx="100" cy="100" r="50" fill="steelblue"/>
-//   <rect x="10" y="10" width="80" height="60" fill="orange"/>
-// </svg>
+// '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200"><circle cx="100" cy="100" r="50" fill="steelblue"/><rect x="10" y="10" width="80" height="60" fill="orange"/></svg>'
 ```
 
 ## Shapes
@@ -32,7 +29,7 @@ console.log(canvas.toString());
 | `Line`    | `<line>`      | `x1`, `y1`, `x2`, `y2`                           |
 | `Path`    | `<path>`      | `d` (SVG path data string)                       |
 | `Polygon` | `<polygon>`   | `points` (space- or comma-separated coordinates) |
-| `Group`   | `<g>`         | `children` (nested shapes)                       |
+| `Group`   | `<g>`         | use `.add(shape)` for nested shapes              |
 
 All shapes accept common [presentation attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/Presentation) such as `fill`, `stroke`, `strokeWidth`, `opacity`, `transform`, `id`, `className`, and `style`.
 
