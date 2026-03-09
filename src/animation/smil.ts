@@ -263,6 +263,8 @@ export function validateSmilBegin(value: string): void {
 	}
 }
 
+// Renders common timing attributes (dur, begin, from/to, repeatCount, values, keyTimes, fill)
+// for SMIL elements.
 function renderAttrs(options: BaseAnimationOptions): string {
 	if (options.dur !== undefined) {
 		validateSmilTime(options.dur, "dur");

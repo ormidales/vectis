@@ -1,6 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
-import { Circle, Path, Polygon, Rect } from "../src/index.js";
-import { validateSmilBegin, validateSmilTime } from "../src/animation/smil.js";
+import { Circle, Path, Polygon, Rect, validateSmilBegin, validateSmilTime } from "../src/index.js";
+
+describe("validateSmilTime and validateSmilBegin public exports", () => {
+	it("should export validateSmilTime from the main entry point", () => {
+		expect(validateSmilTime).toBeDefined();
+		expect(typeof validateSmilTime).toBe("function");
+	});
+
+	it("should export validateSmilBegin from the main entry point", () => {
+		expect(validateSmilBegin).toBeDefined();
+		expect(typeof validateSmilBegin).toBe("function");
+	});
+});
 
 describe("SMIL animate", () => {
 	it("should add an <animate> tag inside a circle", () => {
