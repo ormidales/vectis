@@ -109,3 +109,72 @@ describe("Group", () => {
 		expect(output).toContain("</g>");
 	});
 });
+
+describe("Group.remove", () => {
+	it("should remove a shape that was previously added", () => {
+		const group = new Group();
+		const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+		group.add(circle);
+		group.remove(circle);
+		expect(group.toString()).toBe("<g/>");
+	});
+
+	it("should be a no-op when the shape is not in the group", () => {
+		const group = new Group();
+		const circle = new Circle({ cx: 50, cy: 50, r: 25 });
+		expect(() => group.remove(circle)).not.toThrow();
+		expect(group.toString()).toBe("<g/>");
+	});
+
+	it("should only remove the specified shape, leaving others intact", () => {
+		const group = new Group();
+		const circle = new Circle({ cx: 10, cy: 10, r: 5 });
+		const rect = new Rect({ x: 0, y: 0, width: 100, height: 50 });
+		group.add(circle);
+		group.add(rect);
+		group.remove(circle);
+		const output = group.toString();
+		expect(output).not.toContain("<circle");
+		expect(output).toContain("<rect");
+	});
+
+	it("should return this for chaining", () => {
+		const group = new Group();
+		const circle = new Circle();
+		group.add(circle);
+		const result = group.remove(circle);
+		expect(result).toBe(group);
+	});
+});
+
+describe("Group.clear", () => {
+	it("should remove all child shapes from the group", () => {
+		const group = new Group();
+		group.add(new Circle({ cx: 10, cy: 10, r: 5 }));
+		group.add(new Rect({ x: 0, y: 0, width: 100, height: 50 }));
+		group.clear();
+		expect(group.toString()).toBe("<g/>");
+	});
+
+	it("should be a no-op on a group with no children", () => {
+		const group = new Group();
+		expect(() => group.clear()).not.toThrow();
+		expect(group.toString()).toBe("<g/>");
+	});
+
+	it("should return this for chaining", () => {
+		const group = new Group();
+		const result = group.clear();
+		expect(result).toBe(group);
+	});
+
+	it("should allow adding shapes again after clear", () => {
+		const group = new Group();
+		group.add(new Circle({ r: 10 }));
+		group.clear();
+		group.add(new Rect({ x: 0, y: 0, width: 50, height: 50 }));
+		const output = group.toString();
+		expect(output).not.toContain("<circle");
+		expect(output).toContain("<rect");
+	});
+});
