@@ -51,6 +51,28 @@ export class Group extends BaseShape {
 	}
 
 	/**
+	 * Removes a specific child shape from the group. No-op if the shape is not found.
+	 *
+	 * @param shape - The shape to remove.
+	 * @returns The group instance, enabling method chaining.
+	 */
+	remove(shape: Shape): this {
+		const idx = this.children.indexOf(shape);
+		if (idx !== -1) this.children.splice(idx, 1);
+		return this;
+	}
+
+	/**
+	 * Removes all child shapes from the group.
+	 *
+	 * @returns The group instance, enabling method chaining.
+	 */
+	clear(): this {
+		this.children.length = 0;
+		return this;
+	}
+
+	/**
 	 * Serializes the group to a `<g>` SVG element string containing all children.
 	 *
 	 * Emits a self-closing `<g .../>` tag when the group has no children, no `title`,

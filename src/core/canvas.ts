@@ -136,6 +136,28 @@ export class SvgCanvas {
 	}
 
 	/**
+	 * Removes a specific shape from the canvas. No-op if the shape is not found.
+	 *
+	 * @param shape - The shape to remove.
+	 * @returns The canvas instance, enabling method chaining.
+	 */
+	remove(shape: Shape): this {
+		const idx = this.children.indexOf(shape);
+		if (idx !== -1) this.children.splice(idx, 1);
+		return this;
+	}
+
+	/**
+	 * Removes all shapes from the canvas.
+	 *
+	 * @returns The canvas instance, enabling method chaining.
+	 */
+	clear(): this {
+		this.children.length = 0;
+		return this;
+	}
+
+	/**
 	 * Serializes the canvas and all its children to a complete SVG string.
 	 *
 	 * @returns A full `<svg>` element string with all child shapes embedded.
