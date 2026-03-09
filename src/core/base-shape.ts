@@ -99,6 +99,23 @@ export abstract class BaseShape implements Shape {
 	}
 
 	/**
+	 * Renders the inner content shared by all shapes: the optional `<title>` child element
+	 * (per SVG 1.1 §5.4 / SVG 2 §3.7) followed by any attached SMIL animation elements.
+	 *
+	 * Subclasses that manage their own child nodes (e.g. `Group`) can call this method
+	 * to obtain the base inner content and combine it with their own children before
+	 * deciding whether to emit a self-closing or open/close tag.
+	 *
+	 * @returns The serialized title + animation children as a single string, or an empty
+	 *   string when neither is present.
+	 */
+	protected renderBaseChildren(): string {
+		const titleText = this.title?.trim();
+		const titleChild = titleText ? `<title>${escapeXml(titleText)}</title>` : "";
+		return [titleChild, ...this.animations.map(renderSmilAnimation)].filter(Boolean).join("");
+	}
+
+	/**
 	 * Builds the full SVG element string, combining geometric and presentation attributes
 	 * and embedding any attached SMIL animation children.
 	 *
@@ -113,13 +130,12 @@ export abstract class BaseShape implements Shape {
 	 */
 	protected renderElement(tag: string, geometricAttrs: string): string {
 		const attrs = geometricAttrs + this.renderPresentationAttrs();
-		const titleText = this.title?.trim();
-		const titleChild = titleText ? `<title>${escapeXml(titleText)}</title>` : "";
-		const children = [titleChild, ...this.animations.map(renderSmilAnimation)].filter(Boolean);
-		if (children.length === 0) {
-			return `<${tag} ${attrs}/>`;
+		const attrsStr = attrs.trim();
+		const innerContent = this.renderBaseChildren();
+		if (!innerContent) {
+			return attrsStr ? `<${tag} ${attrsStr}/>` : `<${tag}/>`;
 		}
-		return [`<${tag} ${attrs}>`, ...children, `</${tag}>`].join("");
+		return [`<${tag}${attrsStr ? ` ${attrsStr}` : ""}>`, innerContent, `</${tag}>`].join("");
 	}
 
 	/**

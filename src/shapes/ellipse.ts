@@ -9,9 +9,9 @@ export interface EllipseOptions extends PresentationAttributes {
 	cx?: number;
 	/** Y-coordinate of the ellipse centre. Defaults to `0`. */
 	cy?: number;
-	/** Horizontal radius of the ellipse. Defaults to `0`. */
+	/** Horizontal radius of the ellipse. Must be `>= 0`. Negative, `NaN`, and non-finite values are clamped to `0`. Defaults to `0`. */
 	rx?: number;
-	/** Vertical radius of the ellipse. Defaults to `0`. */
+	/** Vertical radius of the ellipse. Must be `>= 0`. Negative, `NaN`, and non-finite values are clamped to `0`. Defaults to `0`. */
 	ry?: number;
 }
 
@@ -37,8 +37,10 @@ export class Ellipse extends BaseShape {
 		super(options);
 		this.cx = options.cx ?? 0;
 		this.cy = options.cy ?? 0;
-		this.rx = options.rx ?? 0;
-		this.ry = options.ry ?? 0;
+		const rx = options.rx ?? 0;
+		const ry = options.ry ?? 0;
+		this.rx = Number.isFinite(rx) ? Math.max(0, rx) : 0;
+		this.ry = Number.isFinite(ry) ? Math.max(0, ry) : 0;
 	}
 
 	/**
