@@ -91,3 +91,98 @@ describe("Ellipse edge cases for rx / ry clamping", () => {
 		});
 	});
 });
+
+describe("Ellipse edge cases for attribute rendering", () => {
+	describe("strokeWidth attribute", () => {
+		it("should render strokeWidth: 0 correctly", () => {
+			const ellipse = new Ellipse({ rx: 10, ry: 5, strokeWidth: 0 });
+			const output = ellipse.toString();
+
+			expect(output).toContain('stroke-width="0"');
+		});
+
+		it("should not render strokeWidth when it is NaN", () => {
+			const invalidCalc = 0 / 0; // NaN
+			const ellipse = new Ellipse({ rx: 10, ry: 5, strokeWidth: invalidCalc });
+			const output = ellipse.toString();
+
+			expect(output).not.toContain("stroke-width");
+		});
+
+		it("should not render strokeWidth when it is undefined", () => {
+			const ellipse = new Ellipse({ rx: 10, ry: 5, strokeWidth: undefined });
+			const output = ellipse.toString();
+
+			expect(output).not.toContain("stroke-width");
+		});
+	});
+
+	describe("opacity attribute", () => {
+		it("should render opacity: 0 correctly", () => {
+			const ellipse = new Ellipse({ rx: 10, ry: 5, opacity: 0 });
+			const output = ellipse.toString();
+
+			expect(output).toContain('opacity="0"');
+		});
+
+		it("should not render opacity when it is NaN", () => {
+			const invalidCalc = 0 / 0; // NaN
+			const ellipse = new Ellipse({ rx: 10, ry: 5, opacity: invalidCalc });
+			const output = ellipse.toString();
+
+			expect(output).not.toContain("opacity");
+		});
+
+		it("should render opacity with decimal values", () => {
+			const ellipse = new Ellipse({ rx: 10, ry: 5, opacity: 0.5 });
+			const output = ellipse.toString();
+
+			expect(output).toContain('opacity="0.5"');
+		});
+	});
+
+	describe("string attributes", () => {
+		it("should not render fill when it is an empty string", () => {
+			const ellipse = new Ellipse({ rx: 10, ry: 5, fill: "" });
+			const output = ellipse.toString();
+
+			expect(output).not.toContain('fill=""');
+			expect(output).not.toContain("fill");
+		});
+
+		it("should not render stroke when it is an empty string", () => {
+			const ellipse = new Ellipse({ rx: 10, ry: 5, stroke: "" });
+			const output = ellipse.toString();
+
+			expect(output).not.toContain('stroke=""');
+			expect(output).not.toContain("stroke");
+		});
+
+		it("should render fill with valid string value", () => {
+			const ellipse = new Ellipse({ rx: 10, ry: 5, fill: "blue" });
+			const output = ellipse.toString();
+
+			expect(output).toContain('fill="blue"');
+		});
+	});
+
+	describe("null values", () => {
+		it("should not render attributes when they are explicitly null", () => {
+			const ellipse = new Ellipse({
+				rx: 10,
+				ry: 5,
+				fill: null as unknown as string,
+				stroke: null as unknown as string,
+				strokeWidth: null as unknown as number,
+				opacity: null as unknown as number,
+			});
+			const output = ellipse.toString();
+
+			expect(output).not.toContain("fill");
+			expect(output).not.toContain("stroke");
+			expect(output).not.toContain("stroke-width");
+			expect(output).not.toContain("opacity");
+			expect(output).toBe('<ellipse cx="0" cy="0" rx="10" ry="5"/>');
+		});
+	});
+});
