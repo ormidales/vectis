@@ -11,6 +11,15 @@ export interface PathOptions extends PresentationAttributes {
 	 * Defaults to an empty string.
 	 */
 	d?: string;
+	/**
+	 * When `true`, skips the automatic call to {@link validatePathData} in the
+	 * constructor.  Use this when you manage path-data validity yourself or
+	 * when you want to suppress validation warnings (e.g. in unit tests or
+	 * during incremental programmatic path construction).
+	 *
+	 * @default false
+	 */
+	skipValidation?: boolean;
 }
 
 /**
@@ -81,7 +90,9 @@ export class Path extends BaseShape {
 	constructor(options: PathOptions = {}) {
 		super(options);
 		this.d = options.d ?? "";
-		validatePathData(this.d);
+		if (!options.skipValidation) {
+			validatePathData(this.d);
+		}
 	}
 
 	/**
