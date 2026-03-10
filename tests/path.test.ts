@@ -192,6 +192,46 @@ describe("Path", () => {
 		});
 	});
 
+	describe("skipValidation option", () => {
+		it("should not warn for invalid path data when skipValidation is true", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "invalid path data", skipValidation: true });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should still warn for invalid path data when skipValidation is false", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "invalid path data", skipValidation: false });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid path data"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should still warn for invalid path data when skipValidation is omitted", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new Path({ d: "invalid path data" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Invalid path data"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should still render correctly when skipValidation is true", () => {
+			const path = new Path({ d: "M 10 10 L 90 90", skipValidation: true });
+
+			expect(path.toString()).toBe('<path d="M 10 10 L 90 90"/>');
+			expect(path.getD()).toBe("M 10 10 L 90 90");
+		});
+	});
+
 	describe("getter methods", () => {
 		it("should return d value via getD()", () => {
 			const path = new Path({ d: "M 10 10 L 90 90" });
