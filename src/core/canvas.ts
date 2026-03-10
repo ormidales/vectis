@@ -109,6 +109,11 @@ export class SvgCanvas {
 		const vbWidth = typeof this.width === "number" ? this.width : 300;
 		const vbHeight = typeof this.height === "number" ? this.height : 150;
 		this.viewBox = options.viewBox ?? `0 0 ${vbWidth} ${vbHeight}`;
+		if (!options.viewBox && (typeof this.width !== "number" || typeof this.height !== "number")) {
+			console.warn(
+				`[vectis] width/height are strings but no viewBox was provided. Defaulting to "${this.viewBox}". Pass a viewBox explicitly.`,
+			);
+		}
 		this.extraNs = Object.entries(options.namespaces ?? {})
 			.filter(([prefix]) => {
 				if (!isValidNcName(prefix)) {
