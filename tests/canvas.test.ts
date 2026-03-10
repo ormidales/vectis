@@ -246,6 +246,76 @@ describe("SvgCanvas", () => {
 		});
 	});
 
+	describe("string dimensions without explicit viewBox", () => {
+		it("should warn when width is a string and no viewBox is provided", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ width: "100%", height: 150 });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining(
+					"[vectis] width/height are strings but no viewBox was provided",
+				),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn when height is a string and no viewBox is provided", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ width: 300, height: "100%" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining(
+					"[vectis] width/height are strings but no viewBox was provided",
+				),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn when both width and height are strings and no viewBox is provided", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ width: "100%", height: "100%" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining(
+					"[vectis] width/height are strings but no viewBox was provided",
+				),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should include the defaulted viewBox value in the warning message", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ width: "100%", height: "100%" });
+
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"0 0 300 150"'),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn when string dimensions are used with an explicit viewBox", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ width: "100%", height: "100%", viewBox: "0 0 300 150" });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn when both width and height are numbers and no viewBox is provided", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+
+			new SvgCanvas({ width: 300, height: 150 });
+
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+	});
+
 	describe("ViewBox validation", () => {
 		it("should not warn for valid viewBox with 4 integers", () => {
 			const consoleWarnSpy = vi.spyOn(console, "warn");

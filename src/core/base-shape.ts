@@ -70,7 +70,7 @@ export abstract class BaseShape implements Shape {
 	 * @returns The shape instance for method chaining.
 	 */
 	clearAnimations(): this {
-		this.animations.length = 0;
+		this.animations.splice(0);
 		return this;
 	}
 

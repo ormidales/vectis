@@ -1,6 +1,6 @@
 {
   "name": "vectis",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "SVG manipulation library written in TypeScript",
   "type": "module",
   "main": "./dist/index.cjs",
