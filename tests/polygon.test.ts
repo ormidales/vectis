@@ -6,7 +6,14 @@ describe("Polygon", () => {
 		const polygon = new Polygon();
 		const output = polygon.toString();
 
-		expect(output).toBe('<polygon/>');
+		expect(output).toBe('<polygon points=""/>');
+	});
+
+	it("should emit points=\"\" when points is explicitly empty", () => {
+		const polygon = new Polygon({ points: "" });
+		const output = polygon.toString();
+
+		expect(output).toBe('<polygon points=""/>');
 	});
 
 	it("should accept custom points", () => {
