@@ -14,13 +14,13 @@ import type { PresentationAttributes } from "../interfaces/shape.interface.js";
  * to the specified end point.
  */
 export interface LineOptions extends PresentationAttributes {
-	/** X-coordinate of the line start point. Defaults to `0`. */
+	/** X-coordinate of the line start point. `NaN` and non-finite values are normalised to `0`. Defaults to `0`. */
 	x1?: number;
-	/** Y-coordinate of the line start point. Defaults to `0`. */
+	/** Y-coordinate of the line start point. `NaN` and non-finite values are normalised to `0`. Defaults to `0`. */
 	y1?: number;
-	/** X-coordinate of the line end point. Defaults to `0`. */
+	/** X-coordinate of the line end point. `NaN` and non-finite values are normalised to `0`. Defaults to `0`. */
 	x2?: number;
-	/** Y-coordinate of the line end point. Defaults to `0`. */
+	/** Y-coordinate of the line end point. `NaN` and non-finite values are normalised to `0`. Defaults to `0`. */
 	y2?: number;
 }
 
@@ -37,6 +37,11 @@ export class Line extends BaseShape {
 	private readonly x2: number;
 	private readonly y2: number;
 
+	private static sanitizeCoord(v: number | undefined): number {
+		const n = v ?? 0;
+		return Number.isFinite(n) ? n : 0;
+	}
+
 	/**
 	 * Creates a new line shape.
 	 *
@@ -44,10 +49,10 @@ export class Line extends BaseShape {
 	 */
 	constructor(options: LineOptions = {}) {
 		super(options);
-		this.x1 = options.x1 ?? 0;
-		this.y1 = options.y1 ?? 0;
-		this.x2 = options.x2 ?? 0;
-		this.y2 = options.y2 ?? 0;
+		this.x1 = Line.sanitizeCoord(options.x1);
+		this.y1 = Line.sanitizeCoord(options.y1);
+		this.x2 = Line.sanitizeCoord(options.x2);
+		this.y2 = Line.sanitizeCoord(options.y2);
 	}
 
 	/**
