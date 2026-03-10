@@ -10,6 +10,8 @@ import { escapeXml } from "./escape.js";
  * - Not `Infinity` or `-Infinity` (for numeric values)
  * - Not an empty string or whitespace-only string
  *
+ * Note: the numeric value `0` is considered valid and will be rendered.
+ *
  * String values are automatically escaped using `escapeXml` to prevent XSS.
  * Numeric values are rendered directly without escaping.
  *
