@@ -106,6 +106,30 @@ describe("Rect", () => {
 		expect(rect.toString()).toBe('<rect x="0" y="0" width="0" height="0"/>');
 	});
 
+	it("should normalize NaN x to 0", () => {
+		const rect = new Rect({ x: NaN });
+		expect(rect.getX()).toBe(0);
+		expect(rect.toString()).toContain('x="0"');
+	});
+
+	it("should normalize Infinity y to 0", () => {
+		const rect = new Rect({ y: Infinity });
+		expect(rect.getY()).toBe(0);
+		expect(rect.toString()).toContain('y="0"');
+	});
+
+	it("should normalize -Infinity x to 0", () => {
+		const rect = new Rect({ x: -Infinity });
+		expect(rect.getX()).toBe(0);
+		expect(rect.toString()).toContain('x="0"');
+	});
+
+	it("should normalize NaN y to 0", () => {
+		const rect = new Rect({ y: NaN });
+		expect(rect.getY()).toBe(0);
+		expect(rect.toString()).toContain('y="0"');
+	});
+
 	describe("getter methods", () => {
 		it("should return x value via getX()", () => {
 			const rect = new Rect({ x: 10, y: 20, width: 100, height: 50 });

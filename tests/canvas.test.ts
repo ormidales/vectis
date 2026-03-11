@@ -11,7 +11,7 @@ describe("SvgCanvas", () => {
 		expect(output).toContain('viewBox="0 0 300 150"');
 		expect(output).toContain('width="300"');
 		expect(output).toContain('height="150"');
-		expect(output).toContain("</svg>");
+		expect(output).toContain("/>");
 	});
 
 	it("should accept custom width and height", () => {
@@ -35,7 +35,7 @@ describe("SvgCanvas", () => {
 		const output = canvas.toString();
 
 		expect(output).toBe(
-			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="500" height="400"></svg>',
+			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="500" height="400"/>',
 		);
 	});
 
@@ -78,7 +78,7 @@ describe("SvgCanvas", () => {
 			const output = canvas.toString();
 
 			expect(output).toBe(
-				'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"></svg>',
+				'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"/>',
 			);
 		});
 
@@ -87,7 +87,7 @@ describe("SvgCanvas", () => {
 			const output = canvas.toString();
 
 			expect(output).toBe(
-				'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"></svg>',
+				'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"/>',
 			);
 		});
 
@@ -126,7 +126,7 @@ describe("SvgCanvas", () => {
 			const output = canvas.toString();
 
 			expect(output).toBe(
-				'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200" width="200" height="200"></svg>',
+				'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200" width="200" height="200"/>',
 			);
 		});
 

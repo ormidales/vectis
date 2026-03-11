@@ -5,9 +5,9 @@ import type { PresentationAttributes } from "../interfaces/shape.interface.js";
  * Options for constructing a {@link Rect} element.
  */
 export interface RectOptions extends PresentationAttributes {
-	/** X-coordinate of the rectangle's top-left corner. Defaults to `0`. */
+	/** X-coordinate of the rectangle's top-left corner. `NaN` and non-finite values are normalized to `0`. Defaults to `0`. */
 	x?: number;
-	/** Y-coordinate of the rectangle's top-left corner. Defaults to `0`. */
+	/** Y-coordinate of the rectangle's top-left corner. `NaN` and non-finite values are normalized to `0`. Defaults to `0`. */
 	y?: number;
 	/** Width of the rectangle. Must be `>= 0`. Negative, `NaN`, and non-finite values are clamped to `0`. Defaults to `0`. */
 	width?: number;
@@ -35,8 +35,10 @@ export class Rect extends BaseShape {
 	 */
 	constructor(options: RectOptions = {}) {
 		super(options);
-		this.x = options.x ?? 0;
-		this.y = options.y ?? 0;
+		const x = options.x ?? 0;
+		const y = options.y ?? 0;
+		this.x = Number.isFinite(x) ? x : 0;
+		this.y = Number.isFinite(y) ? y : 0;
 		const w = options.width ?? 0;
 		const h = options.height ?? 0;
 		this.width = Number.isFinite(w) ? Math.max(0, w) : 0;

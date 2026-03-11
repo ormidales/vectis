@@ -70,6 +70,16 @@ export function validatePathData(d: string): void {
 			`[vectis] Invalid path data: "${d}". Path data contains an illegal character: ${JSON.stringify(illegalMatch[0])}. Only SVG path commands and numeric values are allowed. The SVG may not render correctly.`,
 		);
 	}
+
+	// Warn when 'e'/'E' appears outside a valid scientific notation context
+	// (i.e. not immediately preceded by a digit)
+	const standaloneExponentPattern = /(?<!\d)[eE]/;
+
+	if (standaloneExponentPattern.test(d)) {
+		console.warn(
+			`[vectis] Suspicious path data: "${d}". "e"/"E" appears outside a numeric exponent context.`,
+		);
+	}
 }
 
 /**
