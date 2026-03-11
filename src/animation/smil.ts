@@ -250,6 +250,8 @@ export function validateSmilTime(value: string, attrName: string): void {
  * - `"0.5s"`, `"01:00"`, `"indefinite"`
  *
  * @param value - The begin attribute string to validate.
+ * @returns `void`. Emits a `console.warn` as a side-effect when any semicolon-separated
+ *   entry is not recognised as a valid SMIL begin value.
  */
 export function validateSmilBegin(value: string): void {
 	const parts = value.split(";").map((s) => s.trim());
@@ -288,14 +290,21 @@ function renderAttrs(options: BaseAnimationOptions): string {
 /**
  * Serializes a {@link SmilAnimationOptions} descriptor into a SMIL animation element string.
  *
- * Produces either an `<animate>` or `<animateTransform>` element depending on the options type.
+ * Produces an `<animate>` element when `options` contains `attributeName` without a `type`
+ * field (i.e. {@link AnimateOptions}), or an `<animateTransform>` element when a `type` field
+ * (e.g. `"rotate"`) is present (i.e. {@link AnimateTransformOptions}).
  *
- * @param options - The animation configuration to serialise.
- * @returns An SVG SMIL animation element string.
+ * @param options - Animation configuration. Use {@link AnimateOptions} for `<animate>`
+ *   or {@link AnimateTransformOptions} for `<animateTransform>`.
+ * @returns A self-closing SVG SMIL element string with normalized spacing.
  *
  * @example
  * renderSmilAnimation({ attributeName: 'cx', from: '0', to: '100', dur: '1s' });
  * // '<animate attributeName="cx" from="0" to="100" dur="1s" />'
+ *
+ * @example
+ * renderSmilAnimation({ type: 'rotate', from: '0', to: '360', dur: '2s' });
+ * // '<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2s" />'
  */
 export function renderSmilAnimation(options: SmilAnimationOptions): string {
 	let result: string;
