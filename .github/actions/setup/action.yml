@@ -1,0 +1,25 @@
+name: Setup Node.js and dependencies
+description: Checks out the code, sets up Node.js, and restores cached node_modules
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Restore node_modules
+      id: cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+    - name: Install dependencies (cache miss fallback)
+      if: steps.cache-restore.outputs.cache-hit != 'true'
+      run: npm ci
+      shell: bash
