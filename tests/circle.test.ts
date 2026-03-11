@@ -148,6 +148,58 @@ describe("Circle", () => {
 		expect(output).toContain("&lt;script&gt;");
 	});
 
+	describe("cx/cy normalisation", () => {
+		it("should normalise a NaN cx to 0 via getCx()", () => {
+			const circle = new Circle({ cx: NaN });
+			expect(circle.getCx()).toBe(0);
+		});
+
+		it("should normalise an infinite cx to 0 via getCx()", () => {
+			const circle = new Circle({ cx: Infinity });
+			expect(circle.getCx()).toBe(0);
+		});
+
+		it("should normalise a negative infinite cx to 0 via getCx()", () => {
+			const circle = new Circle({ cx: -Infinity });
+			expect(circle.getCx()).toBe(0);
+		});
+
+		it("should output cx=\"0\" in toString() when cx is NaN", () => {
+			const circle = new Circle({ cx: NaN });
+			expect(circle.toString()).toContain('cx="0"');
+		});
+
+		it("should output cy=\"0\" in toString() when cy is Infinity", () => {
+			const circle = new Circle({ cy: Infinity });
+			expect(circle.toString()).toContain('cy="0"');
+		});
+
+		it("should output cx=\"0\" in toString() when cx is -Infinity", () => {
+			const circle = new Circle({ cx: -Infinity });
+			expect(circle.toString()).toContain('cx="0"');
+		});
+
+		it("should normalise a NaN cy to 0 via getCy()", () => {
+			const circle = new Circle({ cy: NaN });
+			expect(circle.getCy()).toBe(0);
+		});
+
+		it("should normalise a negative infinite cy to 0 via getCy()", () => {
+			const circle = new Circle({ cy: -Infinity });
+			expect(circle.getCy()).toBe(0);
+		});
+
+		it("should preserve a valid negative cx unchanged", () => {
+			const circle = new Circle({ cx: -10 });
+			expect(circle.getCx()).toBe(-10);
+		});
+
+		it("should preserve a valid negative cy unchanged", () => {
+			const circle = new Circle({ cy: -20 });
+			expect(circle.getCy()).toBe(-20);
+		});
+	});
+
 	describe("radius normalisation", () => {
 		it("should clamp a negative radius to 0 in toString()", () => {
 			const circle = new Circle({ r: -15 });
