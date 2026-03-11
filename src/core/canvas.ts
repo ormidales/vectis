@@ -171,6 +171,8 @@ export class SvgCanvas {
 		const content = this.children.map((child) => child.toString()).join("");
 		const w = typeof this.width === "string" ? escapeXml(this.width) : this.width;
 		const h = typeof this.height === "string" ? escapeXml(this.height) : this.height;
-		return `<svg xmlns="http://www.w3.org/2000/svg"${this.extraNs} viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}">${content}</svg>`;
+		const open = `<svg xmlns="http://www.w3.org/2000/svg"${this.extraNs} viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}"`;
+		if (!content) return `${open}/>`;
+		return `${open}>${content}</svg>`;
 	}
 }
