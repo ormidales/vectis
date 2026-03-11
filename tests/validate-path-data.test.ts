@@ -174,4 +174,56 @@ describe("validatePathData", () => {
 
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
 	});
+
+	it("should warn when 'e' appears as a standalone token outside a numeric exponent", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M0 0 e L10 10");
+
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining("[vectis] Suspicious path data"),
+		);
+	});
+
+	it("should not warn for lowercase scientific notation (e.g. 1e-5)", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M0 0 L1e-5 10");
+
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+	});
+
+	it("should not warn for uppercase scientific notation (e.g. 1E3)", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M0 0 L1E3 10");
+
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+	});
+
+	it("should warn when 'E' (uppercase) appears as a standalone token outside a numeric exponent", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M0 0 E L10 10");
+
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			expect.stringContaining("[vectis] Suspicious path data"),
+		);
+	});
+
+	it("should not warn for decimal scientific notation (e.g. 1.5e-3)", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M0 0 L1.5e-3 10");
+
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+	});
+
+	it("should not warn for decimal uppercase scientific notation (e.g. 2.7E4)", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		validatePathData("M0 0 L2.7E4 10");
+
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+	});
 });
