@@ -34,7 +34,7 @@ describe("SvgCanvas.add", () => {
 		const output = canvas.toString();
 
 		expect(output).toBe(
-			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="500" height="400"></svg>',
+			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="500" height="400"/>',
 		);
 	});
 });
