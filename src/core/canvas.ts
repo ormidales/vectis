@@ -33,12 +33,16 @@ export interface SvgCanvasOptions {
 
 /**
  * Checks whether a string is a valid XML namespace prefix (NCName).
- * Prefixes must be non-empty, start with a letter or underscore, contain only
- * letters, digits, hyphens, underscores and dots, and must not be the reserved
- * tokens `xml` or `xmlns`.
  *
- * @param prefix - The candidate namespace prefix.
- * @returns `true` when the prefix is a valid NCName that may be used as a namespace prefix.
+ * Rejects the reserved tokens `xml` and `xmlns` to prevent namespace
+ * hijacking. Prefixes must start with a letter or underscore and contain
+ * only letters, digits, hyphens, underscores, and dots — per the XML
+ * Namespaces 1.0 spec (§3 "Declaring Namespaces").
+ *
+ * @param prefix - Candidate namespace prefix to validate.
+ * @returns `true` when the prefix is safe to use as an `xmlns:` attribute name.
+ *
+ * @see https://www.w3.org/TR/xml-names/#NT-NCName
  */
 function isValidNcName(prefix: string): boolean {
 	if (prefix === "xml" || prefix === "xmlns") {
@@ -71,10 +75,26 @@ function validateDimension(value: string, axis: "width" | "height"): void {
 }
 
 /**
- * Validates SVG viewBox string.
- * Logs a warning if the viewBox format appears invalid.
+ * Validates an SVG `viewBox` attribute string.
  *
- * @param viewBox - The viewBox string to validate.
+ * A valid viewBox contains exactly four whitespace- or comma-separated numeric
+ * values in the order `min-x min-y width height`. Numbers may be integers,
+ * decimals, or scientific notation. The `width` and `height` values (3rd and
+ * 4th) must be strictly positive; zero or negative values are invalid per the
+ * SVG specification.
+ *
+ * Valid examples:
+ * - `"0 0 300 150"` - integers
+ * - `"-10 -10 100 100"` - negative origin
+ * - `"0.5 0.5 99.5 99.5"` - decimals
+ * - `"0, 0, 300, 150"` - comma-separated
+ * - `"0 0 1e4 1e4"` - scientific notation
+ * - `".5 .5 100 100"` - leading-dot decimals
+ *
+ * Logs a `console.warn` if the format is invalid or if `width`/`height` are
+ * not strictly positive. Does not throw.
+ *
+ * @param viewBox - The `viewBox` attribute string to validate.
  */
 function validateViewBox(viewBox: string): void {
 	// The viewBox attribute should contain 4 numeric values: min-x min-y width height
