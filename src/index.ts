@@ -36,7 +36,7 @@ export { Line } from "./shapes/line.js";
 export type { PathOptions } from "./shapes/path.js";
 export { Path, validatePathData } from "./shapes/path.js";
 export type { PolygonOptions } from "./shapes/polygon.js";
-export { Polygon } from "./shapes/polygon.js";
+export { Polygon, validatePolygonPoints } from "./shapes/polygon.js";
 export type { RectOptions } from "./shapes/rect.js";
 export { Rect } from "./shapes/rect.js";
 
