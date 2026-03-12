@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { renderAttribute } from "../src/utils/render-attribute.js";
 
 describe("renderAttribute", () => {
@@ -169,6 +169,41 @@ describe("renderAttribute", () => {
 
 		it("should handle camelCase attribute names", () => {
 			expect(renderAttribute("strokeWidth", 2)).toBe(' strokeWidth="2"');
+		});
+	});
+
+	describe("event handler attribute blocking", () => {
+		it("should block onclick and return empty string", () => {
+			expect(renderAttribute("onclick", "doSomething()")).toBe("");
+		});
+
+		it("should block onload and return empty string", () => {
+			expect(renderAttribute("onload", "alert(1)")).toBe("");
+		});
+
+		it("should block onmouseover and return empty string", () => {
+			expect(renderAttribute("onmouseover", "evil()")).toBe("");
+		});
+
+		it("should block event handler keys case-insensitively", () => {
+			expect(renderAttribute("onClick", "doSomething()")).toBe("");
+			expect(renderAttribute("ONCLICK", "doSomething()")).toBe("");
+			expect(renderAttribute("OnLoad", "alert(1)")).toBe("");
+		});
+
+		it("should emit a console.warn when a forbidden key is blocked", () => {
+			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+			renderAttribute("onclick", "doSomething()");
+			expect(warnSpy).toHaveBeenCalledWith(
+				'[vectis] Blocked forbidden attribute key: "onclick". Event handler attributes are not allowed.',
+			);
+			warnSpy.mockRestore();
+		});
+
+		it("should not block attributes that contain 'on' as a substring but do not match the event handler pattern", () => {
+			expect(renderAttribute("font", "serif")).toBe(' font="serif"');
+			expect(renderAttribute("stroke-on-top", "red")).toBe(' stroke-on-top="red"');
+			expect(renderAttribute("on-click", "val")).toBe(' on-click="val"');
 		});
 	});
 });
