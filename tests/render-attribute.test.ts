@@ -92,12 +92,11 @@ describe("renderAttribute", () => {
 		});
 
 		it("should escape quotes in attribute keys", () => {
-			expect(renderAttribute('data-x" onload="alert(1)', "val")).not.toContain(
-				'" onload="alert(1)',
-			);
-			expect(renderAttribute('data-x" onload="alert(1)', "val")).toContain(
-				"&quot;",
-			);
+			// A key containing only a quote (no whitespace) is escaped normally
+			expect(renderAttribute('data-x"value', "val")).toContain("&quot;");
+			expect(renderAttribute('data-x"value', "val")).not.toContain('"value"');
+			// A key containing whitespace is blocked entirely (unsafe key chars guard)
+			expect(renderAttribute('data-x" onload="alert(1)', "val")).toBe("");
 		});
 
 		it("should escape ampersands in attribute keys", () => {
@@ -204,6 +203,11 @@ describe("renderAttribute", () => {
 			expect(renderAttribute("font", "serif")).toBe(' font="serif"');
 			expect(renderAttribute("stroke-on-top", "red")).toBe(' stroke-on-top="red"');
 			expect(renderAttribute("on-click", "val")).toBe(' on-click="val"');
+		});
+
+		it("should block keys that contain whitespace (key-splitting injection vectors)", () => {
+			expect(renderAttribute("x onclick", "doSomething()")).toBe("");
+			expect(renderAttribute("data-x onload", "alert(1)")).toBe("");
 		});
 	});
 });
