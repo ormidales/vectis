@@ -1,5 +1,5 @@
 name: Setup Node.js and dependencies
-description: Sets up Node.js and restores cached node_modules (caller must checkout first)
+description: Sets up Node.js and restores cached node_modules (caller must check out first)
 
 runs:
   using: composite
