@@ -35,14 +35,18 @@ export interface SvgCanvasOptions {
  * Checks whether a string is a valid XML namespace prefix (NCName).
  *
  * Rejects the reserved tokens `xml` and `xmlns` to prevent namespace
- * hijacking. Prefixes must start with a letter or underscore and contain
- * only letters, digits, hyphens, underscores, and dots — per the XML
- * Namespaces 1.0 spec (§3 "Declaring Namespaces").
+ * hijacking. Prefixes must start with an ASCII letter or underscore and
+ * contain only ASCII letters, digits, hyphens, underscores, and dots.
+ *
+ * This is an intentionally conservative, ASCII-only subset of the XML
+ * Namespaces 1.0 NCName production; many Unicode characters allowed by
+ * the specification are not accepted here.
  *
  * @param prefix - Candidate namespace prefix to validate.
  * @returns `true` when the prefix is safe to use as an `xmlns:` attribute name.
  *
- * @see https://www.w3.org/TR/xml-names/#NT-NCName
+ * @see https://www.w3.org/TR/xml-names/#NT-NCName (full NCName grammar;
+ * this helper validates only an ASCII subset)
  */
 function isValidNcName(prefix: string): boolean {
 	if (prefix === "xml" || prefix === "xmlns") {
