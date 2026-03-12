@@ -22,6 +22,13 @@ export interface PolygonOptions extends PresentationAttributes {
 	skipValidation?: boolean;
 }
 
+// Matches one or more coordinate pairs: each pair is two numbers
+// (optionally signed, integer or decimal) separated by whitespace or a comma.
+// Pairs are separated by whitespace, commas, or a combination.
+// Hoisted to module scope so the RegExp is compiled only once.
+const POLYGON_POINTS_PATTERN =
+	/^\s*[+-]?(?:\d+\.?\d*|\.\d+)[\s,]+[+-]?(?:\d+\.?\d*|\.\d+)(?:[\s,]+[+-]?(?:\d+\.?\d*|\.\d+)[\s,]+[+-]?(?:\d+\.?\d*|\.\d+))*\s*$/;
+
 /**
  * Validates a polygon `points` attribute string.
  * Logs a warning if the value does not consist of valid coordinate pairs.
@@ -33,16 +40,7 @@ export function validatePolygonPoints(points: string): void {
 		return;
 	}
 
-	// Matches one or more coordinate pairs: each pair is two numbers
-	// (optionally signed, integer or decimal) separated by whitespace or a comma.
-	// Pairs are separated by whitespace, commas, or a combination.
-	const num = String.raw`[+-]?(?:\d+\.?\d*|\.\d+)`;
-	const sep = String.raw`[\s,]+`;
-	const validPattern = new RegExp(
-		`^\\s*${num}${sep}${num}(?:${sep}${num}${sep}${num})*\\s*$`,
-	);
-
-	if (!validPattern.test(points)) {
+	if (!POLYGON_POINTS_PATTERN.test(points)) {
 		console.warn(
 			`[vectis] Invalid polygon points: "${points}". Expected space- or comma-separated coordinate pairs (e.g. "0,0 50,100 100,0"). The SVG may not render correctly.`,
 		);
