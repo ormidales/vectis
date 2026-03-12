@@ -75,4 +75,27 @@ describe("escapeXml", () => {
 			"Line 1\nLine 2\tTabbed\rReturn",
 		);
 	});
+
+	it("should remove lone high surrogates (\\uD800–\\uDBFF)", () => {
+		expect(escapeXml("hello\uD800world")).toBe("helloworld");
+		expect(escapeXml("hello\uDBFFworld")).toBe("helloworld");
+	});
+
+	it("should remove lone low surrogates (\\uDC00–\\uDFFF)", () => {
+		expect(escapeXml("hello\uDC00world")).toBe("helloworld");
+		expect(escapeXml("hello\uDFFFworld")).toBe("helloworld");
+	});
+
+	it("should preserve valid surrogate pairs (e.g. emoji)", () => {
+		// U+1F600 GRINNING FACE is encoded as surrogate pair \uD83D\uDE00
+		expect(escapeXml("hello\uD83D\uDE00world")).toBe("hello\uD83D\uDE00world");
+	});
+
+	it("should remove XML non-character \\uFFFE", () => {
+		expect(escapeXml("hello\uFFFEworld")).toBe("helloworld");
+	});
+
+	it("should remove XML non-character \\uFFFF", () => {
+		expect(escapeXml("hello\uFFFFworld")).toBe("helloworld");
+	});
 });
