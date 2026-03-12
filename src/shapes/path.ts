@@ -27,11 +27,12 @@ export interface PathOptions extends PresentationAttributes {
  * Logs a warning if the path data appears invalid.
  *
  * @param d - The path data string to validate.
+ * @returns `true` if the path data is valid (or empty), `false` if it is invalid.
  */
-export function validatePathData(d: string): void {
+export function validatePathData(d: string): boolean {
 	// Skip validation for empty strings or strings containing only whitespace
 	if (d.trim() === "") {
-		return;
+		return true;
 	}
 
 	// Basic validation: check if the path data starts with a valid SVG path command
@@ -42,7 +43,7 @@ export function validatePathData(d: string): void {
 		console.warn(
 			`[vectis] Invalid path data: "${d}". Path data should start with a valid SVG command (M, L, H, V, C, S, Q, T, A, or Z). The SVG may not render correctly.`,
 		);
-		return;
+		return false;
 	}
 
 	// Check for commands that require parameters but are immediately followed by another command
@@ -55,7 +56,7 @@ export function validatePathData(d: string): void {
 		console.warn(
 			`[vectis] Invalid path data: "${d}". Command "${incompleteMatch[1]}" is missing required parameters. The SVG may not render correctly.`,
 		);
-		return;
+		return false;
 	}
 
 	// Additional validation: check for illegal characters anywhere in the path data
@@ -69,6 +70,7 @@ export function validatePathData(d: string): void {
 		console.warn(
 			`[vectis] Invalid path data: "${d}". Path data contains an illegal character: ${JSON.stringify(illegalMatch[0])}. Only SVG path commands and numeric values are allowed. The SVG may not render correctly.`,
 		);
+		return false;
 	}
 
 	// Warn when 'e'/'E' appears outside a valid scientific notation context
@@ -79,7 +81,10 @@ export function validatePathData(d: string): void {
 		console.warn(
 			`[vectis] Suspicious path data: "${d}". "e"/"E" appears outside a numeric exponent context.`,
 		);
+		return false;
 	}
+
+	return true;
 }
 
 /**
