@@ -291,7 +291,7 @@ export function validateAnimationAttributeName(name: string): void {
 	if (FORBIDDEN_ATTR_PATTERN.test(name.trim())) {
 		console.warn(
 			`[vectis] Suspicious animation attributeName: "${name}". ` +
-				`Event handler names are not valid SVG animation targets and will be ignored.`,
+				`Event handler names are not valid SVG animation targets and may be ignored by some SVG renderers.`,
 		);
 	}
 }
