@@ -48,6 +48,29 @@ function isValidNcName(prefix: string): boolean {
 }
 
 /**
+ * Pattern covering CSS length values valid for SVG width/height attributes.
+ * Accepts digits/decimal followed by an optional CSS unit.
+ * Intentionally excludes negative values, which are invalid for SVG dimensions,
+ * and complex expressions like `calc()`.
+ */
+const VALID_SVG_DIMENSION = /^\s*\d*\.?\d+(%|px|em|rem|vw|vh|ex|ch|cm|mm|in|pt|pc)?\s*$/;
+
+/**
+ * Validates a string SVG dimension value (width or height).
+ * Logs a warning if the value does not match expected CSS length syntax.
+ *
+ * @param value - The dimension string to validate.
+ * @param axis - Either `"width"` or `"height"`, used in the warning message.
+ */
+function validateDimension(value: string, axis: "width" | "height"): void {
+	if (!VALID_SVG_DIMENSION.test(value)) {
+		console.warn(
+			`[vectis] Suspicious ${axis} value: "${value}". Expected a valid CSS length (e.g. "100%", "50em", "300"). The SVG may not render correctly.`,
+		);
+	}
+}
+
+/**
  * Validates SVG viewBox string.
  * Logs a warning if the viewBox format appears invalid.
  *
@@ -106,6 +129,8 @@ export class SvgCanvas {
 	constructor(options: SvgCanvasOptions = {}) {
 		this.width = options.width ?? 300;
 		this.height = options.height ?? 150;
+		if (typeof this.width === "string") validateDimension(this.width, "width");
+		if (typeof this.height === "string") validateDimension(this.height, "height");
 		const vbWidth = typeof this.width === "number" ? this.width : 300;
 		const vbHeight = typeof this.height === "number" ? this.height : 150;
 		this.viewBox = options.viewBox ?? `0 0 ${vbWidth} ${vbHeight}`;

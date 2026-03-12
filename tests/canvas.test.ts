@@ -246,6 +246,101 @@ describe("SvgCanvas", () => {
 		});
 	});
 
+	describe("string dimension validation", () => {
+		it("should not warn for valid percentage width", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: "100%", height: 150, viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid em-based width", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: "50em", height: 150, viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid px width", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: "300px", height: 150, viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid unitless numeric string width", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: "300", height: 150, viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid rem height", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: 300, height: "10rem", viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should not warn for valid vw/vh dimensions", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: "100vw", height: "100vh", viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).not.toHaveBeenCalled();
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for width with CSS injection attempt", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: "100%; background: red", height: 150, viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Suspicious width value"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for height with CSS injection attempt", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: 300, height: "100%; color: red", viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Suspicious height value"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn for calc() expression in width", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: "calc(100%)", height: 150, viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining("[vectis] Suspicious width value"),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should include the suspicious value in the warning message", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			new SvgCanvas({ width: "0 + calc(100%)", height: 150, viewBox: "0 0 300 150" });
+			expect(consoleWarnSpy).toHaveBeenCalledWith(
+				expect.stringContaining('"0 + calc(100%)"'),
+			);
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should warn only once per invalid dimension at construction", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn");
+			const canvas = new SvgCanvas({
+				width: "bad!value",
+				height: 150,
+				viewBox: "0 0 300 150",
+			});
+			canvas.toString();
+			canvas.toString();
+			expect(
+				consoleWarnSpy.mock.calls.filter((c) => String(c[0]).includes("Suspicious width")).length,
+			).toBe(1);
+			consoleWarnSpy.mockRestore();
+		});
+	});
+
 	describe("string dimensions without explicit viewBox", () => {
 		it("should warn when width is a string and no viewBox is provided", () => {
 			const consoleWarnSpy = vi.spyOn(console, "warn");
