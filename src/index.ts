@@ -13,7 +13,12 @@ export type {
 	TransformValue,
 	TranslateValue,
 } from "./animation/smil.js";
-export { renderSmilAnimation, validateSmilBegin, validateSmilTime } from "./animation/smil.js";
+export {
+	renderSmilAnimation,
+	validateAnimationAttributeName,
+	validateSmilBegin,
+	validateSmilTime,
+} from "./animation/smil.js";
 
 export { BaseShape } from "./core/base-shape.js";
 export type { SvgCanvasOptions } from "./core/canvas.js";
@@ -36,7 +41,7 @@ export { Line } from "./shapes/line.js";
 export type { PathOptions } from "./shapes/path.js";
 export { Path, validatePathData } from "./shapes/path.js";
 export type { PolygonOptions } from "./shapes/polygon.js";
-export { Polygon } from "./shapes/polygon.js";
+export { Polygon, validatePolygonPoints } from "./shapes/polygon.js";
 export type { RectOptions } from "./shapes/rect.js";
 export { Rect } from "./shapes/rect.js";
 

@@ -265,6 +265,37 @@ export function validateSmilBegin(value: string): void {
 	}
 }
 
+/**
+ * Pattern matching HTML/SVG event-handler attribute names (e.g. `onload`, `onclick`).
+ * These are not valid SVG animation targets and should never appear as `attributeName`
+ * values. Maintained here so future contributors can extend the check if needed.
+ */
+const FORBIDDEN_ATTR_PATTERN = /^on[a-z]+$/i;
+
+/**
+ * Validates a SMIL `attributeName` value and emits a warning when the name looks
+ * like an event-handler attribute (matches {@link FORBIDDEN_ATTR_PATTERN}).
+ *
+ * Event-handler names such as `"onload"` or `"onclick"` are not valid SVG animation
+ * targets. While `escapeXml` prevents raw script injection, passing such a name as
+ * `attributeName` can confuse certain SVG renderers or post-processors.
+ *
+ * The value is trimmed before matching so that incidental leading/trailing whitespace
+ * (e.g. `" onload "`) is also detected. Note that the rendered attribute still uses
+ * the original value via `renderAttribute`/`escapeXml`, so whitespace-padded names
+ * produce an invalid (but non-dangerous) SVG attribute.
+ *
+ * @param name - The `attributeName` string to validate.
+ */
+export function validateAnimationAttributeName(name: string): void {
+	if (FORBIDDEN_ATTR_PATTERN.test(name.trim())) {
+		console.warn(
+			`[vectis] Suspicious animation attributeName: "${name}". ` +
+				`Event handler names are not valid SVG animation targets and may be ignored by some SVG renderers.`,
+		);
+	}
+}
+
 // Renders common timing attributes (dur, begin, from/to, repeatCount, values, keyTimes, fill)
 // for SMIL elements.
 function renderAttrs(options: BaseAnimationOptions): string {
@@ -309,10 +340,13 @@ function renderAttrs(options: BaseAnimationOptions): string {
 export function renderSmilAnimation(options: SmilAnimationOptions): string {
 	let result: string;
 	if (isAnimateTransform(options)) {
-		const attrName = renderAttribute("attributeName", options.attributeName ?? "transform");
+		const resolvedAttrName = options.attributeName ?? "transform";
+		validateAnimationAttributeName(resolvedAttrName);
+		const attrName = renderAttribute("attributeName", resolvedAttrName);
 		const typeAttr = renderAttribute("type", options.type);
 		result = `<animateTransform${attrName}${typeAttr}${renderAttrs(options)} />`;
 	} else {
+		validateAnimationAttributeName(options.attributeName);
 		const attrName = renderAttribute("attributeName", options.attributeName);
 		result = `<animate${attrName}${renderAttrs(options)} />`;
 	}

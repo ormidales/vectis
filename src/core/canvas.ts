@@ -33,12 +33,20 @@ export interface SvgCanvasOptions {
 
 /**
  * Checks whether a string is a valid XML namespace prefix (NCName).
- * Prefixes must be non-empty, start with a letter or underscore, contain only
- * letters, digits, hyphens, underscores and dots, and must not be the reserved
- * tokens `xml` or `xmlns`.
  *
- * @param prefix - The candidate namespace prefix.
- * @returns `true` when the prefix is a valid NCName that may be used as a namespace prefix.
+ * Rejects the reserved tokens `xml` and `xmlns` to prevent namespace
+ * hijacking. Prefixes must start with an ASCII letter or underscore and
+ * contain only ASCII letters, digits, hyphens, underscores, and dots.
+ *
+ * This is an intentionally conservative, ASCII-only subset of the XML
+ * Namespaces 1.0 NCName production; many Unicode characters allowed by
+ * the specification are not accepted here.
+ *
+ * @param prefix - Candidate namespace prefix to validate.
+ * @returns `true` when the prefix is safe to use as an `xmlns:` attribute name.
+ *
+ * @see https://www.w3.org/TR/xml-names/#NT-NCName (full NCName grammar;
+ * this helper validates only an ASCII subset)
  */
 function isValidNcName(prefix: string): boolean {
 	if (prefix === "xml" || prefix === "xmlns") {
@@ -48,10 +56,49 @@ function isValidNcName(prefix: string): boolean {
 }
 
 /**
- * Validates SVG viewBox string.
- * Logs a warning if the viewBox format appears invalid.
+ * Pattern covering CSS length values valid for SVG width/height attributes.
+ * Accepts digits/decimal followed by an optional CSS unit.
+ * Intentionally excludes negative values, which are invalid for SVG dimensions,
+ * and complex expressions like `calc()`.
+ */
+const VALID_SVG_DIMENSION = /^\s*\d*\.?\d+(%|px|em|rem|vw|vh|ex|ch|cm|mm|in|pt|pc)?\s*$/;
+
+/**
+ * Validates a string SVG dimension value (width or height).
+ * Logs a warning if the value does not match expected CSS length syntax.
  *
- * @param viewBox - The viewBox string to validate.
+ * @param value - The dimension string to validate.
+ * @param axis - Either `"width"` or `"height"`, used in the warning message.
+ */
+function validateDimension(value: string, axis: "width" | "height"): void {
+	if (!VALID_SVG_DIMENSION.test(value)) {
+		console.warn(
+			`[vectis] Suspicious ${axis} value: "${value}". Expected a valid CSS length (e.g. "100%", "50em", "300"). The SVG may not render correctly.`,
+		);
+	}
+}
+
+/**
+ * Validates an SVG `viewBox` attribute string.
+ *
+ * A valid viewBox contains exactly four whitespace- or comma-separated numeric
+ * values in the order `min-x min-y width height`. Numbers may be integers,
+ * decimals, or scientific notation. The `width` and `height` values (3rd and
+ * 4th) must be strictly positive; zero or negative values are invalid per the
+ * SVG specification.
+ *
+ * Valid examples:
+ * - `"0 0 300 150"` - integers
+ * - `"-10 -10 100 100"` - negative origin
+ * - `"0.5 0.5 99.5 99.5"` - decimals
+ * - `"0, 0, 300, 150"` - comma-separated
+ * - `"0 0 1e4 1e4"` - scientific notation
+ * - `".5 .5 100 100"` - leading-dot decimals
+ *
+ * Logs a `console.warn` if the format is invalid or if `width`/`height` are
+ * not strictly positive. Does not throw.
+ *
+ * @param viewBox - The `viewBox` attribute string to validate.
  */
 function validateViewBox(viewBox: string): void {
 	// The viewBox attribute should contain 4 numeric values: min-x min-y width height
@@ -106,6 +153,8 @@ export class SvgCanvas {
 	constructor(options: SvgCanvasOptions = {}) {
 		this.width = options.width ?? 300;
 		this.height = options.height ?? 150;
+		if (typeof this.width === "string") validateDimension(this.width, "width");
+		if (typeof this.height === "string") validateDimension(this.height, "height");
 		const vbWidth = typeof this.width === "number" ? this.width : 300;
 		const vbHeight = typeof this.height === "number" ? this.height : 150;
 		this.viewBox = options.viewBox ?? `0 0 ${vbWidth} ${vbHeight}`;

@@ -1,5 +1,8 @@
 import { escapeXml } from "./escape.js";
 
+const FORBIDDEN_KEY_PATTERN = /^on[a-z]+$/i;
+const UNSAFE_KEY_CHARS_PATTERN = /[\s=]/;
+
 /**
  * Validates and renders an SVG attribute only if the value is valid.
  *
@@ -42,6 +45,21 @@ import { escapeXml } from "./escape.js";
 export function renderAttribute(key: string, value: string | number | undefined | null): string {
 	// Filter out invalid values
 	if (value === undefined || value === null) {
+		return "";
+	}
+
+	if (UNSAFE_KEY_CHARS_PATTERN.test(key)) {
+		console.warn(
+			`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`,
+		);
+		return "";
+	}
+
+	if (FORBIDDEN_KEY_PATTERN.test(key.trim())) {
+		const trimmedKey = key.trim();
+		console.warn(
+			`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`,
+		);
 		return "";
 	}
 
