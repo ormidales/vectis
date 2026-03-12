@@ -249,4 +249,22 @@ describe("validatePathData", () => {
 		expect(result).toBe(true);
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
 	});
+
+	it("should not warn for trailing-decimal scientific notation (e.g. 1.e-3)", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		const result = validatePathData("M0 0 L1.e-3 10");
+
+		expect(result).toBe(true);
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+	});
+
+	it("should not warn for trailing-decimal uppercase scientific notation (e.g. 1.E3)", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		const result = validatePathData("M0 0 L1.E3 10");
+
+		expect(result).toBe(true);
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+	});
 });

@@ -74,8 +74,9 @@ export function validatePathData(d: string): boolean {
 	}
 
 	// Warn when 'e'/'E' appears outside a valid scientific notation context
-	// (i.e. not immediately preceded by a digit)
-	const standaloneExponentPattern = /(?<!\d)[eE]/;
+	// (i.e. not immediately preceded by a digit or a decimal point, as SVG
+	// number grammar allows a trailing decimal point before the exponent: 1.e-3)
+	const standaloneExponentPattern = /(?<![\d.])[eE]/;
 
 	if (standaloneExponentPattern.test(d)) {
 		console.warn(
