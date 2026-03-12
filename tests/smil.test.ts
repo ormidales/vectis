@@ -1,5 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
-import { Circle, Path, Polygon, Rect, validateSmilBegin, validateSmilTime } from "../src/index.js";
+import {
+	Circle,
+	Path,
+	Polygon,
+	Rect,
+	validateAnimationAttributeName,
+	validateSmilBegin,
+	validateSmilTime,
+} from "../src/index.js";
 
 describe("validateSmilTime and validateSmilBegin public exports", () => {
 	it("should export validateSmilTime from the main entry point", () => {
@@ -10,6 +18,11 @@ describe("validateSmilTime and validateSmilBegin public exports", () => {
 	it("should export validateSmilBegin from the main entry point", () => {
 		expect(validateSmilBegin).toBeDefined();
 		expect(typeof validateSmilBegin).toBe("function");
+	});
+
+	it("should export validateAnimationAttributeName from the main entry point", () => {
+		expect(validateAnimationAttributeName).toBeDefined();
+		expect(typeof validateAnimationAttributeName).toBe("function");
 	});
 });
 
@@ -499,6 +512,72 @@ describe("validateSmilBegin", () => {
 		const warn = vi.spyOn(console, "warn");
 		validateSmilBegin("0s; badvalue!!; click");
 		expect(warn).toHaveBeenCalledOnce();
+		warn.mockRestore();
+	});
+});
+
+describe("validateAnimationAttributeName", () => {
+	it("should not warn for a valid animatable attribute like cx", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateAnimationAttributeName("cx");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should not warn for a valid animatable attribute like opacity", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateAnimationAttributeName("opacity");
+		expect(warn).not.toHaveBeenCalled();
+		warn.mockRestore();
+	});
+
+	it("should warn for onload", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateAnimationAttributeName("onload");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"onload"');
+		warn.mockRestore();
+	});
+
+	it("should warn for onclick", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateAnimationAttributeName("onclick");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"onclick"');
+		warn.mockRestore();
+	});
+
+	it("should warn for onmouseover passed as 'onMouseOver' (case-insensitive)", () => {
+		const warn = vi.spyOn(console, "warn");
+		validateAnimationAttributeName("onMouseOver");
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"onMouseOver"');
+		warn.mockRestore();
+	});
+
+	it("should warn when onload is used as attributeName in animate()", () => {
+		const warn = vi.spyOn(console, "warn");
+		const circle = new Circle({ r: 10 });
+		circle.animate({ attributeName: "onload", dur: "1s" }).toString();
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"onload"');
+		warn.mockRestore();
+	});
+
+	it("should warn when onclick is used as attributeName in animateTransform()", () => {
+		const warn = vi.spyOn(console, "warn");
+		const rect = new Rect({ width: 100, height: 50 });
+		rect.animate({ type: "rotate", attributeName: "onclick", dur: "1s" }).toString();
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('"onclick"');
+		warn.mockRestore();
+	});
+
+	it("should not warn for the default transform attributeName on animateTransform", () => {
+		const warn = vi.spyOn(console, "warn");
+		const rect = new Rect({ width: 100, height: 50 });
+		rect.animate({ type: "rotate", dur: "1s" }).toString();
+		expect(warn).not.toHaveBeenCalled();
 		warn.mockRestore();
 	});
 });

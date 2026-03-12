@@ -13,7 +13,12 @@ export type {
 	TransformValue,
 	TranslateValue,
 } from "./animation/smil.js";
-export { renderSmilAnimation, validateSmilBegin, validateSmilTime } from "./animation/smil.js";
+export {
+	renderSmilAnimation,
+	validateAnimationAttributeName,
+	validateSmilBegin,
+	validateSmilTime,
+} from "./animation/smil.js";
 
 export { BaseShape } from "./core/base-shape.js";
 export type { SvgCanvasOptions } from "./core/canvas.js";
