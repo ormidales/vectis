@@ -49,13 +49,17 @@ export function renderAttribute(key: string, value: string | number | undefined 
 	}
 
 	if (UNSAFE_KEY_CHARS_PATTERN.test(key)) {
-		console.warn(`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`);
+		console.warn(
+			`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`,
+		);
 		return "";
 	}
 
 	if (FORBIDDEN_KEY_PATTERN.test(key.trim())) {
 		const trimmedKey = key.trim();
-		console.warn(`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`);
+		console.warn(
+			`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`,
+		);
 		return "";
 	}
 
