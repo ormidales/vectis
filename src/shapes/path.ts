@@ -28,6 +28,19 @@ export interface PathOptions extends PresentationAttributes {
  *
  * @param d - The path data string to validate.
  * @returns `true` if the path data is valid (or empty), `false` if it is invalid.
+ * @remarks Two distinct cases return `false` and emit a `console.warn`:
+ *   1. **Hard error** — the string does not start with a valid SVG path command,
+ *      a command is missing its required parameters, or the string contains an
+ *      illegal character (anything other than SVG command letters, digits,
+ *      whitespace, and the numeric separators `.,+-eE`).
+ *   2. **Suspicious exponent** — the string contains `e`/`E` outside a valid
+ *      numeric exponent context (i.e. not immediately preceded by a digit or a
+ *      decimal point, as in `1e-5` or `1.e-3`).
+ *
+ *   In both cases the SVG may not render correctly.  Callers should inspect the
+ *   return value and surface or handle the warning accordingly.  To suppress
+ *   validation entirely (e.g. during incremental path construction), pass
+ *   `skipValidation: true` to the {@link Path} constructor instead.
  */
 export function validatePathData(d: string): boolean {
 	// Skip validation for empty strings or strings containing only whitespace
