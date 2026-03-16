@@ -78,6 +78,10 @@ export class Group extends BaseShape {
 	 * Emits a self-closing `<g .../>` tag when the group has no children, no `title`,
 	 * and no attached SMIL animations; otherwise emits an open/close `<g ...>...</g>` pair.
 	 *
+	 * @remarks The self-closing decision is driven by the combined output of
+	 *   {@link renderBaseChildren} (title + animations) and the direct children array.
+	 *   A group with only a `title` or only animations will still emit an open/close tag.
+	 *
 	 * @returns SVG `<g>` element string.
 	 */
 	toString(): string {
