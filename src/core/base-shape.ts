@@ -78,6 +78,8 @@ export abstract class BaseShape implements Shape {
 	 * Builds a string of SVG presentation attributes from the stored options.
 	 *
 	 * @returns A partial attribute string (leading space included), e.g. ` fill="red" opacity="0.5"`.
+	 * @remarks The `title` property is intentionally excluded — it is serialized as a
+	 *   `<title>` child element by {@link renderBaseChildren} per SVG 1.1 §5.4.
 	 */
 	protected renderPresentationAttrs(): string {
 		const parts: string[] = [
