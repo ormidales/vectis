@@ -32,7 +32,7 @@ export interface PathOptions extends PresentationAttributes {
  *   1. **Hard error** — the string does not start with a valid SVG path command,
  *      a command is missing its required parameters, or the string contains an
  *      illegal character (anything other than SVG command letters, digits,
- *      whitespace, and the numeric separators `.,+-eE`).
+ *      whitespace, numeric separators `.,+-`, and exponent indicators `eE`).
  *   2. **Suspicious exponent** — the string contains `e`/`E` outside a valid
  *      numeric exponent context (i.e. not immediately preceded by a digit or a
  *      decimal point, as in `1e-5` or `1.e-3`).
