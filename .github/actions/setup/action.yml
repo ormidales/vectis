@@ -1,22 +1,37 @@
 name: Setup Node.js and dependencies
 description: Sets up Node.js and restores cached node_modules (caller must check out first)
 
+inputs:
+  node-version:
+    description: Node.js version to set up
+    default: '20'
+  save-cache:
+    description: Whether to save the node_modules cache on a cache miss (requires actions:write)
+    default: 'true'
+
 runs:
   using: composite
   steps:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: ${{ inputs.node-version }}
 
     - name: Restore node_modules
       id: cache-restore
       uses: actions/cache/restore@v4
       with:
         path: node_modules
-        key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+        key: node-modules-${{ runner.os }}-${{ inputs.node-version }}-${{ hashFiles('package-lock.json') }}
 
     - name: Install dependencies (cache miss fallback)
       if: steps.cache-restore.outputs.cache-hit != 'true'
       run: npm ci
       shell: bash
+
+    - name: Save node_modules cache
+      if: steps.cache-restore.outputs.cache-hit != 'true' && inputs.save-cache == 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ runner.os }}-${{ inputs.node-version }}-${{ hashFiles('package-lock.json') }}

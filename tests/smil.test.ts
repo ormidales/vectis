@@ -192,7 +192,7 @@ describe("SMIL animate", () => {
 		const rect = new Rect({ width: 100, height: 50 });
 		rect.animate({
 			type: "translate",
-			to: '<script>alert(1)</script>',
+			to: "<script>alert(1)</script>",
 			dur: "1s",
 		});
 		const output = rect.toString();
@@ -454,6 +454,39 @@ describe("validateSmilTime", () => {
 		expect(warn).not.toHaveBeenCalled();
 		warn.mockRestore();
 	});
+
+	it("should return true for a valid time value", () => {
+		expect(validateSmilTime("1s")).toBe(true);
+		expect(validateSmilTime("500ms")).toBe(true);
+		expect(validateSmilTime("2h")).toBe(true);
+		expect(validateSmilTime("30min")).toBe(true);
+		expect(validateSmilTime("indefinite")).toBe(true);
+		expect(validateSmilTime("01:30")).toBe(true);
+		expect(validateSmilTime("1:01:30")).toBe(true);
+	});
+
+	it("should return false for an invalid time value", () => {
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+		try {
+			expect(validateSmilTime("10")).toBe(false);
+			expect(validateSmilTime("1sec")).toBe(false);
+			expect(validateSmilTime("invalid")).toBe(false);
+			expect(validateSmilTime("99:99")).toBe(false);
+		} finally {
+			warn.mockRestore();
+		}
+	});
+
+	it("should return true without attrName when the value is valid", () => {
+		expect(validateSmilTime("2s")).toBe(true);
+	});
+
+	it("should return false without attrName when the value is invalid", () => {
+		const warn = vi.spyOn(console, "warn");
+		expect(validateSmilTime("bad")).toBe(false);
+		expect(warn).toHaveBeenCalledOnce();
+		warn.mockRestore();
+	});
 });
 
 describe("validateSmilBegin", () => {
@@ -513,6 +546,20 @@ describe("validateSmilBegin", () => {
 		validateSmilBegin("0s; badvalue!!; click");
 		expect(warn).toHaveBeenCalledOnce();
 		warn.mockRestore();
+	});
+
+	it("should return true for a valid begin value", () => {
+		expect(validateSmilBegin("1s")).toBe(true);
+		expect(validateSmilBegin("indefinite")).toBe(true);
+		expect(validateSmilBegin("click")).toBe(true);
+		expect(validateSmilBegin("myId.begin")).toBe(true);
+		expect(validateSmilBegin("myId.end+1s")).toBe(true);
+		expect(validateSmilBegin("0s; click; myId.begin+500ms")).toBe(true);
+	});
+
+	it("should return false for an invalid begin value", () => {
+		expect(validateSmilBegin("1second")).toBe(false);
+		expect(validateSmilBegin("0s; badvalue!!; click")).toBe(false);
 	});
 });
 
