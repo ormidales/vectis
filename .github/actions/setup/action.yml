@@ -5,6 +5,9 @@ inputs:
   node-version:
     description: Node.js version to set up
     default: '20'
+  save-cache:
+    description: Whether to save the node_modules cache on a cache miss (requires actions:write)
+    default: 'true'
 
 runs:
   using: composite
@@ -27,7 +30,7 @@ runs:
       shell: bash
 
     - name: Save node_modules cache
-      if: steps.cache-restore.outputs.cache-hit != 'true'
+      if: steps.cache-restore.outputs.cache-hit != 'true' && inputs.save-cache == 'true'
       uses: actions/cache/save@v4
       with:
         path: node_modules

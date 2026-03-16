@@ -19,6 +19,8 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
+        with:
+          save-cache: 'false'
 
       - name: Run linter
         run: npm run lint
