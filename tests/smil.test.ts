@@ -466,10 +466,12 @@ describe("validateSmilTime", () => {
 	});
 
 	it("should return false for an invalid time value", () => {
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 		expect(validateSmilTime("10")).toBe(false);
 		expect(validateSmilTime("1sec")).toBe(false);
 		expect(validateSmilTime("invalid")).toBe(false);
 		expect(validateSmilTime("99:99")).toBe(false);
+		warn.mockRestore();
 	});
 
 	it("should return true without attrName when the value is valid", () => {

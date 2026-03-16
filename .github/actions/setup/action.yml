@@ -25,3 +25,10 @@ runs:
       if: steps.cache-restore.outputs.cache-hit != 'true'
       run: npm ci
       shell: bash
+
+    - name: Save node_modules cache
+      if: steps.cache-restore.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ runner.os }}-${{ inputs.node-version }}-${{ hashFiles('package-lock.json') }}
