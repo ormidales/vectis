@@ -12,6 +12,7 @@
  * escapeXml('<script>'); // '&lt;script&gt;'
  * escapeXml('hello\x00world'); // 'helloworld'
  * escapeXml('hello\uD800world'); // 'helloworld'
+ * escapeXml('hello\uFFFEworld'); // 'helloworld'
  * escapeXml('hello\uFFFFworld'); // 'helloworld'
  */
 export function escapeXml(value: string): string {
