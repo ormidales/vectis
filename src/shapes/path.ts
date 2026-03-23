@@ -33,10 +33,10 @@ export interface PathOptions extends PresentationAttributes {
  *      a command is missing its required parameters, or the string contains an
  *      illegal character (anything other than SVG command letters, digits,
  *      whitespace, numeric separators `.,+-`, and exponent indicators `eE`).
- *   2. **Suspicious exponent** — the string contains a bare `e` or `E` token
- *      that is not immediately preceded by a digit or a decimal point.  Valid
- *      scientific notation such as `1e-5`, `1.e-3`, or `2.7E4` is accepted;
- *      standalone `e`/`E` tokens (e.g. `"M0 0 e L10 10"`) are rejected.
+ *   2. **Suspicious exponent** — the string contains an `e` or `E` that is not
+ *      immediately preceded by a digit or a decimal point.  Valid scientific
+ *      notation such as `1e-5`, `1.e-3`, or `2.7E4` is accepted; invalid examples
+ *      like `"M0 0 e L10 10"`, `"M1 1 e-5 2"`, or `"M0 0 E3 4"` are rejected.
  *
  *   In both cases the SVG may not render correctly.  Callers should inspect the
  *   return value and surface or handle the warning accordingly.  To suppress
@@ -87,9 +87,10 @@ export function validatePathData(d: string): boolean {
 		return false;
 	}
 
-	// Warn when 'e' or 'E' appears as a standalone token (i.e. not immediately
-	// preceded by a digit or a decimal point). Valid scientific notation like
-	// "1e-5", "1.e-3", "2.7E4" is preserved; bare "e"/"E" tokens are rejected.
+	// Warn when 'e' or 'E' is not immediately preceded by a digit or a decimal
+	// point. Valid scientific notation like "1e-5", "1.e-3", "2.7E4" is
+	// preserved; invalid forms like "e L10", "e-5" (no mantissa), or "E3"
+	// (no mantissa) are rejected.
 	const standaloneExponentPattern = /(?<![\d.])[eE]/;
 
 	if (standaloneExponentPattern.test(d)) {
