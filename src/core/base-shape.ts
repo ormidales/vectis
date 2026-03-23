@@ -131,8 +131,10 @@ export abstract class BaseShape implements Shape {
 	 *   pair with animation children otherwise.
 	 */
 	protected renderElement(tag: string, geometricAttrs: string): string {
-		const attrs = geometricAttrs + this.renderPresentationAttrs();
-		const attrsStr = attrs.trim();
+		// renderPresentationAttrs() returns each part with a leading space (e.g. ` fill="red"`);
+		// trim() normalises any leading/trailing whitespace that arises when geometricAttrs is
+		// empty (no geometric attributes) but presentation attributes are present.
+		const attrsStr = (geometricAttrs + this.renderPresentationAttrs()).trim();
 		const innerContent = this.renderBaseChildren();
 		if (!innerContent) {
 			return attrsStr ? `<${tag} ${attrsStr}/>` : `<${tag}/>`;
