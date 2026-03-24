@@ -47,3 +47,4 @@ export { Rect } from "./shapes/rect.js";
 
 export { escapeXml } from "./utils/escape.js";
 export { renderAttribute } from "./utils/render-attribute.js";
+export { sanitizeNumber } from "./utils/sanitize-number.js";

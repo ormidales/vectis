@@ -1,5 +1,6 @@
 import { BaseShape } from "../core/base-shape.js";
 import type { PresentationAttributes } from "../interfaces/shape.interface.js";
+import { sanitizeNumber } from "../utils/sanitize-number.js";
 
 /**
  * Options for constructing an {@link Ellipse} element.
@@ -35,12 +36,10 @@ export class Ellipse extends BaseShape {
 	 */
 	constructor(options: EllipseOptions = {}) {
 		super(options);
-		this.cx = options.cx ?? 0;
-		this.cy = options.cy ?? 0;
-		const rx = options.rx ?? 0;
-		const ry = options.ry ?? 0;
-		this.rx = Number.isFinite(rx) ? Math.max(0, rx) : 0;
-		this.ry = Number.isFinite(ry) ? Math.max(0, ry) : 0;
+		this.cx = sanitizeNumber(options.cx);
+		this.cy = sanitizeNumber(options.cy);
+		this.rx = Math.max(0, sanitizeNumber(options.rx));
+		this.ry = Math.max(0, sanitizeNumber(options.ry));
 	}
 
 	/**

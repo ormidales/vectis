@@ -1,7 +1,7 @@
 {
   "name": "vectis",
   "version": "1.0.14",
-  "description": "SVG manipulation library written in TypeScript",
+  "description": "Type-safe SVG generation library for Node.js and the browser — shapes, paths, groups, and SMIL animations",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -27,7 +27,21 @@
     "type": "git",
     "url": "git+https://github.com/ormidales/vectis.git"
   },
-  "keywords": ["svg", "canvas", "typescript"],
+  "keywords": [
+    "svg",
+    "canvas",
+    "typescript",
+    "smil",
+    "animation",
+    "path",
+    "circle",
+    "rect",
+    "polygon",
+    "vector",
+    "graphics",
+    "node",
+    "browser"
+  ],
   "author": "Hugo Doueil <46538211+ormidales@users.noreply.github.com>",
   "license": "ISC",
   "devDependencies": {

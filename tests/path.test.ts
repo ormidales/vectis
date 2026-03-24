@@ -23,6 +23,14 @@ describe("Path", () => {
 		expect(output).toContain('fill="none"');
 	});
 
+	it("should render without double space when no d but presentation attributes exist", () => {
+		const path = new Path({ fill: "red" });
+		const output = path.toString();
+
+		expect(output).toBe('<path fill="red"/>');
+		expect(output).not.toContain("  ");
+	});
+
 	it("should include stroke attribute when specified", () => {
 		const path = new Path({ d: "M 0 0", stroke: "red" });
 		const output = path.toString();
