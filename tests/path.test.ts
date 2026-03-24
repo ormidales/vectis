@@ -23,7 +23,7 @@ describe("Path", () => {
 		expect(output).toContain('fill="none"');
 	});
 
-	it("should render without double space when no d and presentation attributes exist", () => {
+	it("should render without double space when no d but presentation attributes exist", () => {
 		const path = new Path({ fill: "red" });
 		const output = path.toString();
 
