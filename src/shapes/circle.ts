@@ -1,5 +1,6 @@
 import { BaseShape } from "../core/base-shape.js";
 import type { PresentationAttributes } from "../interfaces/shape.interface.js";
+import { sanitizeNumber } from "../utils/sanitize-number.js";
 
 /**
  * Options for constructing a {@link Circle} element.
@@ -32,12 +33,9 @@ export class Circle extends BaseShape {
 	 */
 	constructor(options: CircleOptions = {}) {
 		super(options);
-		const cx = options.cx ?? 0;
-		const cy = options.cy ?? 0;
-		this.cx = Number.isFinite(cx) ? cx : 0;
-		this.cy = Number.isFinite(cy) ? cy : 0;
-		const r = options.r ?? 0;
-		this.r = Number.isFinite(r) ? Math.max(0, r) : 0;
+		this.cx = sanitizeNumber(options.cx);
+		this.cy = sanitizeNumber(options.cy);
+		this.r = Math.max(0, sanitizeNumber(options.r));
 	}
 
 	/**

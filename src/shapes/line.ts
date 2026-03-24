@@ -1,5 +1,6 @@
 import { BaseShape } from "../core/base-shape.js";
 import type { PresentationAttributes } from "../interfaces/shape.interface.js";
+import { sanitizeNumber } from "../utils/sanitize-number.js";
 
 /**
  * Options for constructing a {@link Line} element.
@@ -37,11 +38,6 @@ export class Line extends BaseShape {
 	private readonly x2: number;
 	private readonly y2: number;
 
-	private static sanitizeCoord(v: number | undefined): number {
-		const n = v ?? 0;
-		return Number.isFinite(n) ? n : 0;
-	}
-
 	/**
 	 * Creates a new line shape.
 	 *
@@ -49,10 +45,10 @@ export class Line extends BaseShape {
 	 */
 	constructor(options: LineOptions = {}) {
 		super(options);
-		this.x1 = Line.sanitizeCoord(options.x1);
-		this.y1 = Line.sanitizeCoord(options.y1);
-		this.x2 = Line.sanitizeCoord(options.x2);
-		this.y2 = Line.sanitizeCoord(options.y2);
+		this.x1 = sanitizeNumber(options.x1);
+		this.y1 = sanitizeNumber(options.y1);
+		this.x2 = sanitizeNumber(options.x2);
+		this.y2 = sanitizeNumber(options.y2);
 	}
 
 	/**
