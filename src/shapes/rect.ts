@@ -1,5 +1,6 @@
 import { BaseShape } from "../core/base-shape.js";
 import type { PresentationAttributes } from "../interfaces/shape.interface.js";
+import { sanitizeNumber } from "../utils/sanitize-number.js";
 
 /**
  * Options for constructing a {@link Rect} element.
@@ -35,14 +36,10 @@ export class Rect extends BaseShape {
 	 */
 	constructor(options: RectOptions = {}) {
 		super(options);
-		const x = options.x ?? 0;
-		const y = options.y ?? 0;
-		this.x = Number.isFinite(x) ? x : 0;
-		this.y = Number.isFinite(y) ? y : 0;
-		const w = options.width ?? 0;
-		const h = options.height ?? 0;
-		this.width = Number.isFinite(w) ? Math.max(0, w) : 0;
-		this.height = Number.isFinite(h) ? Math.max(0, h) : 0;
+		this.x = sanitizeNumber(options.x);
+		this.y = sanitizeNumber(options.y);
+		this.width = Math.max(0, sanitizeNumber(options.width));
+		this.height = Math.max(0, sanitizeNumber(options.height));
 	}
 
 	/**
