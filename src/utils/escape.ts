@@ -20,16 +20,17 @@ export function escapeXml(value: string): string {
 		value
 			// biome-ignore lint/suspicious/noControlCharactersInRegex: intentionally matching control characters to remove them
 			.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
-			// Strip lone Unicode surrogate code points (U+D800–U+DFFF) — forbidden by XML spec
-			// Uses a replace callback (no regex lookahead/lookbehind) to preserve valid surrogate pairs (e.g. emoji)
+			// Strip lone Unicode surrogates (U+D800 to U+DFFF) — forbidden in XML 1.0.
+			// Valid pairs (high surrogate U+D800-U+DBFF immediately followed by low surrogate
+			// U+DC00-U+DFFF) encode characters above U+FFFF (e.g. emoji) and must be preserved.
 			.replace(/[\uD800-\uDFFF]/g, (char, offset: number, str: string) => {
 				const code = char.charCodeAt(0);
 				if (code >= 0xd800 && code <= 0xdbff) {
-					// High surrogate: keep only when immediately followed by a low surrogate
+					// High surrogate: keep only when immediately followed by a low surrogate.
 					const next = str.charCodeAt(offset + 1);
 					return next >= 0xdc00 && next <= 0xdfff ? char : "";
 				}
-				// Low surrogate: keep only when immediately preceded by a high surrogate
+				// Low surrogate: keep only when immediately preceded by a high surrogate.
 				const prev = str.charCodeAt(offset - 1);
 				return prev >= 0xd800 && prev <= 0xdbff ? char : "";
 			})
