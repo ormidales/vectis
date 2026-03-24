@@ -92,7 +92,7 @@ export abstract class BaseShape implements Shape {
 			renderAttribute("stroke-linejoin", this.strokeLinejoin),
 			// OpacityValue is number | `${number}` | `${number}%` — numeric string variants
 			// (e.g. "0.5", "50%") are assignable to `string` and handled by renderAttribute's
-			// string branch (trim → escapeXml). No explicit narrowing is required.
+			// string branch (whitespace trim-check → escapeXml of the original value). No explicit narrowing is required.
 			renderAttribute("opacity", this.opacity),
 			renderAttribute("transform", this.transform),
 			renderAttribute("style", this.style),
