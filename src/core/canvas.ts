@@ -217,7 +217,8 @@ export class SvgCanvas {
 	 * @returns A full `<svg>` element string with all child shapes embedded.
 	 */
 	toString(): string {
-		const content = this.children.map((child) => child.toString()).join("");
+		let content = "";
+		for (const child of this.children) content += child.toString();
 		const w = typeof this.width === "string" ? escapeXml(this.width) : this.width;
 		const h = typeof this.height === "string" ? escapeXml(this.height) : this.height;
 		const open = `<svg xmlns="http://www.w3.org/2000/svg"${this.extraNs} viewBox="${escapeXml(this.viewBox)}" width="${w}" height="${h}"`;
