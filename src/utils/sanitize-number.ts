@@ -15,6 +15,7 @@
  * sanitizeNumber(undefined, 1)       // 1
  */
 export function sanitizeNumber(v: number | undefined, fallback = 0): number {
-	const n = v ?? fallback;
-	return Number.isFinite(n) ? n : fallback;
+	const safeFallback = Number.isFinite(fallback) ? fallback : 0;
+	const n = v ?? safeFallback;
+	return Number.isFinite(n) ? n : safeFallback;
 }
