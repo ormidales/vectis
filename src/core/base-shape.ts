@@ -73,7 +73,7 @@ export abstract class BaseShape implements Shape {
 	 * const circle = new Circle({ r: 25 });
 	 * circle.animate({ attributeName: 'r', from: '25', to: '50', dur: '1s' });
 	 * circle.clearAnimations();
-	 * circle.toString(); // '<circle r="25"/>'  — no <animate> child
+	 * circle.toString(); // '<circle cx="0" cy="0" r="25"/>'  — no <animate> child
 	 */
 	clearAnimations(): this {
 		this.animations.splice(0);
