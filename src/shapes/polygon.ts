@@ -30,17 +30,27 @@ const POLYGON_POINTS_PATTERN =
 	/^\s*[+-]?(?:\d+\.?\d*|\.\d+)[\s,]+[+-]?(?:\d+\.?\d*|\.\d+)(?:[\s,]+[+-]?(?:\d+\.?\d*|\.\d+)[\s,]+[+-]?(?:\d+\.?\d*|\.\d+))*\s*$/;
 
 /**
+ * Returns `true` when `points` is a valid polygon points string (or empty/whitespace),
+ * without emitting any console warning. Use this for client-side pre-validation.
+ *
+ * @param points - The polygon points string to test.
+ * @returns `true` if the string is valid (or empty), `false` otherwise.
+ */
+export function isValidPolygonPoints(points: string): boolean {
+	if (points.trim() === "") {
+		return true;
+	}
+	return POLYGON_POINTS_PATTERN.test(points);
+}
+
+/**
  * Validates a polygon `points` attribute string.
  * Logs a warning if the value does not consist of valid coordinate pairs.
  *
  * @param points - The polygon points string to validate.
  */
 export function validatePolygonPoints(points: string): void {
-	if (points.trim() === "") {
-		return;
-	}
-
-	if (!POLYGON_POINTS_PATTERN.test(points)) {
+	if (!isValidPolygonPoints(points)) {
 		console.warn(
 			`[vectis] Invalid polygon points: "${points}". Expected space- or comma-separated coordinate pairs (e.g. "0,0 50,100 100,0"). The SVG may not render correctly.`,
 		);
