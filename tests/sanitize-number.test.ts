@@ -45,4 +45,16 @@ describe("sanitizeNumber", () => {
 	it("should ignore the custom fallback when the value is a valid finite number", () => {
 		expect(sanitizeNumber(7, 99)).toBe(7);
 	});
+
+	it("should replace a non-finite fallback (Infinity) with 0", () => {
+		expect(sanitizeNumber(undefined, Number.POSITIVE_INFINITY)).toBe(0);
+	});
+
+	it("should replace a non-finite fallback (-Infinity) with 0", () => {
+		expect(sanitizeNumber(undefined, Number.NEGATIVE_INFINITY)).toBe(0);
+	});
+
+	it("should replace a non-finite fallback (NaN) with 0", () => {
+		expect(sanitizeNumber(Number.NaN, Number.NaN)).toBe(0);
+	});
 });

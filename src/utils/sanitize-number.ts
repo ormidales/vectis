@@ -4,7 +4,8 @@
  *
  * @param v - The value to sanitize.
  * @param fallback - The fallback value to use when `v` is `undefined`, `NaN`,
- *   or non-finite. Defaults to `0`.
+ *   or non-finite. Must be a finite number; if it is non-finite (e.g. `NaN`
+ *   or `Infinity`), it is silently replaced by `0`.
  * @returns A finite number.
  *
  * @example
@@ -13,6 +14,8 @@
  * sanitizeNumber(Infinity)           // 0
  * sanitizeNumber(42)                 // 42
  * sanitizeNumber(undefined, 1)       // 1
+ * sanitizeNumber(undefined, Infinity) // 0  (non-finite fallback replaced by 0)
+ * sanitizeNumber(NaN, NaN)           // 0  (non-finite fallback replaced by 0)
  */
 export function sanitizeNumber(v: number | undefined, fallback = 0): number {
 	const safeFallback = Number.isFinite(fallback) ? fallback : 0;
