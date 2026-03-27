@@ -85,6 +85,10 @@ export class Group extends BaseShape {
 	 * @returns SVG `<g>` element string.
 	 */
 	toString(): string {
+		// Group cannot use renderElement() because it must interleave
+		// SMIL animation children (via renderBaseChildren) with arbitrary
+		// child shapes, whereas renderElement only handles self-closing
+		// or animation-only content.
 		const attrs = this.renderPresentationAttrs();
 		const baseContent = this.renderBaseChildren();
 		const shapeContent = this.children.map((child) => child.toString()).join("");
