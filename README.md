@@ -19,6 +19,32 @@ console.log(canvas.toString());
 // '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200"><circle cx="100" cy="100" r="50" fill="steelblue"/><rect x="10" y="10" width="80" height="60" fill="orange"/></svg>'
 ```
 
+## Canvas options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `width` | `number \| string` | `300` | Width of the SVG viewport. Accepts a number (user units) or a CSS string such as `"100%"` or `"50em"`. |
+| `height` | `number \| string` | `150` | Height of the SVG viewport. Accepts a number (user units) or a CSS string such as `"100%"` or `"50em"`. |
+| `viewBox` | `string` | `"0 0 {width} {height}"` | Value of the `viewBox` attribute (e.g. `"0 0 300 150"`). Inferred from `width`/`height` when both are numbers and omitted. |
+| `namespaces` | `Record<string, string>` | `{}` | Additional XML namespace declarations for the root `<svg>` element (e.g. `{ xlink: "http://www.w3.org/1999/xlink" }`). |
+
+### Responsive SVG with `viewBox`
+
+Set `width` and `height` to `"100%"` and supply an explicit `viewBox` to produce a fluid, scalable SVG that fills its container:
+
+```ts
+import { SvgCanvas, Circle } from "vectis";
+
+const canvas = new SvgCanvas({
+  width: "100%",
+  height: "100%",
+  viewBox: "0 0 200 200",
+});
+canvas.add(new Circle({ cx: 100, cy: 100, r: 50, fill: "steelblue" }));
+console.log(canvas.toString());
+// '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%"><circle cx="100" cy="100" r="50" fill="steelblue"/></svg>'
+```
+
 ## Shapes
 
 | Class     | SVG element   | Key options                                      |
