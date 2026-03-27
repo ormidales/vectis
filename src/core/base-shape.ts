@@ -68,6 +68,12 @@ export abstract class BaseShape implements Shape {
 	 * its previous animations.
 	 *
 	 * @returns The shape instance for method chaining.
+	 *
+	 * @example
+	 * const circle = new Circle({ r: 25 });
+	 * circle.animate({ attributeName: 'r', from: '25', to: '50', dur: '1s' });
+	 * circle.clearAnimations();
+	 * circle.toString(); // '<circle r="25"/>'  — no <animate> child
 	 */
 	clearAnimations(): this {
 		this.animations.splice(0);
