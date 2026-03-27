@@ -25,7 +25,7 @@ console.log(canvas.toString());
 |---|---|---|---|
 | `width` | `number \| string` | `300` | Width of the SVG viewport. Accepts a number (user units) or a CSS string such as `"100%"` or `"50em"`. |
 | `height` | `number \| string` | `150` | Height of the SVG viewport. Accepts a number (user units) or a CSS string such as `"100%"` or `"50em"`. |
-| `viewBox` | `string` | `"0 0 {width} {height}"` | Value of the `viewBox` attribute (e.g. `"0 0 300 150"`). Inferred from `width`/`height` when both are numbers and omitted. |
+| `viewBox` | `string` | `"0 0 {numericWidthOr300} {numericHeightOr150}"` | Value of the `viewBox` attribute (e.g. `"0 0 300 150"`). When omitted, it defaults to `0 0 W H`, where `W`/`H` are the numeric `width`/`height` values if provided, or `300`/`150` if not or if the corresponding dimension is given as a non-numeric string (e.g. `"100%"`). |
 | `namespaces` | `Record<string, string>` | `{}` | Additional XML namespace declarations for the root `<svg>` element (e.g. `{ xlink: "http://www.w3.org/1999/xlink" }`). |
 
 ### Responsive SVG with `viewBox`
