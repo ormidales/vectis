@@ -80,6 +80,11 @@ export function renderAttribute(key: string, value: string | number | undefined 
 			// - Values with magnitude ≥ 1 (order ≥ 0) are rounded at 4 decimal places.
 			// In both cases, trailing zeros (and the decimal point if unneeded) are stripped.
 			// absValue is always > 0 here because 0 is handled by isInteger above.
+			//
+			// Example: value = 0.00314
+			//   absValue = 0.00314, order = floor(log10(0.00314)) = -3
+			//   precision = max(4, min(10, 4 - (-3))) = max(4, 7) = 7
+			//   toFixed(7) → "0.0031400" → strip → "0.00314"
 			const absValue = Math.abs(value);
 			const order = Math.floor(Math.log10(absValue));
 			const precision = Math.max(4, Math.min(10, 4 - order));
