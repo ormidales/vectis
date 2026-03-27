@@ -85,6 +85,10 @@ export class Group extends BaseShape {
 	 * @returns SVG `<g>` element string.
 	 */
 	toString(): string {
+		// Group cannot use renderElement() because renderElement() only knows how
+		// to render the base children (<title> plus SMIL animations) and cannot
+		// include arbitrary child shapes. Group therefore assembles the <g> element
+		// manually by concatenating the base content with the serialized children.
 		const attrs = this.renderPresentationAttrs();
 		const baseContent = this.renderBaseChildren();
 		const shapeContent = this.children.map((child) => child.toString()).join("");

@@ -25,14 +25,17 @@ export function escapeXml(value: string): string {
 			// U+DC00-U+DFFF) encode characters above U+FFFF (e.g. emoji) and must be preserved.
 			.replace(/[\uD800-\uDFFF]/g, (char, offset: number, str: string) => {
 				const code = char.charCodeAt(0);
-				if (code >= 0xd800 && code <= 0xdbff) {
+				const isHighSurrogate = code >= 0xd800 && code <= 0xdbff;
+				if (isHighSurrogate) {
 					// High surrogate: keep only when immediately followed by a low surrogate.
 					const next = str.charCodeAt(offset + 1);
-					return next >= 0xdc00 && next <= 0xdfff ? char : "";
+					const isFollowedByLow = next >= 0xdc00 && next <= 0xdfff;
+					return isFollowedByLow ? char : "";
 				}
 				// Low surrogate: keep only when immediately preceded by a high surrogate.
 				const prev = str.charCodeAt(offset - 1);
-				return prev >= 0xd800 && prev <= 0xdbff ? char : "";
+				const isPrecededByHigh = prev >= 0xd800 && prev <= 0xdbff;
+				return isPrecededByHigh ? char : "";
 			})
 			// Strip XML non-characters U+FFFE and U+FFFF — forbidden by XML spec
 			.replace(/[\uFFFE\uFFFF]/g, "")

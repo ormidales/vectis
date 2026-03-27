@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      actions: write
+      actions: read
     strategy:
       matrix:
         node-version: ['20', '22']
@@ -42,6 +42,7 @@ jobs:
         uses: ./.github/actions/setup
         with:
           node-version: ${{ matrix.node-version }}
+          save-cache: 'false'
 
       - name: Run tests
         shell: bash
