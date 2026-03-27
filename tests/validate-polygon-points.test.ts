@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { validatePolygonPoints } from "../src/index.js";
+import { isValidPolygonPoints, validatePolygonPoints } from "../src/index.js";
 
 describe("validatePolygonPoints", () => {
 	afterEach(() => {
@@ -176,5 +176,71 @@ describe("Polygon constructor with skipValidation", () => {
 		expect(consoleWarnSpy).toHaveBeenCalledWith(
 			expect.stringContaining("[vectis] Invalid polygon points"),
 		);
+	});
+});
+
+describe("isValidPolygonPoints", () => {
+	it("should be exported from the main entry point", () => {
+		expect(isValidPolygonPoints).toBeDefined();
+		expect(typeof isValidPolygonPoints).toBe("function");
+	});
+
+	it("should return true for an empty string", () => {
+		expect(isValidPolygonPoints("")).toBe(true);
+	});
+
+	it("should return true for a whitespace-only string", () => {
+		expect(isValidPolygonPoints("   ")).toBe(true);
+		expect(isValidPolygonPoints("\t\n  ")).toBe(true);
+	});
+
+	it("should return true for a valid pair with comma separator", () => {
+		expect(isValidPolygonPoints("0,0 50,100")).toBe(true);
+	});
+
+	it("should return true for a triangle defined with comma-separated pairs", () => {
+		expect(isValidPolygonPoints("0,0 50,100 100,0")).toBe(true);
+	});
+
+	it("should return true for coordinate pairs separated only by spaces", () => {
+		expect(isValidPolygonPoints("0 0 50 100 100 0")).toBe(true);
+	});
+
+	it("should return true for coordinate pairs with decimal values", () => {
+		expect(isValidPolygonPoints("0.5,1.5 50.25,100.75 99.9,0.1")).toBe(true);
+	});
+
+	it("should return true for coordinate pairs with signed values", () => {
+		expect(isValidPolygonPoints("-10,+20 50,-30 +100,0")).toBe(true);
+	});
+
+	it("should return false for a single number (no pair)", () => {
+		expect(isValidPolygonPoints("100")).toBe(false);
+	});
+
+	it("should return false for an odd number of coordinates", () => {
+		expect(isValidPolygonPoints("0,0 50,100 100")).toBe(false);
+	});
+
+	it("should return false for alphabetic characters in points", () => {
+		expect(isValidPolygonPoints("abc def")).toBe(false);
+	});
+
+	it("should return false for HTML/script injection attempt", () => {
+		expect(isValidPolygonPoints('<script>alert(1)</script>')).toBe(false);
+	});
+
+	it("should return false for malformed decimal numbers with multiple consecutive dots", () => {
+		expect(isValidPolygonPoints("1..2 3 4 5")).toBe(false);
+	});
+
+	it("should not emit any console warning", () => {
+		const consoleWarnSpy = vi.spyOn(console, "warn");
+
+		isValidPolygonPoints("not-valid-at-all");
+
+		expect(consoleWarnSpy).not.toHaveBeenCalled();
+
+		vi.restoreAllMocks();
 	});
 });
