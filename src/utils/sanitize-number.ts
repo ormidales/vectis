@@ -14,7 +14,7 @@
  * sanitizeNumber(Infinity)           // 0
  * sanitizeNumber(42)                 // 42
  * sanitizeNumber(undefined, 1)       // 1
- * sanitizeNumber(undefined, Infinity) // 0  (non-finite fallback replaced by 0)
+ * sanitizeNumber(undefined, Infinity)       // 0  (non-finite fallback replaced by 0)
  * sanitizeNumber(NaN, NaN)           // 0  (non-finite fallback replaced by 0)
  */
 export function sanitizeNumber(v: number | undefined, fallback = 0): number {
