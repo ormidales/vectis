@@ -46,6 +46,10 @@ describe("sanitizeNumber", () => {
 		expect(sanitizeNumber(7, 99)).toBe(7);
 	});
 
+	it("should return 0 when value is 0, even if a non-zero fallback is provided", () => {
+		expect(sanitizeNumber(0, 99)).toBe(0);
+	});
+
 	it("should replace a non-finite fallback (Infinity) with 0", () => {
 		expect(sanitizeNumber(undefined, Number.POSITIVE_INFINITY)).toBe(0);
 	});
