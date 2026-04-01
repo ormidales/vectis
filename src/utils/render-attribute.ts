@@ -85,9 +85,9 @@ export function renderAttribute(key: string, value: string | number | undefined 
 			//   absValue = 0.00314, order = floor(log10(0.00314)) = -3
 			//   precision = max(4, min(10, 4 - (-3))) = max(4, 7) = 7
 			//   toFixed(7) → "0.0031400" → strip → "0.00314"
-			const absValue = Math.abs(value);
-			const order = Math.floor(Math.log10(absValue));
-			const precision = Math.max(4, Math.min(10, 4 - order));
+			const absValue = Math.abs(value); // always > 0: a non-integer value is never zero
+			const order = Math.floor(Math.log10(absValue)); // magnitude exponent (e.g. 0.003 → -3, 3.14 → 0)
+			const precision = Math.max(4, Math.min(10, 4 - order)); // dp needed for ~4 sig figs, clamped to [4, 10]
 			rendered = value.toFixed(precision).replace(/\.?0+$/, "");
 		}
 		return ` ${escapedKey}="${rendered}"`;
