@@ -27,6 +27,8 @@ export type { GroupOptions } from "./core/group.js";
 export { Group } from "./core/group.js";
 
 export type {
+	CircleShape,
+	EllipseShape,
 	OpacityValue,
 	PresentationAttributes,
 	Shape,
