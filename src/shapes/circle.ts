@@ -1,5 +1,5 @@
 import { BaseShape } from "../core/base-shape.js";
-import type { PresentationAttributes } from "../interfaces/shape.interface.js";
+import type { CircleShape, PresentationAttributes } from "../interfaces/shape.interface.js";
 import { sanitizeNumber } from "../utils/sanitize-number.js";
 
 /**
@@ -21,7 +21,7 @@ export interface CircleOptions extends PresentationAttributes {
  * new Circle({ cx: 50, cy: 50, r: 25, fill: 'blue' }).toString();
  * // '<circle cx="50" cy="50" r="25" fill="blue"/>'
  */
-export class Circle extends BaseShape {
+export class Circle extends BaseShape implements CircleShape {
 	private readonly cx: number;
 	private readonly cy: number;
 	private readonly r: number;

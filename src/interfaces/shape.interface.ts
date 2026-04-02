@@ -68,3 +68,29 @@ export interface Shape {
 	 */
 	toString(): string;
 }
+
+/**
+ * Contract for SVG `<circle>` shape objects, extending {@link Shape} with circle-specific getters.
+ */
+export interface CircleShape extends Shape {
+	/** Returns the x-coordinate of the circle centre. */
+	getCx(): number;
+	/** Returns the y-coordinate of the circle centre. */
+	getCy(): number;
+	/** Returns the radius of the circle. */
+	getR(): number;
+}
+
+/**
+ * Contract for SVG `<ellipse>` shape objects, extending {@link Shape} with ellipse-specific getters.
+ */
+export interface EllipseShape extends Shape {
+	/** Returns the x-coordinate of the ellipse centre. */
+	getCx(): number;
+	/** Returns the y-coordinate of the ellipse centre. */
+	getCy(): number;
+	/** Returns the horizontal radius of the ellipse. */
+	getRx(): number;
+	/** Returns the vertical radius of the ellipse. */
+	getRy(): number;
+}
