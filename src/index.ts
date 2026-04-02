@@ -27,6 +27,8 @@ export type { GroupOptions } from "./core/group.js";
 export { Group } from "./core/group.js";
 
 export type {
+	CircleShape,
+	EllipseShape,
 	OpacityValue,
 	PresentationAttributes,
 	Shape,
@@ -46,5 +48,5 @@ export type { RectOptions } from "./shapes/rect.js";
 export { Rect } from "./shapes/rect.js";
 
 export { escapeXml } from "./utils/escape.js";
-export { renderAttribute } from "./utils/render-attribute.js";
+export { isValidAttributeKey, renderAttribute } from "./utils/render-attribute.js";
 export { sanitizeNumber } from "./utils/sanitize-number.js";

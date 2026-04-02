@@ -1,6 +1,6 @@
 {
   "name": "vectis",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Type-safe SVG generation library for Node.js and the browser — shapes, paths, groups, and SMIL animations",
   "type": "module",
   "main": "./dist/index.cjs",

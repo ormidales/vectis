@@ -76,7 +76,7 @@ export abstract class BaseShape implements Shape {
 	 * circle.toString(); // '<circle cx="0" cy="0" r="25"/>'  — no <animate> child
 	 */
 	clearAnimations(): this {
-		this.animations.splice(0);
+		this.animations.length = 0;
 		return this;
 	}
 

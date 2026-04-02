@@ -89,11 +89,12 @@ export class Group extends BaseShape {
 		// to render the base children (<title> plus SMIL animations) and cannot
 		// include arbitrary child shapes. Group therefore assembles the <g> element
 		// manually by concatenating the base content with the serialized children.
-		const attrs = this.renderPresentationAttrs();
+		const attrsStr = this.renderPresentationAttrs().trim();
 		const baseContent = this.renderBaseChildren();
 		const shapeContent = this.children.map((child) => child.toString()).join("");
 		const content = baseContent + shapeContent;
-		if (!content) return `<g${attrs}/>`;
-		return `<g${attrs}>${content}</g>`;
+		const open = attrsStr ? `<g ${attrsStr}` : "<g";
+		if (!content) return `${open}/>`;
+		return `${open}>${content}</g>`;
 	}
 }

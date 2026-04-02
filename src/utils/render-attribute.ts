@@ -4,6 +4,26 @@ const FORBIDDEN_KEY_PATTERN = /^on[a-z]+$/i;
 const UNSAFE_KEY_CHARS_PATTERN = /[\s=]/;
 
 /**
+ * Returns `true` if the attribute key is safe to use in SVG output.
+ * Rejects keys that contain whitespace or `=`, and event-handler names (e.g. `onclick`).
+ *
+ * @param key - The SVG attribute name to validate.
+ * @returns `true` if the key is valid, `false` otherwise.
+ *
+ * @example
+ * isValidAttributeKey('fill');       // true
+ * isValidAttributeKey('stroke-width'); // true
+ * isValidAttributeKey('onclick');    // false
+ * isValidAttributeKey('x y');        // false
+ * isValidAttributeKey('x=y');        // false
+ */
+export function isValidAttributeKey(key: string): boolean {
+	if (UNSAFE_KEY_CHARS_PATTERN.test(key)) return false;
+	if (FORBIDDEN_KEY_PATTERN.test(key.trim())) return false;
+	return true;
+}
+
+/**
  * Validates and renders an SVG attribute only if the value is valid.
  *
  * A value is considered valid if it meets these criteria:
@@ -48,18 +68,17 @@ export function renderAttribute(key: string, value: string | number | undefined 
 		return "";
 	}
 
-	if (UNSAFE_KEY_CHARS_PATTERN.test(key)) {
-		console.warn(
-			`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`,
-		);
-		return "";
-	}
-
-	if (FORBIDDEN_KEY_PATTERN.test(key.trim())) {
-		const trimmedKey = key.trim();
-		console.warn(
-			`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`,
-		);
+	if (!isValidAttributeKey(key)) {
+		if (UNSAFE_KEY_CHARS_PATTERN.test(key)) {
+			console.warn(
+				`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`,
+			);
+		} else {
+			const trimmedKey = key.trim();
+			console.warn(
+				`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`,
+			);
+		}
 		return "";
 	}
 
@@ -85,9 +104,9 @@ export function renderAttribute(key: string, value: string | number | undefined 
 			//   absValue = 0.00314, order = floor(log10(0.00314)) = -3
 			//   precision = max(4, min(10, 4 - (-3))) = max(4, 7) = 7
 			//   toFixed(7) → "0.0031400" → strip → "0.00314"
-			const absValue = Math.abs(value);
-			const order = Math.floor(Math.log10(absValue));
-			const precision = Math.max(4, Math.min(10, 4 - order));
+			const absValue = Math.abs(value); // always > 0: a non-integer value is never zero
+			const order = Math.floor(Math.log10(absValue)); // magnitude exponent (e.g. 0.003 → -3, 3.14 → 0)
+			const precision = Math.max(4, Math.min(10, 4 - order)); // dp needed for ~4 sig figs, clamped to [4, 10]
 			rendered = value.toFixed(precision).replace(/\.?0+$/, "");
 		}
 		return ` ${escapedKey}="${rendered}"`;

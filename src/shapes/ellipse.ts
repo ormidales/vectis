@@ -1,5 +1,5 @@
 import { BaseShape } from "../core/base-shape.js";
-import type { PresentationAttributes } from "../interfaces/shape.interface.js";
+import type { EllipseShape, PresentationAttributes } from "../interfaces/shape.interface.js";
 import { sanitizeNumber } from "../utils/sanitize-number.js";
 
 /**
@@ -23,7 +23,7 @@ export interface EllipseOptions extends PresentationAttributes {
  * new Ellipse({ cx: 50, cy: 50, rx: 40, ry: 25, fill: 'blue' }).toString();
  * // '<ellipse cx="50" cy="50" rx="40" ry="25" fill="blue"/>'
  */
-export class Ellipse extends BaseShape {
+export class Ellipse extends BaseShape implements EllipseShape {
 	private readonly cx: number;
 	private readonly cy: number;
 	private readonly rx: number;
