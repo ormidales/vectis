@@ -409,6 +409,24 @@ describe("SvgCanvas", () => {
 			expect(consoleWarnSpy).not.toHaveBeenCalled();
 			consoleWarnSpy.mockRestore();
 		});
+
+		it("should use 300 as the viewBox width fallback when width is a string and no viewBox given", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+			const canvas = new SvgCanvas({ width: "100%", height: 200 });
+
+			expect(consoleWarnSpy).toHaveBeenCalled();
+			expect(canvas.toString()).toContain('viewBox="0 0 300 200"');
+			consoleWarnSpy.mockRestore();
+		});
+
+		it("should use 150 as the viewBox height fallback when height is a string and no viewBox given", () => {
+			const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+			const canvas = new SvgCanvas({ width: 400, height: "100%" });
+
+			expect(consoleWarnSpy).toHaveBeenCalled();
+			expect(canvas.toString()).toContain('viewBox="0 0 400 150"');
+			consoleWarnSpy.mockRestore();
+		});
 	});
 
 	describe("ViewBox validation", () => {
