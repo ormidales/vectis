@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { renderAttribute } from "../src/utils/render-attribute.js";
+import { isValidAttributeKey, renderAttribute } from "../src/utils/render-attribute.js";
 
 describe("renderAttribute", () => {
 	describe("valid values", () => {
@@ -161,8 +161,7 @@ describe("renderAttribute", () => {
 		});
 	});
 
-	describe("attribute key formatting", () => {
-		it("should handle kebab-case attribute names", () => {
+	describe("attribute key formatting", () => {		it("should handle kebab-case attribute names", () => {
 			expect(renderAttribute("stroke-width", 2)).toBe(' stroke-width="2"');
 		});
 
@@ -209,5 +208,46 @@ describe("renderAttribute", () => {
 			expect(renderAttribute("x onclick", "doSomething()")).toBe("");
 			expect(renderAttribute("data-x onload", "alert(1)")).toBe("");
 		});
+	});
+});
+
+describe("isValidAttributeKey", () => {
+	it("should return true for a plain valid key", () => {
+		expect(isValidAttributeKey("fill")).toBe(true);
+		expect(isValidAttributeKey("stroke-width")).toBe(true);
+		expect(isValidAttributeKey("data-value")).toBe(true);
+	});
+
+	it("should return false for a key with spaces", () => {
+		expect(isValidAttributeKey("x y")).toBe(false);
+		expect(isValidAttributeKey("data-x onload")).toBe(false);
+	});
+
+	it("should return false for a key with '='", () => {
+		expect(isValidAttributeKey("x=y")).toBe(false);
+		expect(isValidAttributeKey("a=b")).toBe(false);
+	});
+
+	it("should return false for event-handler keys", () => {
+		expect(isValidAttributeKey("onclick")).toBe(false);
+		expect(isValidAttributeKey("onload")).toBe(false);
+		expect(isValidAttributeKey("onmouseover")).toBe(false);
+	});
+
+	it("should reject event-handler keys case-insensitively", () => {
+		expect(isValidAttributeKey("onClick")).toBe(false);
+		expect(isValidAttributeKey("ONCLICK")).toBe(false);
+		expect(isValidAttributeKey("OnLoad")).toBe(false);
+	});
+
+	it("should return true for keys that contain 'on' as a substring but are not event handlers", () => {
+		expect(isValidAttributeKey("font")).toBe(true);
+		expect(isValidAttributeKey("stroke-on-top")).toBe(true);
+		expect(isValidAttributeKey("on-click")).toBe(true);
+	});
+
+	it("should be exported from the main entry point", async () => {
+		const { isValidAttributeKey: fn } = await import("../src/index.js");
+		expect(typeof fn).toBe("function");
 	});
 });
