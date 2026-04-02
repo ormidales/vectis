@@ -68,18 +68,17 @@ export function renderAttribute(key: string, value: string | number | undefined 
 		return "";
 	}
 
-	if (UNSAFE_KEY_CHARS_PATTERN.test(key)) {
-		console.warn(
-			`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`,
-		);
-		return "";
-	}
-
 	if (!isValidAttributeKey(key)) {
-		const trimmedKey = key.trim();
-		console.warn(
-			`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`,
-		);
+		if (UNSAFE_KEY_CHARS_PATTERN.test(key)) {
+			console.warn(
+				`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`,
+			);
+		} else {
+			const trimmedKey = key.trim();
+			console.warn(
+				`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`,
+			);
+		}
 		return "";
 	}
 
