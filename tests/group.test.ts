@@ -108,6 +108,15 @@ describe("Group", () => {
 		expect(output).toContain("<circle");
 		expect(output).toContain("</g>");
 	});
+
+	it("should produce a valid tag regardless of leading-space format from renderPresentationAttrs", () => {
+		// Regression: Group.toString() must never produce '<gfill="...">' — the
+		// tag name and first attribute must always be separated by a space.
+		const groupWithAttr = new Group({ fill: "red" });
+		const output = groupWithAttr.toString();
+		expect(output).toMatch(/^<g /);
+		expect(output).not.toMatch(/^<g[a-z]/);
+	});
 });
 
 describe("Group.remove", () => {
