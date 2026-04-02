@@ -4,6 +4,26 @@ const FORBIDDEN_KEY_PATTERN = /^on[a-z]+$/i;
 const UNSAFE_KEY_CHARS_PATTERN = /[\s=]/;
 
 /**
+ * Returns `true` if the attribute key is safe to use in SVG output.
+ * Rejects keys that contain whitespace or `=`, and event-handler names (e.g. `onclick`).
+ *
+ * @param key - The SVG attribute name to validate.
+ * @returns `true` if the key is valid, `false` otherwise.
+ *
+ * @example
+ * isValidAttributeKey('fill');       // true
+ * isValidAttributeKey('stroke-width'); // true
+ * isValidAttributeKey('onclick');    // false
+ * isValidAttributeKey('x y');        // false
+ * isValidAttributeKey('x=y');        // false
+ */
+export function isValidAttributeKey(key: string): boolean {
+	if (UNSAFE_KEY_CHARS_PATTERN.test(key)) return false;
+	if (FORBIDDEN_KEY_PATTERN.test(key.trim())) return false;
+	return true;
+}
+
+/**
  * Validates and renders an SVG attribute only if the value is valid.
  *
  * A value is considered valid if it meets these criteria:
@@ -48,18 +68,17 @@ export function renderAttribute(key: string, value: string | number | undefined 
 		return "";
 	}
 
-	if (UNSAFE_KEY_CHARS_PATTERN.test(key)) {
-		console.warn(
-			`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`,
-		);
-		return "";
-	}
-
-	if (FORBIDDEN_KEY_PATTERN.test(key.trim())) {
-		const trimmedKey = key.trim();
-		console.warn(
-			`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`,
-		);
+	if (!isValidAttributeKey(key)) {
+		if (UNSAFE_KEY_CHARS_PATTERN.test(key)) {
+			console.warn(
+				`[vectis] Blocked invalid attribute key: "${key}". Attribute keys must not contain whitespace or '=' characters.`,
+			);
+		} else {
+			const trimmedKey = key.trim();
+			console.warn(
+				`[vectis] Blocked forbidden attribute key: "${trimmedKey}". Event handler attributes are not allowed.`,
+			);
+		}
 		return "";
 	}
 
